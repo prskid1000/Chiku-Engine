@@ -6,8 +6,8 @@
 ### A Collection of Software Engines-
 - Graphics Engine
 - Sound Engine
-- Physx Engine
-- Response Engine
+- Physics Engine
+- Intelligence Engine
 
 <br>
 To be used for development of various simulation softwares
