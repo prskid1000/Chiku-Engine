@@ -1,5 +1,15 @@
 export var initState = {
-  
+  config:{},
+  playground: {
+      left: 0,
+      right: 0,
+      top: 0,
+      bottom: 0
+  },
+  pointer: {
+      x: 0,
+      y: 0
+  }
 }
 
 export function getState() {
