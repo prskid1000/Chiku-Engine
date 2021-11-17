@@ -25,7 +25,6 @@ function Playground() {
             bottom: boundingBox.bottom
         }
         store.dispatch(actions.setPlaygroundCoordinates)
-        console.log(store.getState())
     }, []);
 
     return (

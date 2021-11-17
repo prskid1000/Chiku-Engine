@@ -16,7 +16,6 @@ var playground = (state = [], action) => {
             state.left = action.payload.left
             state.right = action.payload.right
             state.bottom = action.payload.bottom
-            console.log(action.payload)
             return state
 
         default:
