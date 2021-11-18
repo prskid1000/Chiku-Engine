@@ -1,5 +1,21 @@
 export var initState = {
-  config:{},
+  config:{
+      controllerEngine: {
+          status: 0
+      },
+      graphicsEngine: {
+          status: 0
+      },
+      intelligenceEngine: {
+          status: 0
+      },
+      physicsEngine: {
+          status: 0
+      },
+      soundEngine: {
+          status: 0
+      }
+  },
   playground: {
       left: 0,
       right: 0,
@@ -9,7 +25,9 @@ export var initState = {
   pointer: {
       x: 0,
       y: 0
-  }
+  },
+  objectList: {},
+  currentObjectId: 0
 }
 
 export function getState() {

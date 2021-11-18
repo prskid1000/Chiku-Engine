@@ -35,10 +35,61 @@ var pointer = (state = [], action) => {
     }
 }
 
+var objectList = (state = [], action) => {
+    switch (action.type) {
+        case 'addObject':
+            var properties = {
+                mass: 0,
+                force: {
+                    magnitude: 0,
+                    direction: 0
+                },
+                velocity: {
+                    magnitude: 0,
+                    direction: 0
+                },
+                xCoordinate: 0,
+                yCoordinate: 0,
+                radius: 0,
+                textureId: 0,
+                shapeId: 0
+            }
+            
+            state[action.payload.objectId] = properties
+            return state
+
+        case 'removeObject':
+            delete state[action.payload.objectId]
+            if(state == undefined) state = {}
+            return state
+
+        case 'updateObject':
+            state = action.payload
+            console.log(state)
+            return state
+
+        default:
+            return state
+    }
+}
+
+var currentObjectId = (state = [], action) => {
+    switch (action.type) {
+        case 'setCurrentObjectId':
+            state = action.payload.objectId
+            return state
+
+        default:
+            return state
+    }
+}
+
 var reducers = {
     config,
     playground,
-    pointer
+    pointer,
+    objectList,
+    currentObjectId
 }
 
 export default reducers;
