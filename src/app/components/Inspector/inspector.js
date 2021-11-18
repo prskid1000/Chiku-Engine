@@ -17,7 +17,8 @@ function Inspector() {
         'xCoordinate',
         'yCoordinate',
         'textureId',
-        'shapeId'
+        'shapeId',
+        'soundId',
     ]
 
     var vectorPropertyList = [
