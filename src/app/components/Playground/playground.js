@@ -2,10 +2,15 @@ import { React, useState, useEffect} from "react";
 import actions from '../../redux/actions';
 import { useStore } from 'react-redux';
 import './playground.css';
+import { registerEngine } from "../../../engine/engine";
 
 function Playground() {
 
     var store = useStore();
+    var [state, setState] = useState(store.getState())
+    store.subscribe(() => {
+        setState(JSON.parse(JSON.stringify(store.getState())))
+    })
 
     var onMouseMove = (event) => {
         actions.setPointerCoordinates.payload = {
@@ -25,6 +30,7 @@ function Playground() {
             bottom: boundingBox.bottom
         }
         store.dispatch(actions.setPlaygroundCoordinates)
+        registerEngine()
     }, []);
 
     return (

@@ -8,9 +8,51 @@ function Inspector() {
     var store = useStore();
     var [state, setState] = useState(store.getState())
     store.subscribe(() => {
-        setState(store.getState())
-    });
+        setState(JSON.parse(JSON.stringify(store.getState())))
+    })
 
+    var scalerPropertyList = [
+        'mass', 
+        'radius', 
+        'xCoordinate',
+        'yCoordinate',
+        'textureId',
+        'shapeId'
+    ]
+
+    var vectorPropertyList = [
+        'velocity',
+        'force'
+    ]
+
+    var engineList = [
+        'controllerEngine',
+        'graphicsEngine',
+        'intelligenceEngine',
+        'physicsEngine',
+        'soundEngine'
+    ]
+
+    var engine = (type) => {
+
+        var startHandler = (event) => {
+            state.config[type].status = 1
+            actions.updateConfig.payload = state.config
+            store.dispatch(actions.updateConfig)
+        }
+
+        var stopHandler = (event) => {
+            state.config[type].status = 0
+            actions.updateConfig.payload = state.config
+            store.dispatch(actions.updateConfig)
+        }
+
+        return <div className="ml-3 mt-3 row" key={type}>
+            <label className="label_text text-light col-10 col-md-6">{type}&nbsp;</label>
+            {state.config[type].status == 0 && <button className="btn btn-success col-10 col-md-4" onClick={startHandler}>Start</button>}
+            {state.config[type].status == 1 && <button className="btn btn-danger col-10 col-md-4" onClick={stopHandler}>Stop</button>}
+        </div>
+    }
 
     var scalerProperty = (property) => {
 
@@ -28,13 +70,11 @@ function Inspector() {
             store.dispatch(actions.updateObject)
         }
 
-        return <>
-            <div className="ml-3 mt-3 row">
-                <label className="label_text text-light col-10 col-md-4">{property}&nbsp;</label>
-                <input className="form-control col-8 col-md-5" value={state.objectList[state.currentObjectId] != undefined ? state.objectList[state.currentObjectId][property] : 0} onChange={magnitudeHandler} type="text"></input>
-                <button className="btn btn-dark col-2 col-md-1" onClick={handler}><i className="fas fa-save"></i></button>
-            </div>
-        </>
+        return <div className="ml-3 mt-3 row" key={property}>
+            <label className="label_text text-light col-10 col-md-4">{property}&nbsp;</label>
+            <input className="form-control col-8 col-md-5" value={state.objectList[state.currentObjectId] != undefined ? state.objectList[state.currentObjectId][property] : 0} onChange={magnitudeHandler} type="text"></input>
+            <button className="btn btn-dark col-2 col-md-1" onClick={handler}><i className="fas fa-save"></i></button>
+        </div>
     }
 
     var vectorProperty = (property) => {
@@ -59,14 +99,12 @@ function Inspector() {
             store.dispatch(actions.updateObject)
         }
 
-        return <>
-            <div className="ml-3 mt-3 row">
-                <label className="label_text col-10 col-md-4">{property}</label>
-                <input placeholder="Magnitude" className="form-control text-hint mt-1 col-10 col-md-3" value={state.objectList[state.currentObjectId] != undefined ? state.objectList[state.currentObjectId][property].magnitude : 0} onChange={magnitudeHandler} type="text"></input>
-                <input placeholder="Direction" className="form-control mt-1 col-10 col-md-3" value={state.objectList[state.currentObjectId] != undefined ? state.objectList[state.currentObjectId][property].direction : 0} onChange={directionHandler} type="text"></input>
-                <button className="btn btn-dark col-6 col-md-1" onClick={handler}><i className="fas fa-save"></i></button>
-            </div>
-        </>
+        return <div className="ml-3 mt-3 row" key={property}>
+            <label className="label_text col-10 col-md-4">{property}</label>
+            <input placeholder="Magnitude" className="form-control text-hint mt-1 col-10 col-md-3 mr-1" value={state.objectList[state.currentObjectId] != undefined ? state.objectList[state.currentObjectId][property].magnitude : 0} onChange={magnitudeHandler} type="text"></input>
+            <input placeholder="Direction" className="form-control mt-1 col-10 col-md-3" value={state.objectList[state.currentObjectId] != undefined ? state.objectList[state.currentObjectId][property].direction : 0} onChange={directionHandler} type="text"></input>
+            <button className="btn btn-dark col-6 col-md-1" onClick={handler}><i className="fas fa-save"></i></button>
+        </div>
     }
 
     var objectCreator = () => {
@@ -115,15 +153,17 @@ function Inspector() {
                 {objectCreator()}
                 {objectRemover()}
                 <hr className="hr"></hr>
-                {scalerProperty("mass")}
-                {scalerProperty("radius")}
-                {scalerProperty("shapeId")}
-                {scalerProperty("textureId")}
-                {scalerProperty("xCoordinate")}
-                {scalerProperty("yCoordinate")}
+                {scalerPropertyList.map((value) => (
+                    scalerProperty(value)
+                ))}
                 <hr className="hr"></hr>
-                {vectorProperty("velocity")}
-                {vectorProperty("force")}
+                {vectorPropertyList.map((value) => (
+                    vectorProperty(value)
+                ))}
+                <hr className="hr"></hr>
+                {engineList.map((value) => (
+                    engine(value)
+                ))}
                 <hr className="hr"></hr>
             </div>
         </>

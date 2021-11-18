@@ -26,6 +26,10 @@ var actions = {
     setCurrentObjectId: {
         type: 'setCurrentObjectId',
         payload: {}
+    },
+    updateConfig: {
+        type: 'updateConfig',
+        payload: {}
     }
 }
 

@@ -1,19 +1,24 @@
 export var initState = {
   config:{
       controllerEngine: {
-          status: 0
+          status: 0,
+          started: false
       },
       graphicsEngine: {
-          status: 0
+          status: 0,
+          started: false
       },
       intelligenceEngine: {
-          status: 0
+          status: 0,
+          started: false
       },
       physicsEngine: {
-          status: 0
+          status: 0,
+          started: false
       },
       soundEngine: {
-          status: 0
+          status: 0,
+          started: false
       }
   },
   playground: {
@@ -28,6 +33,14 @@ export var initState = {
   },
   objectList: {},
   currentObjectId: 0
+}
+
+export function getLastAction() {
+    return sessionStorage.getItem("REDUX_LAST_ACTION")
+}
+
+export function setLastAction(lastAction) {
+    sessionStorage.setItem("REDUX_LAST_ACTION", lastAction)
 }
 
 export function getState() {

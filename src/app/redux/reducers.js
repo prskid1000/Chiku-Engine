@@ -1,7 +1,14 @@
+import { setLastAction } from "./persistor"
+
 var config = (state = [], action) => {
+    setLastAction(action.type)
     switch (action.type) {
         case 'resetState':
             state.config = {}
+            return state
+
+        case 'updateConfig':
+            state = action.payload
             return state
 
         default:
@@ -10,6 +17,7 @@ var config = (state = [], action) => {
 }
 
 var playground = (state = [], action) => {
+    setLastAction(action.type)
     switch (action.type) {
         case 'setPlaygroundCoordinates':
             state.top = action.payload.top
@@ -24,6 +32,7 @@ var playground = (state = [], action) => {
 }
 
 var pointer = (state = [], action) => {
+    setLastAction(action.type)
     switch (action.type) {
         case 'setPointerCoordinates':
             state.x = action.payload.pointerX
@@ -36,6 +45,7 @@ var pointer = (state = [], action) => {
 }
 
 var objectList = (state = [], action) => {
+    setLastAction(action.type)
     switch (action.type) {
         case 'addObject':
             var properties = {
@@ -74,6 +84,7 @@ var objectList = (state = [], action) => {
 }
 
 var currentObjectId = (state = [], action) => {
+    setLastAction(action.type)
     switch (action.type) {
         case 'setCurrentObjectId':
             state = action.payload.objectId
