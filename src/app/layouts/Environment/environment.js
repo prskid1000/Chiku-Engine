@@ -7,8 +7,8 @@ function Environment() {
     return (
         <>
             <div className="row environment">
-                <div className="col-12 col-md-9"><Playground /></div>
-                <div className="col-12 col-md-3"><Inspector /></div>
+                <div className="col-12 col-md-8"><Playground /></div>
+                <div className="col-12 col-md-4"><Inspector /></div>
             </div>
         </>
     );

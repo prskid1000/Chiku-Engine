@@ -153,7 +153,7 @@ function Inspector() {
 
     return (
         <>
-            <div className="inspector">
+            <div className="inspector col">
                 {objectCreator()}
                 {objectRemover()}
                 <hr className="hr"></hr>
@@ -168,7 +168,6 @@ function Inspector() {
                 {engineList.map((value) => (
                     engine(value)
                 ))}
-                <hr className="hr"></hr>
             </div>
         </>
     );
