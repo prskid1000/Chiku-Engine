@@ -32,7 +32,8 @@ export var initState = {
       y: 0
   },
   objectList: {},
-  currentObjectId: 0
+  currentObjectId: 0,
+  lastRemovedObjectId: 0
 }
 
 export function getLastAction() {

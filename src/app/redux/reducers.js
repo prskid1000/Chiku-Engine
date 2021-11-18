@@ -62,7 +62,8 @@ var objectList = (state = [], action) => {
                 yCoordinate: 0,
                 radius: 0,
                 textureId: 0,
-                shapeId: 0
+                shapeId: 0,
+                objectId: action.payload.objectId
             }
             
             state[action.payload.objectId] = properties
@@ -95,12 +96,25 @@ var currentObjectId = (state = [], action) => {
     }
 }
 
+var lastRemovedObjectId = (state = [], action) => {
+    setLastAction(action.type)
+    switch (action.type) {
+        case 'setLastRemovedObjectId':
+            state = action.payload.objectId
+            return state
+
+        default:
+            return state
+    }
+}
+
 var reducers = {
     config,
     playground,
     pointer,
     objectList,
-    currentObjectId
+    currentObjectId,
+    lastRemovedObjectId
 }
 
 export default reducers;

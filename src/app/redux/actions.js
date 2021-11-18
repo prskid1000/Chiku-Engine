@@ -30,6 +30,10 @@ var actions = {
     updateConfig: {
         type: 'updateConfig',
         payload: {}
+    },
+    setLastRemovedObjectId: {
+        type: 'setLastRemovedObjectId',
+        payload: {}
     }
 }
 

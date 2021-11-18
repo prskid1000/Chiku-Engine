@@ -113,11 +113,11 @@ function Inspector() {
             var date = new Date()
             var objectId = date.getTime();
 
-            actions.addObject.payload.objectId = objectId;
-            store.dispatch(actions.addObject);
-
             actions.setCurrentObjectId.payload.objectId = objectId
             store.dispatch(actions.setCurrentObjectId)
+
+            actions.addObject.payload.objectId = objectId;
+            store.dispatch(actions.addObject);
         }
 
         return <>
@@ -132,8 +132,12 @@ function Inspector() {
         var objectId = "Object Id"
 
         var handler = (event) => {
+            actions.setLastRemovedObjectId.payload.objectId = state.currentObjectId
+            store.dispatch(actions.setLastRemovedObjectId)
+            
             actions.removeObject.payload.objectId = state.currentObjectId
             store.dispatch(actions.removeObject)
+            
             actions.setCurrentObjectId.payload.objectId = (Object.keys(state.objectList).length != 0) ? Object.keys(state.objectList)[0] : 0
             store.dispatch(actions.setCurrentObjectId)
         }
