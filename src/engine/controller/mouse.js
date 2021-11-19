@@ -1,1 +1,3 @@
-var 
+export function applyMouseEffect(objectId) {
+
+}

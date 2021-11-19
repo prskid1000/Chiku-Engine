@@ -58,6 +58,14 @@ var objectList = (state = [], action) => {
                     magnitude: 0,
                     direction: 0
                 },
+                addForce: {
+                    magnitude: 0,
+                    direction: 0
+                },
+                addVelocity: {
+                    magnitude: 0,
+                    direction: 0
+                },
                 xCoordinate: 0,
                 yCoordinate: 0,
                 radius: 0,

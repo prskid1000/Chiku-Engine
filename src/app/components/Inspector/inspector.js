@@ -79,6 +79,9 @@ function Inspector() {
     }
 
     var vectorProperty = (property) => {
+
+        var addKey = "add" + property.charAt(0).toUpperCase() + property.slice(1)
+
         var magnitudeHandler = (event) => {
             if (state.objectList == undefined) return
             if (state.objectList[state.currentObjectId] == undefined) return
@@ -93,6 +96,20 @@ function Inspector() {
             setState(JSON.parse(JSON.stringify(state)))
         }
 
+        var addMagnitudeHandler = (event) => {
+            if (state.objectList == undefined) return
+            if (state.objectList[state.currentObjectId] == undefined) return
+            state.objectList[state.currentObjectId][addKey].magnitude = event.target.value
+            setState(JSON.parse(JSON.stringify(state)))
+        }
+
+        var addDirectionHandler = (event) => {
+            if (state.objectList == undefined) return
+            if (state.objectList[state.currentObjectId] == undefined) return
+            state.objectList[state.currentObjectId][addKey].direction = event.target.value
+            setState(JSON.parse(JSON.stringify(state)))
+        }
+
         var handler = (event) => {
             if (state.objectList == undefined) return
             if (state.objectList[state.currentObjectId] == undefined) return
@@ -100,11 +117,39 @@ function Inspector() {
             store.dispatch(actions.updateObject)
         }
 
+        var addHandler = (event) => {
+            if (state.objectList == undefined) return
+            if (state.objectList[state.currentObjectId] == undefined) return
+
+            var magnitude = state.objectList[state.currentObjectId][addKey].magnitude;
+            var direction = state.objectList[state.currentObjectId][addKey].direction;
+        
+            var properties = state.objectList[state.currentObjectId]
+
+            var yComponent = properties[property].magnitude * Math.sin(properties[property].direction * Math.PI / 180) +
+                magnitude * Math.sin(direction * Math.PI / 180);
+
+            var xComponent = properties[property].magnitude * Math.cos(properties[property].direction * Math.PI / 180) +
+                magnitude * Math.cos(direction * Math.PI / 180);
+
+            properties[property].magnitude = Math.sqrt(xComponent * xComponent + yComponent * yComponent);
+            properties[property].direction = Math.atan(yComponent / xComponent) * 180 / Math.PI;
+
+            state.objectList[state.currentObjectId] = properties
+            actions.updateObject.payload = state.objectList
+            store.dispatch(actions.updateObject)
+
+        }
+
         return <div className="ml-3 mt-3 row" key={property}>
-            <label className="label_text col-10 col-md-4">{property}</label>
+            <label className="label_text col-10 col-md-4">Net {property}</label>
             <input placeholder="Magnitude" className="form-control text-hint mt-1 col-10 col-md-3 mr-1" value={state.objectList[state.currentObjectId] != undefined ? state.objectList[state.currentObjectId][property].magnitude : 0} onChange={magnitudeHandler} type="text"></input>
             <input placeholder="Direction" className="form-control mt-1 col-10 col-md-3" value={state.objectList[state.currentObjectId] != undefined ? state.objectList[state.currentObjectId][property].direction : 0} onChange={directionHandler} type="text"></input>
             <button className="btn btn-dark col-6 col-md-1" onClick={handler}><i className="fas fa-save"></i></button>
+            <label className="label_text col-10 col-md-4"></label>
+            <input placeholder="Magnitude" className="form-control text-hint mt-1 col-10 col-md-3 mr-1" value={state.objectList[state.currentObjectId] != undefined ? state.objectList[state.currentObjectId][addKey].magnitude : 0} onChange={addMagnitudeHandler} type="text"></input>
+            <input placeholder="Direction" className="form-control mt-1 col-10 col-md-3" value={state.objectList[state.currentObjectId] != undefined ? state.objectList[state.currentObjectId][addKey].direction : 0} onChange={addDirectionHandler} type="text"></input>
+            <button className="btn btn-dark col-6 col-md-1 mt-1" onClick={addHandler}><i className="fas fa-plus"></i></button>
         </div>
     }
 

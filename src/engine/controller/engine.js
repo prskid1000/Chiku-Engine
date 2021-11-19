@@ -1,9 +1,18 @@
 import { getLastAction } from "../../app/redux/persistor"
 import store from "../../app/redux/store"
+import { applyKeyEffect } from "./keyboard"
+import { applyMouseEffect } from "./mouse"
+
+var FeatureMap = {
+    "0": applyKeyEffect,
+    "1": applyMouseEffect
+}
 
 var controllerId = {}
 var contollerLoop = (objectId) => {
-    console.log(objectId)
+    Object.keys(FeatureMap).map((key) => {
+        FeatureMap[key](objectId)
+    })
 }
 
 export function startController() {

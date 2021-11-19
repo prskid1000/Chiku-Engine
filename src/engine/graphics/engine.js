@@ -1,9 +1,18 @@
 import { getLastAction } from "../../app/redux/persistor"
 import store from "../../app/redux/store"
+import { applyShape } from "./shape"
+import { applyTexture } from "./texture"
+
+var FeatureMap = {
+    "0": applyShape,
+    "1": applyTexture
+}
 
 var graphicsId = {}
 var graphicsLoop = (objectId) => {
-    console.log(objectId)
+    Object.keys(FeatureMap).map((key) => {
+        FeatureMap[key](objectId)
+    })
 }
 
 export function startGraphics() {

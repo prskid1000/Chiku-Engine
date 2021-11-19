@@ -1,9 +1,18 @@
 import { getLastAction } from "../../app/redux/persistor"
 import store from "../../app/redux/store"
+import { applyAction } from "./action"
+import { applyReaction } from "./reaction"
+
+var FeatureMap = {
+    "0": applyAction,
+    "1": applyReaction
+}
 
 var intelligenceId = {}
 var intelligenceLoop = (objectId) => {
-    console.log(objectId)
+    Object.keys(FeatureMap).map((key) => {
+        FeatureMap[key](objectId)
+    })
 }
 
 export function startIntelligence() {

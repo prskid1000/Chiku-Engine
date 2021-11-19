@@ -1,66 +1,52 @@
+import actions from "../../app/redux/actions";
+import store from "../../app/redux/store";
+
 /*
   - ID of event loop for each body
   - Each event ID is unique
 */
 var loopID = 0;
+var  setVelocity = (objectId) => {
 
-export function addForce(properties, setProperties, magnitude, direction){
+    var objectList = store.getState().objectList;
+    var properties = objectList[objectId]
+    console.log(properties)
 
-    var yComponent = properties.force.magnitude * Math.sin(properties.force.direction) + 
-        magnitude * Math.sin(direction);
-
-    var xComponent = properties.force.magnitude * Math.cos(properties.force.direction) +
-        magnitude * Math.cos(direction);
-
-    properties.force.magnitude = Math.sqrt(xComponent * xComponent + yComponent * yComponent);
-    properties.force.direction = Math.atan(yComponent / xComponent);
-    setProperties(properties);
-}
-
-export function removeForce(properties, setProperties, magnitude, direction) {
-    var yComponent = properties.force.magnitude * Math.sin(properties.force.direction) -
-        magnitude * Math.sin(direction);
-
-    var xComponent = properties.force.magnitude * Math.cos(properties.force.direction) -
-        magnitude * Math.cos(direction);
-
-    properties.force.magnitude = Math.sqrt(xComponent * xComponent + yComponent * yComponent);
-    properties.force.direction = Math.atan(yComponent / xComponent);
-    setProperties(properties);
-}
-
-var  setVelocity = (properties, setProperties) => {
-    var yComponent = properties.force.magnitude * Math.sin(properties.force.direction) / 
+    var yComponent = properties.force.magnitude * Math.sin(properties.force.direction * Math.PI / 180) /
         (properties.mass == 0 ? 1 : properties.mass);
 
-    var xComponent = properties.force.magnitude * Math.cos(properties.force.direction) /
+    var xComponent = properties.force.magnitude * Math.cos(properties.force.direction * Math.PI / 180) /
         (properties.mass == 0 ? 1 : properties.mass);
 
-    var yVelocity = properties.velocity.magnitude * Math.sin(properties.velocity.direction) + yComponent;
-    var xVelocity = properties.velocity.magnitude * Math.cos(properties.velocity.direction) + xComponent;
+    var yVelocity = properties.velocity.magnitude * Math.sin(properties.velocity.direction * Math.PI / 180) + yComponent;
+    var xVelocity = properties.velocity.magnitude * Math.cos(properties.velocity.direction * Math.PI / 180) + xComponent;
 
     properties.velocity.magnitude = Math.sqrt(xVelocity * xVelocity + yVelocity * yVelocity);
-    properties.velocity.direction = Math.atan(yVelocity / xVelocity);
-    setProperties(properties);
+    properties.velocity.direction = Math.atan(yVelocity / xVelocity) * 180 / Math.PI;
+    
+    objectList[objectId] = properties
+    actions.updateObject.payload = objectList
+    store.dispatch(actions.updateObject)
 }
 
-var setPosition = (properties, setProperties) => {
+var setPosition = (objectId) => {
 
-    var yVelocity = properties.velocity.magnitude * Math.sin(properties.velocity.direction);
-    var xVelocity = properties.velocity.magnitude * Math.cos(properties.velocity.direction);
+    var objectList = store.getState().objectList;
+    var properties = objectList[objectId]
+
+    var yVelocity = properties.velocity.magnitude * Math.sin(properties.velocity.direction * Math.PI / 180);
+    var xVelocity = properties.velocity.magnitude * Math.cos(properties.velocity.direction * Math.PI / 180);
 
     properties.yCoordinate = properties.yCoordinate + yVelocity;
     properties.xCoordinate = properties.xCoordinate + xVelocity;
-    setProperties(properties);
+
+    objectList[objectId] = properties
+    actions.updateObject.payload = objectList
+    store.dispatch(actions.updateObject)
+    
 }
 
-export function startMovement(properties, setProperties) {
-    loopID = setInterval(() => {
-        setVelocity(properties, setProperties);
-        setPosition(properties, setProperties);
-    }, 1000);
-}
-
-export function stopMovement() {
-    clearInterval(loopID);
+export function applyMovement(objectId) {
+    setVelocity(objectId);
+    setPosition(objectId);
 }

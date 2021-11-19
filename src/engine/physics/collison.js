@@ -1,3 +1,3 @@
-var setCollisionRadius = (properties) => {
+export function applyCollisonDetection(objectId) {
 
 }

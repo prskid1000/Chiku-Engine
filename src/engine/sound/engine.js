@@ -1,9 +1,18 @@
 import { getLastAction } from "../../app/redux/persistor"
 import store from "../../app/redux/store"
+import { applyBGSound } from "./background"
+import { applyObjectSound } from "./object"
+
+var FeatureMap = {
+    "0": applyBGSound,
+    "1": applyObjectSound
+}
 
 var soundId = {}
 var soundLoop = (objectId) => {
-    console.log(objectId)
+    Object.keys(FeatureMap).map((key) => {
+        FeatureMap[key](objectId)
+    })
 }
 
 export function startSound() {

@@ -1,9 +1,18 @@
 import { getLastAction } from "../../app/redux/persistor"
 import store from "../../app/redux/store"
+import { applyCollisonDetection } from "./collison"
+import { applyMovement } from "./movement"
+
+var FeatureMap = {
+    "0": applyCollisonDetection,
+    "1": applyMovement
+}
 
 var physicsId = {}
 var physicsLoop = (objectId) => {
-    console.log(objectId)
+    Object.keys(FeatureMap).map((key) => {
+        FeatureMap[key](objectId)
+    })
 }
 
 export function startPhysics() {
