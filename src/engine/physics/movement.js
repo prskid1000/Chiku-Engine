@@ -6,6 +6,7 @@ import store from "../../app/redux/store";
   - Each event ID is unique
 */
 var loopID = 0;
+
 var  setVelocity = (objectId) => {
 
     var objectList = store.getState().objectList;
@@ -43,7 +44,6 @@ var setPosition = (objectId) => {
     objectList[objectId] = properties
     actions.updateObject.payload = objectList
     store.dispatch(actions.updateObject)
-    
 }
 
 export function applyMovement(objectId) {
