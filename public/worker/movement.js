@@ -1,5 +1,5 @@
-import actions from "../../app/redux/actions";
-import store from "../../app/redux/store";
+import actions from "../../src/app/redux/actions";
+import store from "../../src/app/redux/store";
 
 /*
   - ID of event loop for each body

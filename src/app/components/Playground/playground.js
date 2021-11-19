@@ -7,10 +7,6 @@ import { registerEngine } from "../../../engine/engine";
 function Playground() {
 
     var store = useStore();
-    var [state, setState] = useState(store.getState())
-    store.subscribe(() => {
-        setState(JSON.parse(JSON.stringify(store.getState())))
-    })
 
     var onMouseMove = (event) => {
         actions.setPointerCoordinates.payload = {
@@ -18,7 +14,6 @@ function Playground() {
             pointerY: event.clientY
         }
         store.dispatch(actions.setPointerCoordinates)
-        //console.log(store.getState())
     }
 
     useEffect(() => {
@@ -30,6 +25,8 @@ function Playground() {
             bottom: boundingBox.bottom
         }
         store.dispatch(actions.setPlaygroundCoordinates)
+
+        //Registers Simulation Engine
         registerEngine()
     }, []);
 

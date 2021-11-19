@@ -1,44 +1,44 @@
 import { getLastAction } from "../../app/redux/persistor"
 import store from "../../app/redux/store"
-import { applyCollisonDetection } from "./collison"
-import { applyMovement } from "./movement"
-
-var FeatureMap = {
-    "0": applyCollisonDetection,
-    "1": applyMovement
-}
 
 var physicsId = {}
-var physicsLoop = (objectId) => {
-    Object.keys(FeatureMap).map((key) => {
-        FeatureMap[key](objectId)
-    })
-}
 
 export function startPhysics() {
     Object.keys(store.getState().objectList).map((key) => {
-        physicsId[key] = setInterval(() => {
-            physicsLoop(key)
-        }, 1000)
+        if (physicsId[key] == undefined) {
+            physicsId[key] = new Worker("worker/physics.js")
+            physicsId[key].postMessage(key)
+        }
     })
     store.subscribe(() => {
-        if (getLastAction() == "addObject") {
-            var currentObjectId = store.getState().currentObjectId
-            physicsId[currentObjectId] = setInterval(() => {
-                physicsLoop(currentObjectId)
-            }, 1000)
+        if (store.getState().config.physicsEngine.started == true) {
+            if (getLastAction() == "addObject") {
+                if (physicsId[currentObjectId] == undefined) {
+                    var currentObjectId = store.getState().currentObjectId
+                    physicsId[currentObjectId] = new Worker("worker/physics.js")
+                    physicsId[currentObjectId].postMessage(currentObjectId)
+                }
+            }
         }
     })
 }
 
 export function stopPhysics() {
     Object.keys(store.getState().objectList).map((key) => {
-        clearInterval(physicsId[key])
+        if (physicsId[key] != undefined) {
+            physicsId[key].terminate()
+            delete physicsId[key]
+        }
     })
     store.subscribe(() => {
-        if (getLastAction() == "removeObject") {
-            var lastRemovedObjectId = store.getState().lastRemovedObjectId
-            clearInterval(physicsId[lastRemovedObjectId])
+        if (store.getState().config.physicsEngine.started == true) {
+            if (getLastAction() == "removeObject") {
+                if (physicsId[lastRemovedObjectId] != undefined) {
+                    var lastRemovedObjectId = store.getState().lastRemovedObjectId
+                    physicsId[lastRemovedObjectId].terminate()
+                    delete physicsId[lastRemovedObjectId]
+                }
+            }
         }
     })
 }

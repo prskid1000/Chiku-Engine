@@ -1,44 +1,44 @@
 import { getLastAction } from "../../app/redux/persistor"
 import store from "../../app/redux/store"
-import { applyAction } from "./action"
-import { applyReaction } from "./reaction"
-
-var FeatureMap = {
-    "0": applyAction,
-    "1": applyReaction
-}
 
 var intelligenceId = {}
-var intelligenceLoop = (objectId) => {
-    Object.keys(FeatureMap).map((key) => {
-        FeatureMap[key](objectId)
-    })
-}
 
 export function startIntelligence() {
     Object.keys(store.getState().objectList).map((key) => {
-        intelligenceId[key] = setInterval(() => {
-            intelligenceLoop(key)
-        }, 1000)
+        if (intelligenceId[key] == undefined) {
+            intelligenceId[key] = new Worker("worker/intelligence.js")
+            intelligenceId[key].postMessage(key)
+        }
     })
     store.subscribe(() => {
-        if (getLastAction() == "addObject") {
-            var currentObjectId = store.getState().currentObjectId
-            intelligenceId[currentObjectId] = setInterval(() => {
-                intelligenceLoop(currentObjectId)
-            }, 1000)
+        if (store.getState().config.intelligenceEngine.started == true) {
+            if (getLastAction() == "addObject") {
+                if (intelligenceId[currentObjectId] == undefined) {
+                    var currentObjectId = store.getState().currentObjectId
+                    intelligenceId[currentObjectId] = new Worker("worker/intelligence.js")
+                    intelligenceId[currentObjectId].postMessage(currentObjectId)
+                }
+            }
         }
     })
 }
 
 export function stopIntelligence() {
     Object.keys(store.getState().objectList).map((key) => {
-        clearInterval(intelligenceId[key])
+        if (intelligenceId[key] != undefined) {
+            intelligenceId[key].terminate()
+            delete intelligenceId[key]
+        }
     })
     store.subscribe(() => {
-        if (getLastAction() == "removeObject") {
-            var lastRemovedObjectId = store.getState().lastRemovedObjectId
-            clearInterval(intelligenceId[lastRemovedObjectId])
+        if (store.getState().config.intelligenceEngine.started == true) {
+            if (getLastAction() == "removeObject") {
+                if (intelligenceId[lastRemovedObjectId] != undefined) {
+                    var lastRemovedObjectId = store.getState().lastRemovedObjectId
+                    intelligenceId[lastRemovedObjectId].terminate()
+                    delete intelligenceId[lastRemovedObjectId]
+                }
+            }
         }
     })
 }

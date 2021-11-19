@@ -1,44 +1,44 @@
 import { getLastAction } from "../../app/redux/persistor"
 import store from "../../app/redux/store"
-import { applyBGSound } from "./background"
-import { applyObjectSound } from "./object"
-
-var FeatureMap = {
-    "0": applyBGSound,
-    "1": applyObjectSound
-}
 
 var soundId = {}
-var soundLoop = (objectId) => {
-    Object.keys(FeatureMap).map((key) => {
-        FeatureMap[key](objectId)
-    })
-}
 
 export function startSound() {
     Object.keys(store.getState().objectList).map((key) => {
-        soundId[key] = setInterval(() => {
-            soundLoop(key)
-        }, 1000)
+        if (soundId[key] == undefined) {
+            soundId[key] = new Worker("worker/sound.js")
+            soundId[key].postMessage(key)
+        }
     })
     store.subscribe(() => {
-        if (getLastAction() == "addObject") {
-            var currentObjectId = store.getState().currentObjectId
-            soundId[currentObjectId] = setInterval(() => {
-                soundLoop(currentObjectId)
-            }, 1000)
+        if (store.getState().config.soundEngine.started == true) {
+            if (getLastAction() == "addObject") {
+                if (soundId[currentObjectId] == undefined) {
+                    var currentObjectId = store.getState().currentObjectId
+                    soundId[currentObjectId] = new Worker("worker/sound.js")
+                    soundId[currentObjectId].postMessage(currentObjectId)
+                }
+            }
         }
     })
 }
 
 export function stopSound() {
     Object.keys(store.getState().objectList).map((key) => {
-        clearInterval(soundId[key])
+        if (soundId[key] != undefined) {
+            soundId[key].terminate()
+            delete soundId[key]
+        }
     })
     store.subscribe(() => {
-        if (getLastAction() == "removeObject") {
-            var lastRemovedObjectId = store.getState().lastRemovedObjectId
-            clearInterval(soundId[lastRemovedObjectId])
+        if (store.getState().config.soundEngine.started == true) {
+            if (getLastAction() == "removeObject") {
+                if (soundId[lastRemovedObjectId] != undefined) {
+                    var lastRemovedObjectId = store.getState().lastRemovedObjectId
+                    soundId[lastRemovedObjectId].terminate()
+                    delete soundId[lastRemovedObjectId]
+                }
+            }
         }
     })
 }
