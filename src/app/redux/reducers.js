@@ -84,7 +84,6 @@ var objectList = (state = [], action) => {
 
         case 'updateObject':
             state = action.payload
-            console.log(state)
             return state
 
         default:
