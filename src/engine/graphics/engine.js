@@ -1,5 +1,6 @@
 import { getLastAction } from "../../app/redux/persistor"
 import store from "../../app/redux/store"
+import { workLoad } from "./workload"
 
 var graphicsId = {}
 
@@ -8,6 +9,7 @@ export function startGraphics() {
         if (graphicsId[key] == undefined) {
             graphicsId[key] = new Worker("worker/graphics.js")
             graphicsId[key].postMessage(key)
+            graphicsId[key].onmessage = workLoad(key)
         }
     })
     store.subscribe(() => {
@@ -17,6 +19,7 @@ export function startGraphics() {
                     var currentObjectId = store.getState().currentObjectId
                     graphicsId[currentObjectId] = new Worker("worker/graphics.js")
                     graphicsId[currentObjectId].postMessage(currentObjectId)
+                    graphicsId[currentObjectId].onmessage = workLoad(currentObjectId)
                 }
             }
         }

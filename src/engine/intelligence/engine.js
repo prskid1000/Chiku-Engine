@@ -1,13 +1,16 @@
 import { getLastAction } from "../../app/redux/persistor"
 import store from "../../app/redux/store"
+import { workLoad } from "./workload"
 
 var intelligenceId = {}
+
 
 export function startIntelligence() {
     Object.keys(store.getState().objectList).map((key) => {
         if (intelligenceId[key] == undefined) {
             intelligenceId[key] = new Worker("worker/intelligence.js")
             intelligenceId[key].postMessage(key)
+            intelligenceId[key].onmessage = workLoad(key)
         }
     })
     store.subscribe(() => {
@@ -17,6 +20,7 @@ export function startIntelligence() {
                     var currentObjectId = store.getState().currentObjectId
                     intelligenceId[currentObjectId] = new Worker("worker/intelligence.js")
                     intelligenceId[currentObjectId].postMessage(currentObjectId)
+                    intelligenceId[currentObjectId].onmessage = workLoad(currentObjectId)
                 }
             }
         }

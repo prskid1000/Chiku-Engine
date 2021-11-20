@@ -50,8 +50,8 @@ function Inspector() {
 
         return <div className="ml-3 mt-3 row" key={type}>
             <label className="label_text text-light col-10 col-md-6">{type}&nbsp;</label>
-            {state.config[type].status == 0 && <button className="btn btn-success col-10 col-md-4" onClick={startHandler}>Start</button>}
-            {state.config[type].status == 1 && <button className="btn btn-danger col-10 col-md-4" onClick={stopHandler}>Stop</button>}
+            {state.config[type].status == 0 && <button className="btn btn-sm form-control-sm btn-success col-10 col-md-4" onClick={startHandler}>Start</button>}
+            {state.config[type].status == 1 && <button className="btn btn-sm form-control-sm btn-danger col-10 col-md-4" onClick={stopHandler}>Stop</button>}
         </div>
     }
 
@@ -73,8 +73,8 @@ function Inspector() {
 
         return <div className="ml-3 mt-3 row" key={property}>
             <label className="label_text text-light col-10 col-md-4">{property}&nbsp;</label>
-            <input className="form-control col-8 col-md-5" value={state.objectList[state.currentObjectId] != undefined ? state.objectList[state.currentObjectId][property] : 0} onChange={magnitudeHandler} type="text"></input>
-            <button className="btn btn-dark col-2 col-md-1" onClick={handler}><i className="fas fa-save"></i></button>
+            <input className="form-control form-control-sm col-8 col-md-5" value={state.objectList[state.currentObjectId] != undefined ? state.objectList[state.currentObjectId][property] : 0} onChange={magnitudeHandler} type="text"></input>
+            <button className="btn btn-sm form-control-sm btn-dark col-2 col-md-1" onClick={handler}><i className="fas fa-save"></i></button>
         </div>
     }
 
@@ -143,13 +143,13 @@ function Inspector() {
 
         return <div className="ml-3 mt-3 row" key={property}>
             <label className="label_text col-10 col-md-4">Net {property}</label>
-            <input placeholder="Magnitude" className="form-control text-hint mt-1 col-10 col-md-3 mr-1" value={state.objectList[state.currentObjectId] != undefined ? state.objectList[state.currentObjectId][property].magnitude : 0} onChange={magnitudeHandler} type="text"></input>
-            <input placeholder="Direction" className="form-control mt-1 col-10 col-md-3" value={state.objectList[state.currentObjectId] != undefined ? state.objectList[state.currentObjectId][property].direction : 0} onChange={directionHandler} type="text"></input>
-            <button className="btn btn-dark col-6 col-md-1" onClick={handler}><i className="fas fa-save"></i></button>
+            <input placeholder="Magnitude" className="form-control form-control-sm text-hint mt-1 col-10 col-md-3 mr-1" value={state.objectList[state.currentObjectId] != undefined ? state.objectList[state.currentObjectId][property].magnitude : 0} onChange={magnitudeHandler} type="text"></input>
+            <input placeholder="Direction" className="form-control form-control-sm mt-1 col-10 col-md-3" value={state.objectList[state.currentObjectId] != undefined ? state.objectList[state.currentObjectId][property].direction : 0} onChange={directionHandler} type="text"></input>
+            <button className="btn btn-sm form-control-sm btn-dark col-6 col-md-1" onClick={handler}><i className="fas fa-save"></i></button>
             <label className="label_text col-10 col-md-4"></label>
-            <input placeholder="Magnitude" className="form-control text-hint mt-1 col-10 col-md-3 mr-1" value={state.objectList[state.currentObjectId] != undefined ? state.objectList[state.currentObjectId][addKey].magnitude : 0} onChange={addMagnitudeHandler} type="text"></input>
-            <input placeholder="Direction" className="form-control mt-1 col-10 col-md-3" value={state.objectList[state.currentObjectId] != undefined ? state.objectList[state.currentObjectId][addKey].direction : 0} onChange={addDirectionHandler} type="text"></input>
-            <button className="btn btn-dark col-6 col-md-1 mt-1" onClick={addHandler}><i className="fas fa-plus"></i></button>
+            <input placeholder="Magnitude" className="form-control form-control-sm text-hint mt-1 col-10 col-md-3 mr-1" value={state.objectList[state.currentObjectId] != undefined ? state.objectList[state.currentObjectId][addKey].magnitude : 0} onChange={addMagnitudeHandler} type="text"></input>
+            <input placeholder="Direction" className="form-control form-control-sm mt-1 col-10 col-md-3" value={state.objectList[state.currentObjectId] != undefined ? state.objectList[state.currentObjectId][addKey].direction : 0} onChange={addDirectionHandler} type="text"></input>
+            <button className="btn btn-dark btn-sm form-control-sm col-6 col-md-1 mt-1" onClick={addHandler}><i className="fas fa-plus"></i></button>
         </div>
     }
 
@@ -168,7 +168,7 @@ function Inspector() {
 
         return <>
             <div className="ml-5 mt-3 row">
-                <button className="btn btn-success col-10" onClick={buttonHandler}>New Object</button>
+                <button className="btn btn-sm form-control-sm btn-success col-10" onClick={buttonHandler}>New Object</button>
             </div>
         </>
     }
@@ -191,8 +191,8 @@ function Inspector() {
         return <>
             <div className="ml-3 mt-3 row">
                 <label className="label_text text-light col-10 col-md-4">Object&nbsp;</label>
-                <input disabled className="form-control text-hint col-8 col-md-6" value={state.currentObjectId} type="text"></input>
-                <button className="btn btn-danger col-2 col-md-1" onClick={handler}><i className="fas fa-trash"></i></button>
+                <input disabled className="form-control form-control-sm text-hint col-8 col-md-6" value={state.currentObjectId} type="text"></input>
+                <button className="btn btn-sm form-control-sm btn-danger col-2 col-md-1" onClick={handler}><i className="fas fa-trash"></i></button>
             </div>
         </>
     }
@@ -214,6 +214,7 @@ function Inspector() {
                 {engineList.map((value) => (
                     engine(value)
                 ))}
+                <br></br>
             </div>
         </>
     );

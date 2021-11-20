@@ -8,8 +8,12 @@
     scrollbar-color: white;
 }
 
+.inspector::-webkit-scrollbar {
+  display: none;
+}
+
 .label_text {
-    font-size: 24px;
+    font-size: 18px;
     color: white;
     margin: 0px;
     padding: 0px;

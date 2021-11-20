@@ -1,5 +1,6 @@
 import { getLastAction } from "../../app/redux/persistor"
 import store from "../../app/redux/store"
+import { workLoad } from "./workload"
 
 var physicsId = {}
 
@@ -8,6 +9,7 @@ export function startPhysics() {
         if (physicsId[key] == undefined) {
             physicsId[key] = new Worker("worker/physics.js")
             physicsId[key].postMessage(key)
+            physicsId[key].onmessage = workLoad(key)
         }
     })
     store.subscribe(() => {
@@ -17,6 +19,8 @@ export function startPhysics() {
                     var currentObjectId = store.getState().currentObjectId
                     physicsId[currentObjectId] = new Worker("worker/physics.js")
                     physicsId[currentObjectId].postMessage(currentObjectId)
+                    physicsId[currentObjectId].onmessage = workLoad(currentObjectId)
+
                 }
             }
         }

@@ -1,5 +1,6 @@
 import { getLastAction } from "../../app/redux/persistor"
 import store from "../../app/redux/store"
+import { workLoad } from "./workload"
 
 var soundId = {}
 
@@ -8,6 +9,7 @@ export function startSound() {
         if (soundId[key] == undefined) {
             soundId[key] = new Worker("worker/sound.js")
             soundId[key].postMessage(key)
+            soundId[key].onmessage = workLoad(key)
         }
     })
     store.subscribe(() => {
@@ -17,6 +19,7 @@ export function startSound() {
                     var currentObjectId = store.getState().currentObjectId
                     soundId[currentObjectId] = new Worker("worker/sound.js")
                     soundId[currentObjectId].postMessage(currentObjectId)
+                    soundId[currentObjectId].onmessage = workLoad(currentObjectId)
                 }
             }
         }

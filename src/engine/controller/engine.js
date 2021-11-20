@@ -1,5 +1,6 @@
 import { getLastAction } from "../../app/redux/persistor"
 import store from "../../app/redux/store"
+import { workLoad } from "./workload"
 
 var controllerId = {}
 
@@ -8,6 +9,7 @@ export function startController() {
         if (controllerId[key] == undefined) {
             controllerId[key] = new Worker("worker/controller.js")
             controllerId[key].postMessage(key)
+            controllerId[key].onmessage = workLoad(key)
         }
     })
     store.subscribe(() => {
@@ -17,6 +19,7 @@ export function startController() {
                     var currentObjectId = store.getState().currentObjectId
                     controllerId[currentObjectId] = new Worker("worker/controller.js")
                     controllerId[currentObjectId].postMessage(currentObjectId)
+                    controllerId[currentObjectId].onmessage = workLoad(currentObjectId)
                 }
             }
         }
