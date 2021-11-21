@@ -7,30 +7,35 @@ var saveState = (properties) => {
     var state = getState()
     state.objectList[properties.objectId] = properties
     setState(state)
+    console.log(properties.objectId + "Intelligence")
 }
 
 
 export function startIntelligence() {
-    Object.keys(store.getState().objectList).map((key) => {
+    Object.keys(getState().objectList).map((key) => {
         if (intelligenceId[key] == undefined) {
             intelligenceId[key] = new Worker("worker/intelligence.js")
-            intelligenceId[key].postMessage({
-                "objectList": store.getState().objectList,
-                "objectId": key
-            })
+            setInterval(() => {
+                intelligenceId[key].postMessage({
+                    "objectList": getState().objectList,
+                    "objectId": key
+                })
+            }, 1000);
             intelligenceId[key].onmessage = (e) => { saveState(e.data) }
         }
     })
     store.subscribe(() => {
-        if (store.getState().config.intelligenceEngine.started == true) {
+        if (getState().config.intelligenceEngine.started == true) {
             if (getLastAction() == "addObject") {
                 if (intelligenceId[currentObjectId] == undefined) {
-                    var currentObjectId = store.getState().currentObjectId
+                    var currentObjectId = getState().currentObjectId
                     intelligenceId[currentObjectId] = new Worker("worker/intelligence.js")
-                    intelligenceId[currentObjectId].postMessage({
-                        "objectList": store.getState().objectList,
-                        "objectId": currentObjectId
-                    })
+                    setInterval(() => {
+                        intelligenceId[currentObjectId].postMessage({
+                            "objectList": getState().objectList,
+                            "objectId": currentObjectId
+                        })
+                    }, 1000);
                     intelligenceId[currentObjectId].onmessage = (e) => { saveState(e.data) }
                 }
             }
@@ -39,17 +44,17 @@ export function startIntelligence() {
 }
 
 export function stopIntelligence() {
-    Object.keys(store.getState().objectList).map((key) => {
+    Object.keys(getState().objectList).map((key) => {
         if (intelligenceId[key] != undefined) {
             intelligenceId[key].terminate()
             delete intelligenceId[key]
         }
     })
     store.subscribe(() => {
-        if (store.getState().config.intelligenceEngine.started == true) {
+        if (getState().config.intelligenceEngine.started == true) {
             if (getLastAction() == "removeObject") {
                 if (intelligenceId[lastRemovedObjectId] != undefined) {
-                    var lastRemovedObjectId = store.getState().lastRemovedObjectId
+                    var lastRemovedObjectId = getState().lastRemovedObjectId
                     intelligenceId[lastRemovedObjectId].terminate()
                     delete intelligenceId[lastRemovedObjectId]
                 }

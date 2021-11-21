@@ -7,29 +7,34 @@ var saveState = (properties) => {
     var state = getState()
     state.objectList[properties.objectId] = properties
     setState(state)
+    console.log(properties.objectId + "Physical")
 }
 
 export function startPhysics() {
-    Object.keys(store.getState().objectList).map((key) => {
+    Object.keys(getState().objectList).map((key) => {
         if (physicsId[key] == undefined) {
             physicsId[key] = new Worker("worker/physics.js")
-            physicsId[key].postMessage({
-                "objectList": store.getState().objectList,
-                "objectId": key
-            })
+            setInterval(() => {
+                physicsId[key].postMessage({
+                    "objectList": getState().objectList,
+                    "objectId": key
+                })
+            }, 1000);
             physicsId[key].onmessage = (e) => { saveState(e.data) }
         }
     })
     store.subscribe(() => {
-        if (store.getState().config.physicsEngine.started == true) {
+        if (getState().config.physicsEngine.started == true) {
             if (getLastAction() == "addObject") {
                 if (physicsId[currentObjectId] == undefined) {
-                    var currentObjectId = store.getState().currentObjectId
+                    var currentObjectId = getState().currentObjectId
                     physicsId[currentObjectId] = new Worker("worker/physics.js")
-                    physicsId[currentObjectId].postMessage({
-                        "objectList": store.getState().objectList,
-                        "objectId": currentObjectId
-                    })
+                    setInterval(() => {
+                        physicsId[currentObjectId].postMessage({
+                            "objectList": getState().objectList,
+                            "objectId": currentObjectId
+                        })
+                    }, 1000);
                     physicsId[currentObjectId].onmessage = (e) => { saveState(e.data) }
 
                 }
@@ -39,17 +44,17 @@ export function startPhysics() {
 }
 
 export function stopPhysics() {
-    Object.keys(store.getState().objectList).map((key) => {
+    Object.keys(getState().objectList).map((key) => {
         if (physicsId[key] != undefined) {
             physicsId[key].terminate()
             delete physicsId[key]
         }
     })
     store.subscribe(() => {
-        if (store.getState().config.physicsEngine.started == true) {
+        if (getState().config.physicsEngine.started == true) {
             if (getLastAction() == "removeObject") {
                 if (physicsId[lastRemovedObjectId] != undefined) {
-                    var lastRemovedObjectId = store.getState().lastRemovedObjectId
+                    var lastRemovedObjectId = getState().lastRemovedObjectId
                     physicsId[lastRemovedObjectId].terminate()
                     delete physicsId[lastRemovedObjectId]
                 }
