@@ -1,15 +1,23 @@
-import { getLastAction } from "../../app/redux/persistor"
+import { getState, setState, getLastAction } from "../../app/redux/persistor";
 import store from "../../app/redux/store"
-import { workLoad } from "./workload"
 
 var physicsId = {}
+
+var saveState = (properties) => {
+    var state = getState()
+    state.objectList[properties.objectId] = properties
+    setState(state)
+}
 
 export function startPhysics() {
     Object.keys(store.getState().objectList).map((key) => {
         if (physicsId[key] == undefined) {
             physicsId[key] = new Worker("worker/physics.js")
-            physicsId[key].postMessage(key)
-            physicsId[key].onmessage = workLoad(key)
+            physicsId[key].postMessage({
+                "objectList": store.getState().objectList,
+                "objectId": key
+            })
+            physicsId[key].onmessage = (e) => { saveState(e.data) }
         }
     })
     store.subscribe(() => {
@@ -18,8 +26,11 @@ export function startPhysics() {
                 if (physicsId[currentObjectId] == undefined) {
                     var currentObjectId = store.getState().currentObjectId
                     physicsId[currentObjectId] = new Worker("worker/physics.js")
-                    physicsId[currentObjectId].postMessage(currentObjectId)
-                    physicsId[currentObjectId].onmessage = workLoad(currentObjectId)
+                    physicsId[currentObjectId].postMessage({
+                        "objectList": store.getState().objectList,
+                        "objectId": currentObjectId
+                    })
+                    physicsId[currentObjectId].onmessage = (e) => { saveState(e.data) }
 
                 }
             }

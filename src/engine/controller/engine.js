@@ -1,15 +1,23 @@
-import { getLastAction } from "../../app/redux/persistor"
+import { getState, setState, getLastAction  } from "../../app/redux/persistor";
 import store from "../../app/redux/store"
-import { workLoad } from "./workload"
 
 var controllerId = {}
+
+var saveState = (properties) => {
+    var state = getState()
+    state.objectList[properties.objectId] = properties
+    setState(state)
+}
 
 export function startController() {
     Object.keys(store.getState().objectList).map((key) => {
         if (controllerId[key] == undefined) {
             controllerId[key] = new Worker("worker/controller.js")
-            controllerId[key].postMessage(key)
-            controllerId[key].onmessage = workLoad(key)
+            controllerId[key].postMessage({
+                "objectList": store.getState().objectList, 
+                "objectId": key
+            })
+            controllerId[key].onmessage = (e) => {saveState(e.data)}
         }
     })
     store.subscribe(() => {
@@ -18,8 +26,11 @@ export function startController() {
                 if (controllerId[currentObjectId] == undefined) {
                     var currentObjectId = store.getState().currentObjectId
                     controllerId[currentObjectId] = new Worker("worker/controller.js")
-                    controllerId[currentObjectId].postMessage(currentObjectId)
-                    controllerId[currentObjectId].onmessage = workLoad(currentObjectId)
+                    controllerId[currentObjectId].postMessage({
+                        "objectList": store.getState().objectList,
+                        "objectId": currentObjectId
+                    })
+                    controllerId[currentObjectId].onmessage = (e) => { saveState(e.data) }
                 }
             }
         }

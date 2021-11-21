@@ -1,15 +1,23 @@
-import { getLastAction } from "../../app/redux/persistor"
+import { getState, setState, getLastAction } from "../../app/redux/persistor";
 import store from "../../app/redux/store"
-import { workLoad } from "./workload"
 
 var graphicsId = {}
+
+var saveState = (properties) => {
+    var state = getState()
+    state.objectList[properties.objectId] = properties
+    setState(state)
+}
 
 export function startGraphics() {
     Object.keys(store.getState().objectList).map((key) => {
         if (graphicsId[key] == undefined) {
             graphicsId[key] = new Worker("worker/graphics.js")
-            graphicsId[key].postMessage(key)
-            graphicsId[key].onmessage = workLoad(key)
+            graphicsId[key].postMessage({
+                "objectList": store.getState().objectList,
+                "objectId": key
+            })
+            graphicsId[key].onmessage = (e) => { saveState(e.data) }
         }
     })
     store.subscribe(() => {
@@ -18,8 +26,11 @@ export function startGraphics() {
                 if (graphicsId[currentObjectId] == undefined) {
                     var currentObjectId = store.getState().currentObjectId
                     graphicsId[currentObjectId] = new Worker("worker/graphics.js")
-                    graphicsId[currentObjectId].postMessage(currentObjectId)
-                    graphicsId[currentObjectId].onmessage = workLoad(currentObjectId)
+                    graphicsId[currentObjectId].postMessage({
+                        "objectList": store.getState().objectList,
+                        "objectId": currentObjectId
+                    })
+                    graphicsId[currentObjectId].onmessage = (e) => { saveState(e.data) }
                 }
             }
         }

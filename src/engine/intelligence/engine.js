@@ -1,16 +1,24 @@
-import { getLastAction } from "../../app/redux/persistor"
+import { getState, setState, getLastAction } from "../../app/redux/persistor";
 import store from "../../app/redux/store"
-import { workLoad } from "./workload"
 
 var intelligenceId = {}
+
+var saveState = (properties) => {
+    var state = getState()
+    state.objectList[properties.objectId] = properties
+    setState(state)
+}
 
 
 export function startIntelligence() {
     Object.keys(store.getState().objectList).map((key) => {
         if (intelligenceId[key] == undefined) {
             intelligenceId[key] = new Worker("worker/intelligence.js")
-            intelligenceId[key].postMessage(key)
-            intelligenceId[key].onmessage = workLoad(key)
+            intelligenceId[key].postMessage({
+                "objectList": store.getState().objectList,
+                "objectId": key
+            })
+            intelligenceId[key].onmessage = (e) => { saveState(e.data) }
         }
     })
     store.subscribe(() => {
@@ -19,8 +27,11 @@ export function startIntelligence() {
                 if (intelligenceId[currentObjectId] == undefined) {
                     var currentObjectId = store.getState().currentObjectId
                     intelligenceId[currentObjectId] = new Worker("worker/intelligence.js")
-                    intelligenceId[currentObjectId].postMessage(currentObjectId)
-                    intelligenceId[currentObjectId].onmessage = workLoad(currentObjectId)
+                    intelligenceId[currentObjectId].postMessage({
+                        "objectList": store.getState().objectList,
+                        "objectId": currentObjectId
+                    })
+                    intelligenceId[currentObjectId].onmessage = (e) => { saveState(e.data) }
                 }
             }
         }

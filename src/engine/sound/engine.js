@@ -1,15 +1,23 @@
-import { getLastAction } from "../../app/redux/persistor"
+import { getState, setState, getLastAction } from "../../app/redux/persistor";
 import store from "../../app/redux/store"
-import { workLoad } from "./workload"
 
 var soundId = {}
+
+var saveState = (properties) => {
+    var state = getState()
+    state.objectList[properties.objectId] = properties
+    setState(state)
+}
 
 export function startSound() {
     Object.keys(store.getState().objectList).map((key) => {
         if (soundId[key] == undefined) {
             soundId[key] = new Worker("worker/sound.js")
-            soundId[key].postMessage(key)
-            soundId[key].onmessage = workLoad(key)
+            soundId[key].postMessage({
+                "objectList": store.getState().objectList,
+                "objectId": key
+            })
+            soundId[key].onmessage = (e) => { saveState(e.data) }
         }
     })
     store.subscribe(() => {
@@ -18,8 +26,11 @@ export function startSound() {
                 if (soundId[currentObjectId] == undefined) {
                     var currentObjectId = store.getState().currentObjectId
                     soundId[currentObjectId] = new Worker("worker/sound.js")
-                    soundId[currentObjectId].postMessage(currentObjectId)
-                    soundId[currentObjectId].onmessage = workLoad(currentObjectId)
+                    soundId[currentObjectId].postMessage({
+                        "objectList": store.getState().objectList,
+                        "objectId": currentObjectId
+                    })
+                    soundId[currentObjectId].onmessage = (e) => { saveState(e.data) }
                 }
             }
         }
