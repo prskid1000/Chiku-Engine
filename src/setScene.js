@@ -1,5 +1,5 @@
 module.exports = {
-    processGrid: (message) => {
+    setScene: (message) => {
 
         var grid = message.grid
         var objectList = message.objectList
