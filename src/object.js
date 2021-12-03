@@ -276,6 +276,7 @@ var moveLeft = (grid, objectList, key) => {
     delete objectList[key]
     setBoundary(grid, objectList, objectId)
     setCollision(grid, objectList, objectId)
+    return objectId
 }
 
 var moveRight = (grid, objectList, key) => {
@@ -311,6 +312,7 @@ var moveRight = (grid, objectList, key) => {
     delete objectList[key]
     setBoundary(grid, objectList, objectId)
     setCollision(grid, objectList, objectId)
+    return objectId
 }
 
 var moveUp = (grid, objectList, key) => {
@@ -346,6 +348,7 @@ var moveUp = (grid, objectList, key) => {
     delete objectList[key]
     setBoundary(grid, objectList, objectId)
     setCollision(grid, objectList, objectId)
+    return objectId
 }
 
 var moveDown = (grid, objectList, key) => {
@@ -381,6 +384,7 @@ var moveDown = (grid, objectList, key) => {
     delete objectList[key]
     setBoundary(grid, objectList, objectId)
     setCollision(grid, objectList, objectId)
+    return objectId
 }
 
 var expandUp = (grid, objectList, currentKey) => {

@@ -26,24 +26,24 @@ module.exports = {
 
             if (objectList[key].velocityX > 0) {
                 for (let i = 0; i < objectList[key].velocityX; i++){
-                    moveRight(grid, objectList, key)
+                   key = moveRight(grid, objectList, key)
                 }
                 objectList[key].velocityX -= 1
             } else if (objectList[key].velocityX < 0) {
                 for (let i = 0; i < Math.abs(objectList[key].velocityX); i++) {
-                    moveLeft(grid, objectList, key)
+                   key = moveLeft(grid, objectList, key)
                 }
                 objectList[key].velocityX += 1
             }
 
             if (objectList[key].velocityY > 0) {
                 for (let i = 0; i < objectList[key].velocityY; i++) {
-                    moveUp(grid, objectList, key)
+                   key = moveUp(grid, objectList, key)
                 }
                 objectList[key].velocityY -= 1
             } else if (objectList[key].velocityY < 0) {
                 for (let i = 0; i < Math.abs(objectList[key].velocityY); i++) {
-                    moveDown(grid, objectList, key)
+                   key = moveDown(grid, objectList, key)
                 }
                 objectList[key].velocityY += 1
             }

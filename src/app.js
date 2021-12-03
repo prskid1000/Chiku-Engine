@@ -15,7 +15,7 @@ import { processDOM } from "./processDOM";
 import { processGrid } from "./processGrid";
 
 var computeNumber = 128
-var simulationSpeed = 6000
+var simulationSpeed = 60
 var worker = new Worker("worker/worker.js")
 
 var num = []
@@ -280,7 +280,7 @@ function App() {
         } else {
           cellInfoPanel.current.hidden = true
         }
-      }
+      }break
       case "d": {
         if (currentProperty == null) {
           currentProperty = "density"
@@ -343,6 +343,9 @@ function App() {
         currentProperty = null
       } break
       case "v": {
+        currentProperty = null
+      } break
+      case "6": {
         currentProperty = null
       } break
     }
