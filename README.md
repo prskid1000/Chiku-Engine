@@ -69,5 +69,3 @@
     ArrowLeft-> Decrease elasticity by 0.1, 
     ArrowRight-> Increase elasticity by 0.1
     )
-<br>
-To be used for development of various simulation softwares
