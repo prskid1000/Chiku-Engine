@@ -46,7 +46,7 @@ var getProperty = (key) => {
     var property = {
         "objectId": key,
         "density": 0,
-        "cellCount": 0,
+        "cellCount": 1,
         "mass": 0,
         "forceX": 0,
         "forceY": 0,

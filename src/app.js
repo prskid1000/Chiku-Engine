@@ -1,7 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import useWindowDimensions from "./customHooks";
 import { initGrid } from "./initGrid";
-import { createObject, 
+import { computeCircularColumn, createObject, 
   destroyObject, 
   expandDown, 
   expandLeft,
@@ -382,6 +382,7 @@ function App() {
         currentProperty = null
       } break
     }
+    cellInfoPanel.current.innerHTML = JSON.stringify(objectList[grid[currentKey].objectId])
   }
 
   var onMouseEnterOrClick = (event) => {
@@ -393,8 +394,8 @@ function App() {
     cellInfoPanel.current.style.top = (10 + cell.offsetTop).toString() + "px"
     cellInfoPanel.current.style.left = (10 + cell.offsetLeft).toString() + "px"
 
-    if (grid[event.target.id].objectId != "-1") {
-      setCellInfo(JSON.parse(JSON.stringify(objectList[grid[event.target.id].objectId])))
+    if (grid[event.target.id].objectId != undefined && grid[event.target.id].objectId != "-1") {
+      cellInfoPanel.current.innerHTML = JSON.stringify(objectList[grid[event.target.id].objectId])
     }
   }
 
