@@ -27,11 +27,13 @@ module.exports = {
             if (objectList[key].velocityX > 0) {
                 for (let i = 0; i < objectList[key].velocityX; i++){
                    key = moveRight(grid, objectList, key)
+                    if (key == undefined) return
                 }
                 objectList[key].velocityX -= 1
             } else if (objectList[key].velocityX < 0) {
                 for (let i = 0; i < Math.abs(objectList[key].velocityX); i++) {
                    key = moveLeft(grid, objectList, key)
+                    if (key == undefined) return
                 }
                 objectList[key].velocityX += 1
             }
@@ -39,11 +41,13 @@ module.exports = {
             if (objectList[key].velocityY > 0) {
                 for (let i = 0; i < objectList[key].velocityY; i++) {
                    key = moveUp(grid, objectList, key)
+                    if (key == undefined) return
                 }
                 objectList[key].velocityY -= 1
             } else if (objectList[key].velocityY < 0) {
                 for (let i = 0; i < Math.abs(objectList[key].velocityY); i++) {
                    key = moveDown(grid, objectList, key)
+                   if(key == undefined) return
                 }
                 objectList[key].velocityY += 1
             }

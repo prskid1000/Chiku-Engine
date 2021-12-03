@@ -15,7 +15,7 @@ import { processDOM } from "./processDOM";
 import { processGrid } from "./processGrid";
 
 var computeNumber = 128
-var simulationSpeed = 60
+var simulationSpeed = 600
 var worker = new Worker("worker/worker.js")
 
 var num = []
@@ -37,6 +37,7 @@ function App() {
   var upload = useRef()
   var currentProperty = null
   var currentKey = null
+  var currentObjectId = null
   var cellInfoPanel = useRef()
   var [cellInfo, setCellInfo] = useState()
 
@@ -59,7 +60,8 @@ function App() {
     top: "0",
     let: "0",
     zIndex: "999999",
-    fontSize: "12px",
+    fontSize: "16px",
+    fontWeight: "bold"
   }
 
   var uploadStyle = {
@@ -73,6 +75,7 @@ function App() {
   }
 
   var simulate = () => {
+    console.log(objectList)
     worker.postMessage({
       "statement": processGrid.toString(),
       "args": {
@@ -83,7 +86,7 @@ function App() {
     
     worker.onmessage = (message) => {
       grid = message.data.grid
-      objectList = message.data.objectList
+      objectList = message.data.objectList  
       processDOM(grid)
       if (runState == true) {
         setTimeout(() => {
@@ -144,24 +147,27 @@ function App() {
   }
 
   var handleUp = () => {
-    if (grid[currentKey].objectId == "-1") return
+    if (currentKey == null || currentKey == undefined) return
+    if (currentObjectId == undefined || currentObjectId == "-1" || objectList[currentObjectId] == undefined) return
+
     switch (currentProperty) {
       case "density": {
-        objectList[grid[currentKey].objectId].density += 1;
-        objectList[grid[currentKey].objectId].mass = objectList[grid[currentKey].objectId].density * objectList[grid[currentKey].objectId].cellCount
+        objectList[currentObjectId].density += 1;
+        objectList[currentObjectId].mass = objectList[currentObjectId].density * objectList[currentObjectId].cellCount
       } break
       case "cell": {
+        if (grid[currentKey].objectId == "-1") return
         expandUp(grid, objectList, currentKey)
-        objectList[grid[currentKey].objectId].mass = objectList[grid[currentKey].objectId].density * objectList[grid[currentKey].objectId].cellCount
+        objectList[currentObjectId].mass = objectList[currentObjectId].density * objectList[currentObjectId].cellCount
       } break
       case "force": {
-        objectList[grid[currentKey].objectId].forceY += 1;
+        objectList[currentObjectId].forceY += 1;
       } break
       case "velocity": {
-        objectList[grid[currentKey].objectId].velocityY += 1;
+        objectList[currentObjectId].velocityY += 1;
       } break
       case "move": {
-        moveUp(grid, objectList, currentKey)
+        currentObjectId = moveUp(grid, objectList, currentObjectId)
         processDOM(grid)
       } break
     }
@@ -169,24 +175,27 @@ function App() {
   }
 
   var handleDown = () => {
-    if (grid[currentKey].objectId == "-1") return
+    if (currentKey == null || currentKey == undefined) return
+    if (currentObjectId == undefined || currentObjectId == "-1" || objectList[currentObjectId] == undefined) return
+
     switch (currentProperty) {
       case "density": {
-        objectList[grid[currentKey].objectId].density = objectList[grid[currentKey].objectId].density - 1 >= 0 ? objectList[grid[currentKey].objectId].density - 1 : 0;
-        objectList[grid[currentKey].objectId].mass = objectList[grid[currentKey].objectId].density * objectList[grid[currentKey].objectId].cellCount
+        objectList[currentObjectId].density = objectList[currentObjectId].density - 1 >= 0 ? objectList[currentObjectId].density - 1 : 0;
+        objectList[currentObjectId].mass = objectList[currentObjectId].density * objectList[currentObjectId].cellCount
       } break
       case "cell": {
+        if (grid[currentKey].objectId == "-1") return
         expandDown(grid, objectList, currentKey)
-        objectList[grid[currentKey].objectId].mass = objectList[grid[currentKey].objectId].density * objectList[grid[currentKey].objectId].cellCount
+        objectList[currentObjectId].mass = objectList[currentObjectId].density * objectList[currentObjectId].cellCount
       } break
       case "force": {
-        objectList[grid[currentKey].objectId].forceY -= 1;
+        objectList[currentObjectId].forceY -= 1;
       } break
       case "velocity": {
-        objectList[grid[currentKey].objectId].velocityY -= 1;
+        objectList[currentObjectId].velocityY -= 1;
       } break
       case "move": {
-        moveDown(grid, objectList, currentKey)
+        currentObjectId = moveDown(grid, objectList, currentObjectId)
         processDOM(grid)
       } break
     }
@@ -194,24 +203,27 @@ function App() {
   }
 
   var handleLeft = () => {
-    if (grid[currentKey].objectId == "-1") return
+    if (currentKey == null || currentKey == undefined) return
+    if (currentObjectId == undefined || currentObjectId == "-1" || objectList[currentObjectId] == undefined) return
+
     switch (currentProperty) {
       case "density": {
-        objectList[grid[currentKey].objectId].density = objectList[grid[currentKey].objectId].density - 1 >= 0 ? objectList[grid[currentKey].objectId].density - 1 : 0;
-        objectList[grid[currentKey].objectId].mass = objectList[grid[currentKey].objectId].density * objectList[grid[currentKey].objectId].cellCount
+        objectList[currentObjectId].density = objectList[currentObjectId].density - 1 >= 0 ? objectList[currentObjectId].density - 1 : 0;
+        objectList[currentObjectId].mass = objectList[currentObjectId].density * objectList[currentObjectId].cellCount
       } break
       case "cell": {
+        if (grid[currentKey].objectId == "-1") return
         expandLeft(grid, objectList, currentKey)
-        objectList[grid[currentKey].objectId].mass = objectList[grid[currentKey].objectId].density * objectList[grid[currentKey].objectId].cellCount
+        objectList[currentObjectId].mass = objectList[currentObjectId].density * objectList[currentObjectId].cellCount
       } break
       case "force": {
-        objectList[grid[currentKey].objectId].forceX -= 1;
+        objectList[currentObjectId].forceX -= 1;
       } break
       case "velocity": {
-        objectList[grid[currentKey].objectId].velocityX -= 1;
+        objectList[currentObjectId].velocityX -= 1;
       } break
       case "move": {
-        moveLeft(grid, objectList, currentKey)
+        currentObjectId = moveLeft(grid, objectList, currentObjectId)
         processDOM(grid)
       } break
     }
@@ -219,24 +231,27 @@ function App() {
   }
 
   var handleRight = () => {
-    if (grid[currentKey].objectId == "-1") return
+    if (currentKey == null || currentKey == undefined) return
+    if (currentObjectId == undefined || currentObjectId == "-1" || objectList[currentObjectId] == undefined) return
+
     switch (currentProperty) {
       case "density": {
-        objectList[grid[currentKey].objectId].density += 1;
-        objectList[grid[currentKey].objectId].mass = objectList[grid[currentKey].objectId].density * objectList[grid[currentKey].objectId].cellCount
+        objectList[currentObjectId].density += 1;
+        objectList[currentObjectId].mass = objectList[currentObjectId].density * objectList[currentObjectId].cellCount
       } break
       case "cell": {
+        if (grid[currentKey].objectId == "-1") return
         expandRight(grid, objectList, currentKey)
-        objectList[grid[currentKey].objectId].mass = objectList[grid[currentKey].objectId].density * objectList[grid[currentKey].objectId].cellCount
+        objectList[currentObjectId].mass = objectList[currentObjectId].density * objectList[currentObjectId].cellCount
       } break
       case "force": {
-        objectList[grid[currentKey].objectId].forceX += 1;
+        objectList[currentObjectId].forceX += 1;
       } break
       case "velocity": {
-        objectList[grid[currentKey].objectId].velocityX += 1;
+        objectList[currentObjectId].velocityX += 1;
       } break
       case "move": {
-        moveRight(grid, objectList, currentKey)
+        currentObjectId = moveRight(grid, objectList, currentObjectId)
         processDOM(grid)
       } break
     }
@@ -264,10 +279,14 @@ function App() {
       case "4": {
         runState = false
         createObject(grid, objectList, currentKey)
+        processDOM(grid)
+        currentObjectId = currentKey
       } break
       case "5": {
         runState = false
         destroyObject(grid, objectList, currentKey)
+        processDOM(grid)
+        currentObjectId = "-1"
       } break
       case "6": {
         if (currentProperty == null) {
@@ -329,6 +348,7 @@ function App() {
   }
 
   var onKeyUp = (event) => {
+    
     switch (event.key) {
       case "6": {
         currentProperty = null
@@ -349,7 +369,14 @@ function App() {
         currentProperty = null
       } break
     }
-    cellInfoPanel.current.innerHTML = JSON.stringify(objectList[grid[currentKey].objectId])
+    if (objectList[currentObjectId] == undefined) return
+    var str = "objectId: " + objectList[currentObjectId].objectId.toString() + " | "
+    str += "mass: " + objectList[currentObjectId].mass.toString() + " | "
+    str += "fx: " + objectList[currentObjectId].forceX.toString() + " | "
+    str += "fy: " + objectList[currentObjectId].forceY.toString() + " | "
+    str += "vx: " + objectList[currentObjectId].velocityX.toString() + " | "
+    str += "vy: " + objectList[currentObjectId].velocityY.toString() + " | "
+    cellInfoPanel.current.innerHTML = str
   }
 
   var onMouseEnterOrClick = (event) => {
@@ -362,7 +389,15 @@ function App() {
     cellInfoPanel.current.style.left = (10 + cell.offsetLeft).toString() + "px"
 
     if (grid[event.target.id].objectId != undefined && grid[event.target.id].objectId != "-1") {
-      cellInfoPanel.current.innerHTML = JSON.stringify(objectList[grid[event.target.id].objectId])
+      currentObjectId = grid[event.target.id].objectId
+
+      var str = "objectId: " + objectList[currentObjectId].objectId.toString() + " | "
+      str += "mass: " + objectList[currentObjectId].mass.toString() + " | "
+      str += "fx: " + objectList[currentObjectId].forceX.toString() + " | "
+      str += "fy: " + objectList[currentObjectId].forceY.toString() + " | "
+      str += "vx: " + objectList[currentObjectId].velocityX.toString() + " | "
+      str += "vy: " + objectList[currentObjectId].velocityY.toString() + " | "
+      cellInfoPanel.current.innerHTML = str
     }
   }
 
@@ -420,7 +455,6 @@ function App() {
         <label className="custom-file-label" htmlFor="uploadScene">Upload Scene</label>
       </div>
       <div ref={cellInfoPanel} style={infoPanelStyle}>
-        {JSON.stringify(cellInfo)}
       </div>
     </div>
   );
