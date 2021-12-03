@@ -37,6 +37,8 @@ function App() {
   var upload = useRef()
   var currentProperty = null
   var currentKey = null
+  var cellInfoPanel = useRef()
+  var [cellInfo, setCellInfo] = useState()
 
   var appStyle = {
     height: Math.min(height * 0.99, width * 0.99),
@@ -48,6 +50,16 @@ function App() {
     backgroundColor: "black",
     height: Math.min(height * 0.99, width * 0.99) / computeNumber,
     width: Math.min(height * 0.99, width * 0.99) / computeNumber,
+  }
+
+  var infoPanelStyle = {
+    position: "absolute",
+    backgroundColor: "transparent",
+    color: "white",
+    top: "0",
+    let: "0",
+    zIndex: "999999",
+    fontSize: "12px",
   }
 
   var uploadStyle = {
@@ -136,6 +148,7 @@ function App() {
     switch (currentProperty) {
       case "density": {
         objectList[grid[currentKey].objectId].density += 1;
+        objectList[grid[currentKey].objectId].mass = objectList[grid[currentKey].objectId].density * objectList[grid[currentKey].objectId].cellCount
       } break
       case "cell": {
         expandUp(grid, objectList, currentKey)
@@ -165,6 +178,7 @@ function App() {
     switch (currentProperty) {
       case "density": {
         objectList[grid[currentKey].objectId].density = objectList[grid[currentKey].objectId].density - 1 >= 0 ? objectList[grid[currentKey].objectId].density - 1 : 0;
+        objectList[grid[currentKey].objectId].mass = objectList[grid[currentKey].objectId].density * objectList[grid[currentKey].objectId].cellCount
       } break
       case "cell": {
         expandDown(grid, objectList, currentKey)
@@ -194,6 +208,7 @@ function App() {
     switch (currentProperty) {
       case "density": {
         objectList[grid[currentKey].objectId].density = objectList[grid[currentKey].objectId].density - 1 >= 0 ? objectList[grid[currentKey].objectId].density - 1 : 0;
+        objectList[grid[currentKey].objectId].mass = objectList[grid[currentKey].objectId].density * objectList[grid[currentKey].objectId].cellCount
       } break
       case "cell": {
         expandLeft(grid, objectList, currentKey)
@@ -223,6 +238,7 @@ function App() {
     switch (currentProperty) {
       case "density": {
         objectList[grid[currentKey].objectId].density += 1;
+        objectList[grid[currentKey].objectId].mass = objectList[grid[currentKey].objectId].density * objectList[grid[currentKey].objectId].cellCount
       } break
       case "cell": {
         expandRight(grid, objectList, currentKey)
@@ -278,6 +294,13 @@ function App() {
           currentProperty = "move"
         }
       } break
+      case "7": {
+        if (cellInfoPanel.current.hidden == true) {
+          cellInfoPanel.current.hidden = false
+        } else {
+          cellInfoPanel.current.hidden = true
+        }
+      }
       case "d": {
         if (currentProperty == null) {
           currentProperty = "density"
@@ -366,6 +389,13 @@ function App() {
     var cell = document.getElementById(event.target.id)
     cell.style.backgroundColor = "red"
     currentKey = event.target.id
+
+    cellInfoPanel.current.style.top = (10 + cell.offsetTop).toString() + "px"
+    cellInfoPanel.current.style.left = (10 + cell.offsetLeft).toString() + "px"
+
+    if (grid[event.target.id].objectId != "-1") {
+      setCellInfo(JSON.parse(JSON.stringify(objectList[grid[event.target.id].objectId])))
+    }
   }
 
   var onMouseLeave = (event) => {
@@ -375,7 +405,10 @@ function App() {
   }
 
   useEffect(() => {
+
     upload.current.hidden = true
+    cellInfoPanel.current.hidden = true
+
     worker.postMessage({
       "statement": initGrid.toString(),
       "args": {
@@ -417,6 +450,9 @@ function App() {
       <div ref={upload} style={uploadStyle} className="custom-file">
         <input type="file" className="custom-file-input" id="uploadScene" onChange={onUpload}></input>
         <label className="custom-file-label" htmlFor="uploadScene">Upload Scene</label>
+      </div>
+      <div ref={cellInfoPanel} style={infoPanelStyle}>
+        {JSON.stringify(cellInfo)}
       </div>
     </div>
   );

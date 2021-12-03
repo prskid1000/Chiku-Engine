@@ -28,6 +28,8 @@
     ArrowRight-> Move Right
     )
 
+- Num Key 7 -> View/Hide Object Info (Toggle)
+
 - Char Key D(Hold) -> Density(
     ArrowUp-> Increase density by 1, 
     ArrowDown-> Decrease density by 1, 
