@@ -3,7 +3,9 @@
 ![Last Commit](https://img.shields.io/github/last-commit/prskid1000/Chiku-Engine)
 
 
-### A Simulation Engine that Simulate a Pixel Playground-
+### A Simulation Engine that Simulate a Pixel Playground
+
+### Frictionless and Perfectly Elastic Collision for all objects
 
 ## Getting started
 
@@ -56,18 +58,4 @@
     ArrowDown-> Decrease velocity by 1, 
     ArrowLeft-> Decrease velocity by 1, 
     ArrowRight-> Increase velocity by 1
-    )
-
-- Char Key N(Hold) -> Friction(
-    ArrowUp-> Increase friction by 0.1, 
-    ArrowDown-> Decrease friction by 0.1, 
-    ArrowLeft-> Decrease friction by 0.1,  
-    ArrowRight-> Increase friction by 0.1, 
-    )
-
-- Char Key E(Hold) -> Elasticity(
-    ArrowUp-> Increase elasticity by 0.1, 
-    ArrowDown-> Decrease elasticity by 0.1, 
-    ArrowLeft-> Decrease elasticity by 0.1, 
-    ArrowRight-> Increase elasticity by 0.1
     )

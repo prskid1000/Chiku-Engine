@@ -52,6 +52,8 @@ var getProperty = (key) => {
         "forceY": 0,
         "velocityX": 0,
         "velocityY": 0,
+        "friction": 0,
+        "elasticity": 0,
         "cellList": [key],
         "boundaryList": {
             "left": [key],
@@ -128,21 +130,6 @@ var collisionLeft = (grid, objectList, key) => {
         var target = objectList[grid[key].objectId].boundaryList.left[i]
         var neighbours = getNeighbourKV(target)
         if (grid[neighbours.left].type != "empty") collision.push(target)
-        if (grid[neighbours.left].type == "object") {
-            var netAx = (objectList[grid[key].objectId].forceX + objectList[grid[key].objectId].velocityX * objectList[grid[key].objectId].mass)
-            var netBx = objectList[grid[neighbours.left].objectId].forceX + objectList[grid[neighbours.left].objectId].velocityX * objectList[grid[neighbours.left].objectId].mass
-
-            objectList[grid[key].objectId].forceX = netAx - netBx
-            objectList[grid[neighbours.left].objectId].forceX = netBx - netAx
-
-            if(Math.abs(netAx - netBx) == 0) {
-                var netAy = (objectList[grid[key].objectId].forceY + objectList[grid[key].objectId].velocityY * objectList[grid[key].objectId].mass)
-                var netBy = objectList[grid[neighbours.left].objectId].forceY + objectList[grid[neighbours.left].objectId].velocityY * objectList[grid[neighbours.left].objectId].mass
-
-                objectList[grid[key].objectId].forceY = netAy - netBy 
-                objectList[grid[neighbours.left].objectId].forceY = netBy - netAy 
-            }
-        }
     }
     objectList[grid[key].objectId].collisionList.left = collision
 }
@@ -153,21 +140,6 @@ var collisionRight = (grid, objectList, key) => {
         var target = objectList[grid[key].objectId].boundaryList.right[i]
         var neighbours = getNeighbourKV(target)
         if (grid[neighbours.right].type != "empty") collision.push(target)
-        if (grid[neighbours.right].type == "object") {
-            var netAx = (objectList[grid[key].objectId].forceX + objectList[grid[key].objectId].velocityX * objectList[grid[key].objectId].mass)
-            var netBx = objectList[grid[neighbours.right].objectId].forceX + objectList[grid[neighbours.right].objectId].velocityX * objectList[grid[neighbours.right].objectId].mass
-
-            objectList[grid[key].objectId].forceX = netAx - netBx
-            objectList[grid[neighbours.right].objectId].forceX = netBx - netAx
-
-            if (Math.abs(netAx - netBx) == 0) {
-                var netAy = (objectList[grid[key].objectId].forceY + objectList[grid[key].objectId].velocityY * objectList[grid[key].objectId].mass)
-                var netBy = objectList[grid[neighbours.right].objectId].forceY + objectList[grid[neighbours.right].objectId].velocityY * objectList[grid[neighbours.right].objectId].mass
-
-                objectList[grid[key].objectId].forceY = netAy - netBy 
-                objectList[grid[neighbours.right].objectId].forceY = netBy - netAy 
-            }
-        }
     }
     objectList[grid[key].objectId].collisionList.right = collision
 }
@@ -178,21 +150,6 @@ var collisionTop = (grid, objectList, key) => {
         var target = objectList[grid[key].objectId].boundaryList.top[i]
         var neighbours = getNeighbourKV(target)
         if (grid[neighbours.top].type != "empty") collision.push(target)
-        if (grid[neighbours.top].type == "object") {
-            var netAy = (objectList[grid[key].objectId].forceY + objectList[grid[key].objectId].velocityY * objectList[grid[key].objectId].mass)
-            var netBy = objectList[grid[neighbours.top].objectId].forceY + objectList[grid[neighbours.top].objectId].velocityY * objectList[grid[neighbours.top].objectId].mass
-
-            objectList[grid[key].objectId].forceY = netAy - netBy
-            objectList[grid[neighbours.top].objectId].forceY = netBy - netAy
-
-            if (Math.abs(netAy - netBy) == 0) {
-                var netAx = (objectList[grid[key].objectId].forceX + objectList[grid[key].objectId].velocityX * objectList[grid[key].objectId].mass)
-                var netBx = objectList[grid[neighbours.top].objectId].forceX + objectList[grid[neighbours.top].objectId].velocityX * objectList[grid[neighbours.top].objectId].mass
-
-                objectList[grid[key].objectId].forceX = netAx - netBx 
-                objectList[grid[neighbours.top].objectId].forceX = netBx - netAx
-            }
-        }
     }
     objectList[grid[key].objectId].collisionList.top = collision
 }
@@ -203,21 +160,6 @@ var collisionBottom = (grid, objectList, key) => {
         var target = objectList[grid[key].objectId].boundaryList.bottom[i]
         var neighbours = getNeighbourKV(target)
         if (grid[neighbours.bottom].type != "empty") collision.push(target)
-        if (grid[neighbours.bottom].type == "object") {
-            var netAy = (objectList[grid[key].objectId].forceY + objectList[grid[key].objectId].velocityY * objectList[grid[key].objectId].mass)
-            var netBy = objectList[grid[neighbours.bottom].objectId].forceY + objectList[grid[neighbours.bottom].objectId].velocityY * objectList[grid[neighbours.bottom].objectId].mass
-
-            objectList[grid[key].objectId].forceY = netAy - netBy
-            objectList[grid[neighbours.bottom].objectId].forceY = netBy - netAy
-
-            if (Math.abs(netAy - netBy) == 0) {
-                var netAx = (objectList[grid[key].objectId].forceX + objectList[grid[key].objectId].velocityX * objectList[grid[key].objectId].mass)
-                var netBx = objectList[grid[neighbours.bottom].objectId].forceX + objectList[grid[neighbours.bottom].objectId].velocityX * objectList[grid[neighbours.bottom].objectId].mass
-
-                objectList[grid[key].objectId].forceX = netAx - netBx 
-                objectList[grid[neighbours.bottom].objectId].forceX = netBx - netAx
-            }
-        }
     }
     objectList[grid[key].objectId].collisionList.bottom = collision
 }
@@ -465,19 +407,4 @@ var destroyObject = (grid, objectList, currentKey) => {
         }
         delete objectList[currentKey];
     }
-}
-
-module.exports = {
-    createObject: createObject,
-    destroyObject: destroyObject,
-    moveUp: moveUp,
-    moveDown: moveDown,
-    moveLeft: moveLeft,
-    moveRight: moveRight,
-    expandUp: expandUp,
-    expandDown: expandDown,
-    expandLeft: expandLeft,
-    expandRight: expandRight,
-    computeCircularColumn: computeCircularColumn,
-    computeCircularRow: computeCircularRow
 }

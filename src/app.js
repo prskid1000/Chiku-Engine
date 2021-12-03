@@ -152,18 +152,13 @@ function App() {
       } break
       case "cell": {
         expandUp(grid, objectList, currentKey)
+        objectList[grid[currentKey].objectId].mass = objectList[grid[currentKey].objectId].density * objectList[grid[currentKey].objectId].cellCount
       } break
       case "force": {
         objectList[grid[currentKey].objectId].forceY += 1;
       } break
       case "velocity": {
         objectList[grid[currentKey].objectId].velocityY += 1;
-      } break
-      case "friction": {
-        objectList[grid[currentKey].objectId].friction = objectList[grid[currentKey].objectId].friction + 0.1 <= 1 ? objectList[grid[currentKey].objectId].friction + 0.1 : 1;
-      } break
-      case "elasticity": {
-        objectList[grid[currentKey].objectId].elasticity = objectList[grid[currentKey].objectId].elasticity + 0.1 <= 1 ? objectList[grid[currentKey].objectId].elasticity + 0.1 : 1;
       } break
       case "move": {
         moveUp(grid, objectList, currentKey)
@@ -182,18 +177,13 @@ function App() {
       } break
       case "cell": {
         expandDown(grid, objectList, currentKey)
+        objectList[grid[currentKey].objectId].mass = objectList[grid[currentKey].objectId].density * objectList[grid[currentKey].objectId].cellCount
       } break
       case "force": {
         objectList[grid[currentKey].objectId].forceY -= 1;
       } break
       case "velocity": {
         objectList[grid[currentKey].objectId].velocityY -= 1;
-      } break
-      case "friction": {
-        objectList[grid[currentKey].objectId].friction = objectList[grid[currentKey].objectId].friction - 0.1 >= 0.1 ? objectList[grid[currentKey].objectId].friction - 0.1 : 0;
-      } break
-      case "elasticity": {
-        objectList[grid[currentKey].objectId].elasticity = objectList[grid[currentKey].objectId].elasticity - 0.1 >= 0.1 ? objectList[grid[currentKey].objectId].elasticity - 0.1 : 0;
       } break
       case "move": {
         moveDown(grid, objectList, currentKey)
@@ -212,18 +202,13 @@ function App() {
       } break
       case "cell": {
         expandLeft(grid, objectList, currentKey)
+        objectList[grid[currentKey].objectId].mass = objectList[grid[currentKey].objectId].density * objectList[grid[currentKey].objectId].cellCount
       } break
       case "force": {
         objectList[grid[currentKey].objectId].forceX -= 1;
       } break
       case "velocity": {
         objectList[grid[currentKey].objectId].velocityX -= 1;
-      } break
-      case "friction": {
-        objectList[grid[currentKey].objectId].friction = objectList[grid[currentKey].objectId].friction - 0.1 >= 0.1 ? objectList[grid[currentKey].objectId].friction - 0.1 : 0;
-      } break
-      case "elasticity": {
-        objectList[grid[currentKey].objectId].elasticity = objectList[grid[currentKey].objectId].elasticity - 0.1 >= 0.1 ? objectList[grid[currentKey].objectId].elasticity - 0.1 : 0;
       } break
       case "move": {
         moveLeft(grid, objectList, currentKey)
@@ -242,18 +227,13 @@ function App() {
       } break
       case "cell": {
         expandRight(grid, objectList, currentKey)
+        objectList[grid[currentKey].objectId].mass = objectList[grid[currentKey].objectId].density * objectList[grid[currentKey].objectId].cellCount
       } break
       case "force": {
         objectList[grid[currentKey].objectId].forceX += 1;
       } break
       case "velocity": {
         objectList[grid[currentKey].objectId].velocityX += 1;
-      } break
-      case "friction": {
-        objectList[grid[currentKey].objectId].friction = objectList[grid[currentKey].objectId].friction + 0.1 >= 0 ? objectList[grid[currentKey].objectId].friction + 0.1 : 0;
-      } break
-      case "elasticity": {
-        objectList[grid[currentKey].objectId].elasticity = objectList[grid[currentKey].objectId].elasticity + 0.1 >= 0 ? objectList[grid[currentKey].objectId].elasticity + 0.1 : 0;
       } break
       case "move": {
         moveRight(grid, objectList, currentKey)
@@ -321,16 +301,6 @@ function App() {
           currentProperty = "velocity"
         }
       } break
-      case "n": {
-        if (currentProperty == null) {
-          currentProperty = "friction"
-        }
-      } break
-      case "e": {
-        if (currentProperty == null) {
-          currentProperty = "elasticity"
-        }
-      } break
       case "ArrowUp": {
         if (currentKey != null) {
           runState = false
@@ -373,12 +343,6 @@ function App() {
         currentProperty = null
       } break
       case "v": {
-        currentProperty = null
-      } break
-      case "n": {
-        currentProperty = null
-      } break
-      case "e": {
         currentProperty = null
       } break
     }

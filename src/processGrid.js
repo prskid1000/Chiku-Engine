@@ -1,3 +1,5 @@
+const { moveRight, moveLeft, moveUp, moveDown } = require("./object")
+
 module.exports = {
     processGrid: (message) => {
 
@@ -5,8 +7,47 @@ module.exports = {
         var objectList = message.objectList
 
         Object.keys(objectList).map((key) => {
-            switch (grid[key].type) {
+
+            if (objectList[key].forceX > 0) {
+                objectList[key].velocityX = Math.floor(objectList[key].forceX / objectList[key].mass)
+                objectList[key].forceX -= 1
+            } else if (objectList[key].forceX  < 0) {
+                objectList[key].velocityX = Math.floor(objectList[key].forceX / objectList[key].mass)
+                objectList[key].forceX += 1
             }
+
+            if (objectList[key].forceY > 0) {
+                objectList[key].velocityY = Math.floor(objectList[key].forceY / objectList[key].mass)
+                objectList[key].forceY -= 1
+            } else if (objectList[key].forceY < 0) {
+                objectList[key].velocityY = Math.floor(objectList[key].forceY / objectList[key].mass)
+                objectList[key].forceY += 1
+            }
+
+            if (objectList[key].velocityX > 0) {
+                for (let i = 0; i < objectList[key].velocityX; i++){
+                    moveRight(grid, objectList, key)
+                }
+                objectList[key].velocityX -= 1
+            } else if (objectList[key].velocityX < 0) {
+                for (let i = 0; i < Math.abs(objectList[key].velocityX); i++) {
+                    moveLeft(grid, objectList, key)
+                }
+                objectList[key].velocityX += 1
+            }
+
+            if (objectList[key].velocityY > 0) {
+                for (let i = 0; i < objectList[key].velocityY; i++) {
+                    moveUp(grid, objectList, key)
+                }
+                objectList[key].velocityY -= 1
+            } else if (objectList[key].velocityY < 0) {
+                for (let i = 0; i < Math.abs(objectList[key].velocityY); i++) {
+                    moveDown(grid, objectList, key)
+                }
+                objectList[key].velocityY += 1
+            }
+
         })
 
         return {
