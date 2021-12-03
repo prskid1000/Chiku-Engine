@@ -30,6 +30,7 @@ for (let i = 0; i < computeNumber * computeNumber; i++) {
 }
 
 function App() {
+
   var { height, width } = useWindowDimensions();
   var idx = 0
   var runState = false
@@ -67,6 +68,7 @@ function App() {
         "objectList": objectList,
       }
     })
+    
     worker.onmessage = (message) => {
       grid = message.data.grid
       objectList = message.data.objectList

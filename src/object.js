@@ -171,15 +171,18 @@ var setCollision = (grid, objectList, key) => {
     collisionBottom(grid, objectList, key)
 }
 
-var moveCell = (grid, objectId, currentKey, futureKey) => {
+var addCell = (grid, objectId, futureKey) => {
     if (grid[futureKey].color == "black") {
         grid[futureKey].color = "white"
         grid[futureKey].type = "object"
         grid[futureKey].objectId = objectId
-        grid[currentKey].color = "black"
-        grid[currentKey].type = "empty"
-        grid[currentKey].objectId = "-1"
     }
+}
+
+var removeCell = (grid, currentKey) => {
+    grid[currentKey].color = "black"
+    grid[currentKey].type = "empty"
+    grid[currentKey].objectId = "-1"
 }
 
 var moveLeft = (grid, objectList, key) => {
@@ -203,10 +206,14 @@ var moveLeft = (grid, objectList, key) => {
         column = rowStart + parseInt(cellKey) % computeNumber - 1
         var futureKey = computeCircularColumn(column, rowStart, rowEnd).toString()
         newCellList.push(futureKey)
-        moveCell(grid, objectId, cellKey, futureKey)
+        removeCell(grid, cellKey)
     })
 
     objectList[objectId].cellList = newCellList
+
+    objectList[objectId].cellList.map((cellKey) => {
+        addCell(grid, objectId, cellKey)
+    })
     
     delete objectList[key]
     setBoundary(grid, objectList, objectId)
@@ -217,7 +224,7 @@ var moveRight = (grid, objectList, key) => {
     key = grid[key].objectId
     setBoundary(grid, objectList, key)
     setCollision(grid, objectList, key)
-    if (objectList[key].collisionList.left.length != 0) return
+    if (objectList[key].collisionList.right.length != 0) return
 
     var rowStart = computeCircularRow((Math.floor(parseInt(key) / computeNumber)) * computeNumber)
     var rowEnd = rowStart + computeNumber - 1
@@ -234,10 +241,14 @@ var moveRight = (grid, objectList, key) => {
         column = rowStart + parseInt(cellKey) % computeNumber + 1
         var futureKey = computeCircularColumn(column, rowStart, rowEnd).toString()
         newCellList.push(futureKey)
-        moveCell(grid, objectId, cellKey, futureKey)
+        removeCell(grid, cellKey)
     })
 
     objectList[objectId].cellList = newCellList
+
+    objectList[objectId].cellList.map((cellKey) => {
+        addCell(grid, objectId, cellKey)
+    })
 
     delete objectList[key]
     setBoundary(grid, objectList, objectId)
@@ -248,7 +259,7 @@ var moveUp = (grid, objectList, key) => {
     key = grid[key].objectId
     setBoundary(grid, objectList, key)
     setCollision(grid, objectList, key)
-    if (objectList[key].collisionList.left.length != 0) return
+    if (objectList[key].collisionList.top.length != 0) return
 
     var rowStart = computeCircularRow((Math.floor(parseInt(key) / computeNumber)) * computeNumber - computeNumber)
     var rowEnd = rowStart + computeNumber - 1
@@ -265,10 +276,14 @@ var moveUp = (grid, objectList, key) => {
         column = rowStart + parseInt(cellKey) % computeNumber
         var futureKey = computeCircularColumn(column, rowStart, rowEnd).toString()
         newCellList.push(futureKey)
-        moveCell(grid, objectId, cellKey, futureKey)
+        removeCell(grid, cellKey)
     })
 
     objectList[objectId].cellList = newCellList
+
+    objectList[objectId].cellList.map((cellKey) => {
+        addCell(grid, objectId, cellKey)
+    })
 
     delete objectList[key]
     setBoundary(grid, objectList, objectId)
@@ -279,7 +294,7 @@ var moveDown = (grid, objectList, key) => {
     key = grid[key].objectId
     setBoundary(grid, objectList, key)
     setCollision(grid, objectList, key)
-    if (objectList[key].collisionList.left.length != 0) return
+    if (objectList[key].collisionList.bottom.length != 0) return
 
     var rowStart = computeCircularRow((Math.floor(parseInt(key) / computeNumber)) * computeNumber + computeNumber)
     var rowEnd = rowStart + computeNumber - 1
@@ -296,10 +311,14 @@ var moveDown = (grid, objectList, key) => {
         column = rowStart + parseInt(cellKey) % computeNumber
         var futureKey = computeCircularColumn(column, rowStart, rowEnd).toString()
         newCellList.push(futureKey)
-        moveCell(grid, objectId, cellKey, futureKey)
+        removeCell(grid, cellKey)
     })
 
     objectList[objectId].cellList = newCellList
+
+    objectList[objectId].cellList.map((cellKey) => {
+        addCell(grid, objectId, cellKey)
+    })
 
     delete objectList[key]
     setBoundary(grid, objectList, objectId)
