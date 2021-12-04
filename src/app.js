@@ -75,7 +75,6 @@ function App() {
   }
 
   var simulate = () => {
-    console.log(objectList)
     worker.postMessage({
       "statement": processGrid.toString(),
       "args": {
@@ -171,7 +170,6 @@ function App() {
         processDOM(grid)
       } break
     }
-    //console.log(objectList[grid[currentKey].objectId])
   }
 
   var handleDown = () => {
@@ -199,7 +197,6 @@ function App() {
         processDOM(grid)
       } break
     }
-    //console.log(objectList[grid[currentKey].objectId])
   }
 
   var handleLeft = () => {
@@ -227,7 +224,6 @@ function App() {
         processDOM(grid)
       } break
     }
-    //console.log(objectList[grid[currentKey].objectId])
   }
 
   var handleRight = () => {
@@ -255,7 +251,6 @@ function App() {
         processDOM(grid)
       } break
     }
-    //console.log(objectList[grid[currentKey].objectId])
   }
 
   var onKeyDown = (event) => {
@@ -377,6 +372,7 @@ function App() {
     str += "vx: " + objectList[currentObjectId].velocityX.toString() + " | "
     str += "vy: " + objectList[currentObjectId].velocityY.toString() + " | "
     cellInfoPanel.current.innerHTML = str
+    //console.log(objectList[currentObjectId])
   }
 
   var onMouseEnterOrClick = (event) => {

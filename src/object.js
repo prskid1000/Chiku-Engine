@@ -123,54 +123,54 @@ var setBoundary = (grid, objectList, key) => {
 }
 
 var collisionLeft = (grid, objectList, key) => {
-    var collision = []
+    var collision = { "-1": "-1" }
     for (let i = 0; i < objectList[grid[key].objectId].boundaryList.left.length; i++) {
         var target = objectList[grid[key].objectId].boundaryList.left[i]
         var neighbours = getNeighbourKV(target)
-        if (grid[neighbours.left].type != "empty") collision.push(target)
         if (grid[neighbours.left].type == "object") {
-            
+            collision[grid[neighbours.left].objectId] = neighbours.left
         }
     }
+    delete collision["-1"]
     objectList[grid[key].objectId].collisionList.left = collision
 }
 
 var collisionRight = (grid, objectList, key) => {
-    var collision = []
+    var collision = { "-1": "-1" }
     for (let i = 0; i < objectList[grid[key].objectId].boundaryList.right.length; i++) {
         var target = objectList[grid[key].objectId].boundaryList.right[i]
         var neighbours = getNeighbourKV(target)
-        if (grid[neighbours.right].type != "empty") collision.push(target)
         if (grid[neighbours.right].type == "object") {
-           
+            collision[grid[neighbours.right].objectId] = neighbours.right
         }
     }
+    delete collision["-1"]
     objectList[grid[key].objectId].collisionList.right = collision
 }
 
 var collisionTop = (grid, objectList, key) => {
-    var collision = []
+    var collision = { "-1": "-1" }
     for (let i = 0; i < objectList[grid[key].objectId].boundaryList.top.length; i++) {
         var target = objectList[grid[key].objectId].boundaryList.top[i]
         var neighbours = getNeighbourKV(target)
-        if (grid[neighbours.top].type != "empty") collision.push(target)
         if (grid[neighbours.top].type == "object") {
-           
+            collision[grid[neighbours.top].objectId] = neighbours.top
         }
     }
+    delete collision["-1"]
     objectList[grid[key].objectId].collisionList.top = collision
 }
 
 var collisionBottom = (grid, objectList, key) => {
-    var collision = []
+    var collision = { "-1": "-1" }
     for (let i = 0; i < objectList[grid[key].objectId].boundaryList.bottom.length; i++) {
         var target = objectList[grid[key].objectId].boundaryList.bottom[i]
         var neighbours = getNeighbourKV(target)
-        if (grid[neighbours.bottom].type != "empty") collision.push(target)
         if (grid[neighbours.bottom].type == "object") {
-        
+            collision[grid[neighbours.bottom].objectId] = neighbours.bottom
         }
     }
+    delete collision["-1"]
     objectList[grid[key].objectId].collisionList.bottom = collision
 }
 
@@ -199,13 +199,13 @@ var moveLeft = (grid, objectList, key) => {
     key = grid[key].objectId
     setBoundary(grid, objectList, key)
     setCollision(grid, objectList, key)
-    if(objectList[key].collisionList.left.length != 0) return
+    if (Object.keys(objectList[key].collisionList.left).length != 0) return
 
     var rowStart = computeCircularRow((Math.floor(parseInt(key) / computeNumber)) * computeNumber)
     var rowEnd = rowStart + computeNumber - 1
     var column = rowStart + parseInt(key) % computeNumber - 1
     var objectId = computeCircularColumn(column, rowStart, rowEnd).toString()
-    
+
     objectList[objectId] = JSON.parse(JSON.stringify(objectList[key]))
     objectList[objectId].objectId = objectId
     var newCellList = []
@@ -224,10 +224,8 @@ var moveLeft = (grid, objectList, key) => {
     objectList[objectId].cellList.map((cellKey) => {
         addCell(grid, objectId, cellKey)
     })
-    
+
     delete objectList[key]
-    setBoundary(grid, objectList, objectId)
-    setCollision(grid, objectList, objectId)
     return objectId
 }
 
@@ -235,7 +233,7 @@ var moveRight = (grid, objectList, key) => {
     key = grid[key].objectId
     setBoundary(grid, objectList, key)
     setCollision(grid, objectList, key)
-    if (objectList[key].collisionList.right.length != 0) return
+    if (Object.keys(objectList[key].collisionList.right).length != 0) return
 
     var rowStart = computeCircularRow((Math.floor(parseInt(key) / computeNumber)) * computeNumber)
     var rowEnd = rowStart + computeNumber - 1
@@ -262,8 +260,6 @@ var moveRight = (grid, objectList, key) => {
     })
 
     delete objectList[key]
-    setBoundary(grid, objectList, objectId)
-    setCollision(grid, objectList, objectId)
     return objectId
 }
 
@@ -271,7 +267,7 @@ var moveUp = (grid, objectList, key) => {
     key = grid[key].objectId
     setBoundary(grid, objectList, key)
     setCollision(grid, objectList, key)
-    if (objectList[key].collisionList.top.length != 0) return
+    if (Object.keys(objectList[key].collisionList.top).length != 0) return
 
     var rowStart = computeCircularRow((Math.floor(parseInt(key) / computeNumber)) * computeNumber - computeNumber)
     var rowEnd = rowStart + computeNumber - 1
@@ -298,8 +294,6 @@ var moveUp = (grid, objectList, key) => {
     })
 
     delete objectList[key]
-    setBoundary(grid, objectList, objectId)
-    setCollision(grid, objectList, objectId)
     return objectId
 }
 
@@ -307,7 +301,7 @@ var moveDown = (grid, objectList, key) => {
     key = grid[key].objectId
     setBoundary(grid, objectList, key)
     setCollision(grid, objectList, key)
-    if (objectList[key].collisionList.bottom.length != 0) return
+    if (Object.keys(objectList[key].collisionList.bottom).length != 0) return
 
     var rowStart = computeCircularRow((Math.floor(parseInt(key) / computeNumber)) * computeNumber + computeNumber)
     var rowEnd = rowStart + computeNumber - 1
@@ -334,8 +328,6 @@ var moveDown = (grid, objectList, key) => {
     })
 
     delete objectList[key]
-    setBoundary(grid, objectList, objectId)
-    setCollision(grid, objectList, objectId)
     return objectId
 }
 
