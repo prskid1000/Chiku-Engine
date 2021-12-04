@@ -5,8 +5,6 @@
 
 ### A Simulation Engine that Simulate a Pixel Playground
 
-### Frictionless and Perfectly Elastic Collision for all objects
-
 ## Getting started
 
 - Fork the repository.
@@ -22,15 +20,16 @@
 - Num Key 3 -> Download Scene
 - Num Key 4 -> Create Object
 - Num Key 5 -> Delete Object
+- Num Key 6 -> Delete Cell of Object
 
-- Num Key 6(Hold) -> Move Object(
+- Num Key 7(Hold) -> Move Object(
     ArrowUp-> Move Up, 
     ArrowDown-> Move Down, 
     ArrowLeft-> Move Left, 
     ArrowRight-> Move Right
     )
 
-- Num Key 7 -> View/Hide Object Info (Toggle)
+- Num Key 8 -> View/Hide Object Info (Toggle)
 
 - Char Key D(Hold) -> Density(
     ArrowUp-> Increase density by 1, 

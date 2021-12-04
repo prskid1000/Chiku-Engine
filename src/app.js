@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import useWindowDimensions from "./customHooks";
 import { initGrid } from "./initGrid";
-import { computeCircularColumn, createObject, 
+import { computeCircularColumn, contractObject, createObject, 
   destroyObject, 
   expandDown, 
   expandLeft,
@@ -162,6 +162,9 @@ function App() {
       case "force": {
         objectList[currentObjectId].forceY += 1;
       } break
+      case "push": {
+        objectList[currentObjectId].pushY += 1;
+      } break
       case "velocity": {
         objectList[currentObjectId].velocityY += 1;
       } break
@@ -188,6 +191,9 @@ function App() {
       } break
       case "force": {
         objectList[currentObjectId].forceY -= 1;
+      } break
+      case "push": {
+        objectList[currentObjectId].pushY -= 1;
       } break
       case "velocity": {
         objectList[currentObjectId].velocityY -= 1;
@@ -216,6 +222,9 @@ function App() {
       case "force": {
         objectList[currentObjectId].forceX -= 1;
       } break
+      case "push": {
+        objectList[currentObjectId].pushX -= 1;
+      } break
       case "velocity": {
         objectList[currentObjectId].velocityX -= 1;
       } break
@@ -242,6 +251,9 @@ function App() {
       } break
       case "force": {
         objectList[currentObjectId].forceX += 1;
+      } break
+      case "push": {
+        objectList[currentObjectId].pushX += 1;
       } break
       case "velocity": {
         objectList[currentObjectId].velocityX += 1;
@@ -284,11 +296,17 @@ function App() {
         currentObjectId = "-1"
       } break
       case "6": {
+        runState = false
+        var newObjectId = contractObject(grid, objectList, currentKey)
+        processDOM(grid)
+        if (currentKey == currentObjectId) currentObjectId = newObjectId
+      } break
+      case "7": {
         if (currentProperty == null) {
           currentProperty = "move"
         }
       } break
-      case "7": {
+      case "8": {
         if (cellInfoPanel.current.hidden == true) {
           cellInfoPanel.current.hidden = false
         } else {
@@ -313,6 +331,11 @@ function App() {
       case "v": {
         if (currentProperty == null) {
           currentProperty = "velocity"
+        }
+      } break
+      case "p": {
+        if (currentProperty == null) {
+          currentProperty = "push"
         }
       } break
       case "ArrowUp": {
@@ -369,6 +392,8 @@ function App() {
     str += "mass: " + objectList[currentObjectId].mass.toString() + " | "
     str += "fx: " + objectList[currentObjectId].forceX.toString() + " | "
     str += "fy: " + objectList[currentObjectId].forceY.toString() + " | "
+    str += "px: " + objectList[currentObjectId].pushX.toString() + " | "
+    str += "py: " + objectList[currentObjectId].pushY.toString() + " | "
     str += "vx: " + objectList[currentObjectId].velocityX.toString() + " | "
     str += "vy: " + objectList[currentObjectId].velocityY.toString() + " | "
     cellInfoPanel.current.innerHTML = str
@@ -391,6 +416,8 @@ function App() {
       str += "mass: " + objectList[currentObjectId].mass.toString() + " | "
       str += "fx: " + objectList[currentObjectId].forceX.toString() + " | "
       str += "fy: " + objectList[currentObjectId].forceY.toString() + " | "
+      str += "px: " + objectList[currentObjectId].pushX.toString() + " | "
+      str += "py: " + objectList[currentObjectId].pushY.toString() + " | "
       str += "vx: " + objectList[currentObjectId].velocityX.toString() + " | "
       str += "vy: " + objectList[currentObjectId].velocityY.toString() + " | "
       cellInfoPanel.current.innerHTML = str

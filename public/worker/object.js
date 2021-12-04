@@ -50,6 +50,8 @@ var getProperty = (key) => {
         "mass": 1,
         "forceX": 0,
         "forceY": 0,
+        "pushX": 0,
+        "pushY": 0,
         "velocityX": 0,
         "velocityY": 0,
         "cellList": [key],
@@ -186,6 +188,50 @@ var removeCell = (grid, currentKey) => {
     grid[currentKey].color = "black"
     grid[currentKey].type = "empty"
     grid[currentKey].objectId = "-1"
+}
+
+var forceLeft = (grid, objectList, key) => {
+    key = grid[key].objectId
+    setBoundary(grid, objectList, key)
+    collisionLeft(grid, objectList, key)
+    Object.keys(objectList[key].collisionList.left).map((target) => {
+        objectList[target].forceX -= objectList[key].pushX
+        objectList[key].forceX += objectList[key].pushX
+    })
+
+}
+
+var forceRight = (grid, objectList, key) => {
+    key = grid[key].objectId
+    setBoundary(grid, objectList, key)
+    collisionRight(grid, objectList, key)
+    Object.keys(objectList[key].collisionList.right).map((target) => {
+        objectList[target].forceX += objectList[key].pushX
+        objectList[key].forceX -= objectList[key].pushX
+    })
+
+}
+
+var forceTop = (grid, objectList, key) => {
+    key = grid[key].objectId
+    setBoundary(grid, objectList, key)
+    collisionTop(grid, objectList, key)
+    Object.keys(objectList[key].collisionList.top).map((target) => {
+        objectList[target].forceY += objectList[key].pushY
+        objectList[key].forceY -= objectList[key].pushY
+    })
+
+}
+
+var forceBottom = (grid, objectList, key) => {
+    key = grid[key].objectId
+    setBoundary(grid, objectList, key)
+    collisionBottom(grid, objectList, key)
+    Object.keys(objectList[key].collisionList.bottom).map((target) => {
+        objectList[target].forceY -= objectList[key].pushY
+        objectList[key].forceY += objectList[key].pushY
+    })
+
 }
 
 var moveLeft = (grid, objectList, key) => {

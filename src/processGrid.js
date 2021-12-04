@@ -1,10 +1,12 @@
+const { forceLeft, forceRight, forceTop, forceBottom } = require("./object")
+
 module.exports = {
     processGrid: (message) => {
 
         var grid = message.grid
         var objectList = message.objectList
 
-        //Process Movement
+        //Process Force, Velocity, and Movement
         Object.keys(objectList).map((key) => {
 
             if (objectList[key].forceX > 0) {
@@ -57,13 +59,17 @@ module.exports = {
 
         })
 
-        //Detect Collision
+        //Detect Collision and Apply Action-Reaction Force Pair
         Object.keys(objectList).map((key) => {
             setBoundary(grid, objectList, key)
             collisionLeft(grid, objectList, key)
             collisionRight(grid, objectList, key)
             collisionTop(grid, objectList, key)
             collisionBottom(grid, objectList, key)
+            forceLeft(grid, objectList, key)
+            forceRight(grid, objectList, key)
+            forceTop(grid, objectList, key)
+            forceBottom(grid, objectList, key)
         })
 
         //Process Collision
