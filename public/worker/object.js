@@ -174,13 +174,6 @@ var collisionBottom = (grid, objectList, key) => {
     objectList[grid[key].objectId].collisionList.bottom = collision
 }
 
-var setCollision = (grid, objectList, key) => {
-    collisionLeft(grid, objectList, key)
-    collisionRight(grid, objectList, key)
-    collisionTop(grid, objectList, key)
-    collisionBottom(grid, objectList, key)
-}
-
 var addCell = (grid, objectId, futureKey) => {
     if (grid[futureKey].color == "black") {
         grid[futureKey].color = "white"
@@ -198,7 +191,7 @@ var removeCell = (grid, currentKey) => {
 var moveLeft = (grid, objectList, key) => {
     key = grid[key].objectId
     setBoundary(grid, objectList, key)
-    setCollision(grid, objectList, key)
+    collisionLeft(grid, objectList, key)
     if (Object.keys(objectList[key].collisionList.left).length != 0) return
 
     var rowStart = computeCircularRow((Math.floor(parseInt(key) / computeNumber)) * computeNumber)
@@ -232,7 +225,7 @@ var moveLeft = (grid, objectList, key) => {
 var moveRight = (grid, objectList, key) => {
     key = grid[key].objectId
     setBoundary(grid, objectList, key)
-    setCollision(grid, objectList, key)
+    collisionRight(grid, objectList, key)
     if (Object.keys(objectList[key].collisionList.right).length != 0) return
 
     var rowStart = computeCircularRow((Math.floor(parseInt(key) / computeNumber)) * computeNumber)
@@ -266,7 +259,7 @@ var moveRight = (grid, objectList, key) => {
 var moveUp = (grid, objectList, key) => {
     key = grid[key].objectId
     setBoundary(grid, objectList, key)
-    setCollision(grid, objectList, key)
+    collisionTop(grid, objectList, key)
     if (Object.keys(objectList[key].collisionList.top).length != 0) return
 
     var rowStart = computeCircularRow((Math.floor(parseInt(key) / computeNumber)) * computeNumber - computeNumber)
@@ -300,7 +293,7 @@ var moveUp = (grid, objectList, key) => {
 var moveDown = (grid, objectList, key) => {
     key = grid[key].objectId
     setBoundary(grid, objectList, key)
-    setCollision(grid, objectList, key)
+    collisionBottom(grid, objectList, key)
     if (Object.keys(objectList[key].collisionList.bottom).length != 0) return
 
     var rowStart = computeCircularRow((Math.floor(parseInt(key) / computeNumber)) * computeNumber + computeNumber)

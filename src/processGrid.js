@@ -60,7 +60,10 @@ module.exports = {
         //Detect Collision
         Object.keys(objectList).map((key) => {
             setBoundary(grid, objectList, key)
-            setCollision(grid, objectList, key)
+            collisionLeft(grid, objectList, key)
+            collisionRight(grid, objectList, key)
+            collisionTop(grid, objectList, key)
+            collisionBottom(grid, objectList, key)
         })
 
         //Process Collision
@@ -75,7 +78,7 @@ module.exports = {
                 objectList[key].velocityX = Math.floor(((m - 1) * u1 + 2 * u2) / (m + 1))
                 objectList[target].velocityX = Math.floor((2 * m * u1 + (1 - m) * u2) / (m + 1))
 
-                console.log(u1, u2, key, target, objectList[key].velocityX, objectList[target].velocityX)
+                //console.log(u1, u2, key, target, objectList[key].velocityX, objectList[target].velocityX)
 
                 delete objectList[key].collisionList.left[target]
                 delete objectList[target].collisionList.right[key]
@@ -91,8 +94,7 @@ module.exports = {
                 objectList[key].velocityX = Math.floor(((m - 1) * u1 + 2 * u2) / (m + 1))
                 objectList[target].velocityX = Math.floor((2 * m * u1 + (1 - m) * u2) / (m + 1))
 
-                console.log(objectList)
-                console.log(u1, u2, key, target, objectList[key].velocityX, objectList[target].velocityX)
+                //console.log(u1, u2, key, target, objectList[key].velocityX, objectList[target].velocityX)
 
                 delete objectList[key].collisionList.right[target]
                 delete objectList[target].collisionList.left[key]
