@@ -27,13 +27,13 @@ module.exports = {
             }
 
             if (objectList[key].velocityX > 0) {
-                for (let i = 0; i < objectList[key].velocityX; i++){
+                for (let i = 0; i < objectList[key].velocityX; i++) {
                     var tkey = moveRight(grid, objectList, key)
-                    if(tkey == undefined) break
+                    if (tkey == undefined) break
                     if (key == currentObjectId) currentObjectId = tkey
                     key = tkey
                 }
-                objectList[key].velocityX -= 1
+                objectList[key].velocityX -= objectList[key].energyLoss
             } else if (objectList[key].velocityX < 0) {
                 for (let i = 0; i < Math.abs(objectList[key].velocityX); i++) {
                     var tkey = moveLeft(grid, objectList, key)
@@ -41,7 +41,7 @@ module.exports = {
                     if (key == currentObjectId) currentObjectId = tkey
                     key = tkey
                 }
-                objectList[key].velocityX += 1
+                objectList[key].velocityX += objectList[key].energyLoss
             }
 
             if (objectList[key].velocityY > 0) {
@@ -51,7 +51,7 @@ module.exports = {
                     if (key == currentObjectId) currentObjectId = tkey
                     key = tkey
                 }
-                objectList[key].velocityY -= 1
+                objectList[key].velocityY -= objectList[key].energyLoss
             } else if (objectList[key].velocityY < 0) {
                 for (let i = 0; i < Math.abs(objectList[key].velocityY); i++) {
                     var tkey = moveDown(grid, objectList, key)
@@ -59,7 +59,7 @@ module.exports = {
                     if (key == currentObjectId) currentObjectId = tkey
                     key = tkey
                 }
-                objectList[key].velocityY += 1
+                objectList[key].velocityY += objectList[key].energyLoss
             }
 
         })
@@ -144,7 +144,7 @@ module.exports = {
         return {
             "grid": grid,
             "objectList": objectList,
-            "currentObjectid": currentObjectId
+            "currentObjectId": currentObjectId
         }
     }
 }
