@@ -435,6 +435,7 @@ function App() {
     var cell = document.getElementById(event.target.id)
     cell.style.backgroundColor = "red"
     currentKey = event.target.id
+    colorPanel.current.hidden = true
 
     cellInfoPanel.current.style.top = (10 + cell.offsetTop).toString() + "px"
     cellInfoPanel.current.style.left = (10 + cell.offsetLeft).toString() + "px"
@@ -460,7 +461,6 @@ function App() {
     event.preventDefault()
     var cell = document.getElementById(event.target.id)
     cell.style.backgroundColor = grid[event.target.id].color
-    colorPanel.current.hidden = true
   }
 
   useEffect(() => {
