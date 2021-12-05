@@ -346,49 +346,58 @@ function App() {
         }
       } break
       case "d": {
+        colorPanel.current.hidden = true
         if (currentProperty == null) {
           currentProperty = "density"
         }
       } break
       case "c": {
+        colorPanel.current.hidden = true
         if (currentProperty == null) {
           currentProperty = "cell"
         }
       } break
       case "f": {
+        colorPanel.current.hidden = true
         if (currentProperty == null) {
           currentProperty = "force"
         }
       } break
       case "v": {
+        colorPanel.current.hidden = true
         if (currentProperty == null) {
           currentProperty = "velocity"
         }
       } break
       case "p": {
+        colorPanel.current.hidden = true
         if (currentProperty == null) {
           currentProperty = "push"
         }
       } break
       case "ArrowUp": {
+        colorPanel.current.hidden = true
         if (currentKey != null) {
           runState = false
           handleUp()
         }
       } break
       case "ArrowLeft": {
+        colorPanel.current.hidden = true
         if (currentKey != null) {
           runState = false
           handleLeft()
         }
       } break
       case "ArrowRight": {
+        colorPanel.current.hidden = true
         if (currentKey != null) {
           runState = false
           handleRight()
         }
       } break
       case "ArrowDown": {
+        colorPanel.current.hidden = true
         if (currentKey != null) {
           runState = false
           handleDown()
