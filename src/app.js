@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import useWindowDimensions from "./customHooks";
 import { initGrid } from "./initGrid";
-import { computeCircularColumn, contractObject, createObject, 
+import { computeCircularColumn, computeCircularRow, contractObject, createObject, 
   destroyObject, 
   expandDown, 
   expandLeft,
@@ -16,7 +16,6 @@ import { processGrid } from "./processGrid";
 
 var computeNumber = 128
 var simulationSpeed = 600
-var worker = new Worker("worker/worker.js")
 
 var num = []
 for (let i = 0; i < computeNumber; i++) {
@@ -172,6 +171,38 @@ function App() {
         currentObjectId = moveUp(grid, objectList, currentObjectId)
         processDOM(grid)
       } break
+      default: {
+        var rowStart = computeCircularRow((Math.floor(parseInt(currentKey) / computeNumber)) * computeNumber - computeNumber)
+        var rowEnd = rowStart + computeNumber - 1
+        var column = rowStart + parseInt(currentKey) % computeNumber
+        var futureKey = computeCircularColumn(column, rowStart, rowEnd).toString()
+
+        var cell = document.getElementById(currentKey)
+        cell.style.backgroundColor = grid[currentKey].color
+        cell = document.getElementById(futureKey)
+        cell.style.backgroundColor = "red"
+        currentKey = futureKey
+        colorPanel.current.hidden = true
+
+        cellInfoPanel.current.style.top = (10 + cell.offsetTop).toString() + "px"
+        cellInfoPanel.current.style.left = (10 + cell.offsetLeft).toString() + "px"
+        colorPanel.current.style.top = (cell.offsetTop).toString() + "px"
+        colorPanel.current.style.left = (cell.offsetLeft).toString() + "px"
+
+        if (grid[futureKey].objectId != undefined && grid[futureKey].objectId != "-1") {
+          currentObjectId = grid[futureKey].objectId
+
+          var str = "objectId: " + objectList[currentObjectId].objectId.toString() + " | "
+          str += "mass: " + objectList[currentObjectId].mass.toString() + " | "
+          str += "fx: " + objectList[currentObjectId].forceX.toString() + " | "
+          str += "fy: " + objectList[currentObjectId].forceY.toString() + " | "
+          str += "px: " + grid[futureKey].pushX.toString() + " | "
+          str += "py: " + grid[futureKey].pushY.toString() + " | "
+          str += "vx: " + objectList[currentObjectId].velocityX.toString() + " | "
+          str += "vy: " + objectList[currentObjectId].velocityY.toString() + " | "
+          cellInfoPanel.current.innerHTML = str
+        }
+      }
     }
   }
 
@@ -203,6 +234,40 @@ function App() {
         currentObjectId = moveDown(grid, objectList, currentObjectId)
         processDOM(grid)
       } break
+      default: {
+        var rowStart = computeCircularRow((Math.floor(parseInt(currentKey) / computeNumber)) * computeNumber + computeNumber)
+        var rowEnd = rowStart + computeNumber - 1
+        var column = rowStart + parseInt(currentKey) % computeNumber
+        var futureKey = computeCircularColumn(column, rowStart, rowEnd).toString()
+
+        var cell = document.getElementById(currentKey)
+        cell.style.backgroundColor = grid[currentKey].color
+        cell = document.getElementById(futureKey)
+        cell.style.backgroundColor = "red"
+        currentKey = futureKey
+        colorPanel.current.hidden = true
+
+        cellInfoPanel.current.style.top = (10 + cell.offsetTop).toString() + "px"
+        cellInfoPanel.current.style.left = (10 + cell.offsetLeft).toString() + "px"
+        colorPanel.current.style.top = (cell.offsetTop).toString() + "px"
+        colorPanel.current.style.left = (cell.offsetLeft).toString() + "px"
+
+        if (grid[futureKey].objectId != undefined && grid[futureKey].objectId != "-1") {
+          currentObjectId = grid[futureKey].objectId
+
+          var str = "objectId: " + objectList[currentObjectId].objectId.toString() + " | "
+          str += "mass: " + objectList[currentObjectId].mass.toString() + " | "
+          str += "fx: " + objectList[currentObjectId].forceX.toString() + " | "
+          str += "fy: " + objectList[currentObjectId].forceY.toString() + " | "
+          str += "px: " + grid[futureKey].pushX.toString() + " | "
+          str += "py: " + grid[futureKey].pushY.toString() + " | "
+          str += "vx: " + objectList[currentObjectId].velocityX.toString() + " | "
+          str += "vy: " + objectList[currentObjectId].velocityY.toString() + " | "
+          cellInfoPanel.current.innerHTML = str
+        }
+
+
+      }
     }
   }
 
@@ -234,13 +299,46 @@ function App() {
         currentObjectId = moveLeft(grid, objectList, currentObjectId)
         processDOM(grid)
       } break
+      default: {
+        var rowStart = computeCircularRow((Math.floor(parseInt(currentKey) / computeNumber)) * computeNumber)
+        var rowEnd = rowStart + computeNumber - 1
+        var column = rowStart + parseInt(currentKey) % computeNumber - 1
+        var futureKey = computeCircularColumn(column, rowStart, rowEnd).toString()
+
+        var cell = document.getElementById(currentKey)
+        cell.style.backgroundColor = grid[currentKey].color
+        cell = document.getElementById(futureKey)
+        cell.style.backgroundColor = "red"
+        currentKey = futureKey
+        colorPanel.current.hidden = true
+
+        cellInfoPanel.current.style.top = (10 + cell.offsetTop).toString() + "px"
+        cellInfoPanel.current.style.left = (10 + cell.offsetLeft).toString() + "px"
+        colorPanel.current.style.top = (cell.offsetTop).toString() + "px"
+        colorPanel.current.style.left = (cell.offsetLeft).toString() + "px"
+
+        if (grid[futureKey].objectId != undefined && grid[futureKey].objectId != "-1") {
+          currentObjectId = grid[futureKey].objectId
+
+          var str = "objectId: " + objectList[currentObjectId].objectId.toString() + " | "
+          str += "mass: " + objectList[currentObjectId].mass.toString() + " | "
+          str += "fx: " + objectList[currentObjectId].forceX.toString() + " | "
+          str += "fy: " + objectList[currentObjectId].forceY.toString() + " | "
+          str += "px: " + grid[futureKey].pushX.toString() + " | "
+          str += "py: " + grid[futureKey].pushY.toString() + " | "
+          str += "vx: " + objectList[currentObjectId].velocityX.toString() + " | "
+          str += "vy: " + objectList[currentObjectId].velocityY.toString() + " | "
+          cellInfoPanel.current.innerHTML = str
+        }
+
+
+      }
     }
   }
 
   var handleRight = () => {
     if (currentKey == null || currentKey == undefined) return
     if (currentObjectId == undefined || currentObjectId == "-1" || objectList[currentObjectId] == undefined) return
-
     switch (currentProperty) {
       case "density": {
         objectList[currentObjectId].density += 1;
@@ -265,6 +363,40 @@ function App() {
         currentObjectId = moveRight(grid, objectList, currentObjectId)
         processDOM(grid)
       } break
+      default: {
+        var rowStart = computeCircularRow((Math.floor(parseInt(currentKey) / computeNumber)) * computeNumber)
+        var rowEnd = rowStart + computeNumber - 1
+        var column = rowStart + parseInt(currentKey) % computeNumber + 1
+        var futureKey = computeCircularColumn(column, rowStart, rowEnd).toString()
+    
+        var cell = document.getElementById(currentKey)
+        cell.style.backgroundColor = grid[currentKey].color
+        cell = document.getElementById(futureKey)
+        cell.style.backgroundColor = "red"
+        currentKey = futureKey
+        colorPanel.current.hidden = true
+
+        cellInfoPanel.current.style.top = (10 + cell.offsetTop).toString() + "px"
+        cellInfoPanel.current.style.left = (10 + cell.offsetLeft).toString() + "px"
+        colorPanel.current.style.top = (cell.offsetTop).toString() + "px"
+        colorPanel.current.style.left = (cell.offsetLeft).toString() + "px"
+
+        if (grid[futureKey].objectId != undefined && grid[futureKey].objectId != "-1") {
+          currentObjectId = grid[futureKey].objectId
+
+          var str = "objectId: " + objectList[currentObjectId].objectId.toString() + " | "
+          str += "mass: " + objectList[currentObjectId].mass.toString() + " | "
+          str += "fx: " + objectList[currentObjectId].forceX.toString() + " | "
+          str += "fy: " + objectList[currentObjectId].forceY.toString() + " | "
+          str += "px: " + grid[futureKey].pushX.toString() + " | "
+          str += "py: " + grid[futureKey].pushY.toString() + " | "
+          str += "vx: " + objectList[currentObjectId].velocityX.toString() + " | "
+          str += "vy: " + objectList[currentObjectId].velocityY.toString() + " | "
+          cellInfoPanel.current.innerHTML = str
+        }
+
+
+      }
     }
   }
 

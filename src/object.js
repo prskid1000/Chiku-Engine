@@ -474,7 +474,6 @@ var createObject = (grid, objectList, currentKey) => {
         grid[currentKey].pushY = 0;
         grid[currentKey].type = "object";
         grid[currentKey].objectId = currentKey;
-
     }
 }
 
