@@ -5,7 +5,7 @@ module.exports = {
         var objectList = message.objectList
 
         Object.keys(grid).map((key) => {
-            grid[key].color = "black",
+            grid[key].color = "#000000",
             grid[key].type = "empty",
             grid[key].pushX = 0,
             grid[key].pushY = 0,

@@ -36,9 +36,11 @@ function App() {
   var runState = false
   var upload = useRef()
   var currentProperty = null
-  var currentKey = null
+  var currentKey = 0
+  var colorTarget = 0
   var currentObjectId = null
   var cellInfoPanel = useRef()
+  var colorPanel = useRef()
   var [cellInfo, setCellInfo] = useState()
 
   var appStyle = {
@@ -58,7 +60,22 @@ function App() {
     backgroundColor: "transparent",
     color: "white",
     top: "0",
-    let: "0",
+    left: "0",
+    zIndex: "999999",
+    fontSize: "16px",
+    fontWeight: "bold"
+  }
+
+  var colorPanelStyle = {
+    position: "absolute",
+    backgroundColor: "transparent",
+    color: "white",
+    padding: "0px",
+    margin: "0px",
+    top: "0",
+    left: "0",
+    height: Math.min(height * 0.99, width * 0.99) / computeNumber,
+    width: Math.min(height * 0.99, width * 0.99) / computeNumber,
     zIndex: "999999",
     fontSize: "16px",
     fontWeight: "bold"
@@ -269,6 +286,14 @@ function App() {
     }
   }
 
+  var onColorChange = (event) => {
+    if (grid[colorTarget].objectId != "-1") {
+      grid[colorTarget].color = event.target.value
+      processDOM(grid)
+    }
+    colorPanel.current.hidden = true
+  }
+
   var onKeyDown = (event) => {
     switch (event.key) {
       case "1": {
@@ -317,6 +342,15 @@ function App() {
           cellInfoPanel.current.hidden = true
         }
       }break
+      case "9": {
+        if (colorPanel.current.hidden == true) {
+          colorPanel.current.hidden = false
+          colorPanel.current.value = grid[currentKey].color
+          colorTarget = currentKey
+        } else {
+          colorPanel.current.hidden = true
+        }
+      } break
       case "d": {
         if (currentProperty == null) {
           currentProperty = "density"
@@ -412,6 +446,8 @@ function App() {
 
     cellInfoPanel.current.style.top = (10 + cell.offsetTop).toString() + "px"
     cellInfoPanel.current.style.left = (10 + cell.offsetLeft).toString() + "px"
+    colorPanel.current.style.top = (cell.offsetTop).toString() + "px"
+    colorPanel.current.style.left = (cell.offsetLeft).toString() + "px"
 
     if (grid[event.target.id].objectId != undefined && grid[event.target.id].objectId != "-1") {
       currentObjectId = grid[event.target.id].objectId
@@ -438,6 +474,7 @@ function App() {
 
     upload.current.hidden = true
     cellInfoPanel.current.hidden = true
+    colorPanel.current.hidden = true
 
     worker.postMessage({
       "statement": initGrid.toString(),
@@ -483,6 +520,7 @@ function App() {
       </div>
       <div ref={cellInfoPanel} style={infoPanelStyle}>
       </div>
+      <input type="color" ref={colorPanel} style={colorPanelStyle} className="form-control form-control-color" onChange={onColorChange}></input>
     </div>
   );
 }

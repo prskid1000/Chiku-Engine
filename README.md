@@ -31,6 +31,8 @@
 
 - Num Key 8 -> View/Hide Object Info (Toggle)
 
+- Num Key 9 -> Change Cell Color of Object (Toggle)
+
 - Char Key D(Hold) -> Density(
     ArrowUp-> Increase density by 1, 
     ArrowDown-> Decrease density by 1, 
