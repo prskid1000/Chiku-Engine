@@ -323,13 +323,11 @@ function App() {
         if (currentKey == currentObjectId) currentObjectId = newObjectId
       } break
       case "7": {
-        colorPanel.current.hidden = true
         if (currentProperty == null) {
           currentProperty = "move"
         }
       } break
       case "8": {
-        colorPanel.current.hidden = true
         if (cellInfoPanel.current.hidden == true) {
           cellInfoPanel.current.hidden = false
         } else {
@@ -346,58 +344,49 @@ function App() {
         }
       } break
       case "d": {
-        colorPanel.current.hidden = true
         if (currentProperty == null) {
           currentProperty = "density"
         }
       } break
       case "c": {
-        colorPanel.current.hidden = true
         if (currentProperty == null) {
           currentProperty = "cell"
         }
       } break
       case "f": {
-        colorPanel.current.hidden = true
         if (currentProperty == null) {
           currentProperty = "force"
         }
       } break
       case "v": {
-        colorPanel.current.hidden = true
         if (currentProperty == null) {
           currentProperty = "velocity"
         }
       } break
       case "p": {
-        colorPanel.current.hidden = true
         if (currentProperty == null) {
           currentProperty = "push"
         }
       } break
       case "ArrowUp": {
-        colorPanel.current.hidden = true
         if (currentKey != null) {
           runState = false
           handleUp()
         }
       } break
       case "ArrowLeft": {
-        colorPanel.current.hidden = true
         if (currentKey != null) {
           runState = false
           handleLeft()
         }
       } break
       case "ArrowRight": {
-        colorPanel.current.hidden = true
         if (currentKey != null) {
           runState = false
           handleRight()
         }
       } break
       case "ArrowDown": {
-        colorPanel.current.hidden = true
         if (currentKey != null) {
           runState = false
           handleDown()
@@ -411,27 +400,21 @@ function App() {
     switch (event.key) {
       case "7": {
         currentProperty = null
-        colorPanel.current.hidden = true
       } break
       case "d": {
         currentProperty = null
-        colorPanel.current.hidden = true
       } break
       case "c": {
         currentProperty = null
-        colorPanel.current.hidden = true
       } break
       case "f": {
         currentProperty = null
-        colorPanel.current.hidden = true
       } break
       case "p": {
         currentProperty = null
-        colorPanel.current.hidden = true
       } break
       case "v": {
         currentProperty = null
-        colorPanel.current.hidden = true
       } break
     }
     if (objectList[currentObjectId] == undefined) return
