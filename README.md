@@ -5,6 +5,8 @@
 
 ### A Simulation Engine that Simulate a Pixel Playground
 
+#### It can't be deployed in production environment due to some restricted usage of Web Worker
+
 ## Getting started
 
 - Fork the repository.

@@ -483,6 +483,7 @@ function App() {
         "objectList": objectList,
       }
     })
+    
     worker.onmessage = (message) => {
       grid = message.data.grid
       objectList = message.data.objectList
