@@ -201,6 +201,7 @@ var forceLeft = (grid, objectList, key) => {
     Object.keys(objectList[key].collisionList.left).map((target) => {
         objectList[target].forceX -= grid[objectList[key].collisionList.left[target]].pushX
         objectList[key].forceX += grid[objectList[key].collisionList.left[target]].pushX
+        objectList[target].forceY -= grid[objectList[key].collisionList.left[target]].pushY
     })
 
 }
@@ -212,6 +213,7 @@ var forceRight = (grid, objectList, key) => {
     Object.keys(objectList[key].collisionList.right).map((target) => {
         objectList[target].forceX += grid[objectList[key].collisionList.right[target]].pushX
         objectList[key].forceX -= grid[objectList[key].collisionList.right[target]].pushX
+        objectList[target].forceY += grid[objectList[key].collisionList.right[target]].pushY
     })
 
 }
@@ -223,6 +225,7 @@ var forceTop = (grid, objectList, key) => {
     Object.keys(objectList[key].collisionList.top).map((target) => {
         objectList[target].forceY += grid[objectList[key].collisionList.top[target]].pushY
         objectList[key].forceY -= grid[objectList[key].collisionList.top[target]].pushY
+        objectList[target].forceX += grid[objectList[key].collisionList.top[target]].pushX
     })
 
 }
@@ -234,6 +237,7 @@ var forceBottom = (grid, objectList, key) => {
     Object.keys(objectList[key].collisionList.bottom).map((target) => {
         objectList[target].forceY -= grid[objectList[key].collisionList.bottom[target]].pushY
         objectList[key].forceY += grid[objectList[key].collisionList.bottom[target]].pushY
+        objectList[target].forceX -= grid[objectList[key].collisionList.bottom[target]].pushX
     })
 
 }

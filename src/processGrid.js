@@ -12,8 +12,9 @@ const { forceLeft,
     setBoundary,
     forceBottom, } = require("./object")
 
+    
 module.exports = {
-    processGrid: (grid, objectList) => {
+    processGrid: (grid, objectList, currentObjectId) => {
 
         //Process Force, Velocity, and Movement
         Object.keys(objectList).map((key) => {
@@ -38,6 +39,7 @@ module.exports = {
                 for (let i = 0; i < objectList[key].velocityX; i++){
                     var tkey = moveRight(grid, objectList, key)
                     if(tkey == undefined) break
+                    if(key == currentObjectId) currentObjectId = tkey
                     key = tkey
                 }
                 objectList[key].velocityX -= objectList[key].energyLoss
@@ -45,6 +47,7 @@ module.exports = {
                 for (let i = 0; i < Math.abs(objectList[key].velocityX); i++) {
                     var tkey = moveLeft(grid, objectList, key)
                     if (tkey == undefined) break
+                    if (key == currentObjectId) currentObjectId = tkey
                     key = tkey
                 }
                 objectList[key].velocityX += objectList[key].energyLoss
@@ -54,6 +57,7 @@ module.exports = {
                 for (let i = 0; i < objectList[key].velocityY; i++) {
                     var tkey = moveUp(grid, objectList, key)
                     if (tkey == undefined) break
+                    if (key == currentObjectId) currentObjectId = tkey
                     key = tkey
                 }
                 objectList[key].velocityY -= objectList[key].energyLoss
@@ -61,6 +65,7 @@ module.exports = {
                 for (let i = 0; i < Math.abs(objectList[key].velocityY); i++) {
                     var tkey = moveDown(grid, objectList, key)
                     if (tkey == undefined) break
+                    if (key == currentObjectId) currentObjectId = tkey
                     key = tkey
                 }
                 objectList[key].velocityY += objectList[key].energyLoss
@@ -144,5 +149,7 @@ module.exports = {
             })
 
         })
+
+        return currentObjectId
     }
 }

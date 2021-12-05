@@ -5,30 +5,32 @@ module.exports = {
 
         var grid = message.grid
         var objectList = message.objectList
+        var currentObjectId = message.currentObjectId
 
         //Process Force, Velocity, and Movement
         Object.keys(objectList).map((key) => {
 
             if (objectList[key].forceX > 0) {
                 objectList[key].velocityX = Math.floor(objectList[key].forceX / objectList[key].mass)
-                objectList[key].forceX -= 1
-            } else if (objectList[key].forceX  < 0) {
+                objectList[key].forceX -= objectList[key].opposingForce
+            } else if (objectList[key].forceX < 0) {
                 objectList[key].velocityX = Math.floor(objectList[key].forceX / objectList[key].mass)
-                objectList[key].forceX += 1
+                objectList[key].forceX += objectList[key].opposingForce
             }
 
             if (objectList[key].forceY > 0) {
                 objectList[key].velocityY = Math.floor(objectList[key].forceY / objectList[key].mass)
-                objectList[key].forceY -= 1
+                objectList[key].forceY -= objectList[key].opposingForce
             } else if (objectList[key].forceY < 0) {
                 objectList[key].velocityY = Math.floor(objectList[key].forceY / objectList[key].mass)
-                objectList[key].forceY += 1
+                objectList[key].forceY += objectList[key].opposingForce
             }
 
             if (objectList[key].velocityX > 0) {
                 for (let i = 0; i < objectList[key].velocityX; i++){
                     var tkey = moveRight(grid, objectList, key)
                     if(tkey == undefined) break
+                    if (key == currentObjectId) currentObjectId = tkey
                     key = tkey
                 }
                 objectList[key].velocityX -= 1
@@ -36,6 +38,7 @@ module.exports = {
                 for (let i = 0; i < Math.abs(objectList[key].velocityX); i++) {
                     var tkey = moveLeft(grid, objectList, key)
                     if (tkey == undefined) break
+                    if (key == currentObjectId) currentObjectId = tkey
                     key = tkey
                 }
                 objectList[key].velocityX += 1
@@ -45,6 +48,7 @@ module.exports = {
                 for (let i = 0; i < objectList[key].velocityY; i++) {
                     var tkey = moveUp(grid, objectList, key)
                     if (tkey == undefined) break
+                    if (key == currentObjectId) currentObjectId = tkey
                     key = tkey
                 }
                 objectList[key].velocityY -= 1
@@ -52,6 +56,7 @@ module.exports = {
                 for (let i = 0; i < Math.abs(objectList[key].velocityY); i++) {
                     var tkey = moveDown(grid, objectList, key)
                     if (tkey == undefined) break
+                    if (key == currentObjectId) currentObjectId = tkey
                     key = tkey
                 }
                 objectList[key].velocityY += 1
@@ -139,6 +144,7 @@ module.exports = {
         return {
             "grid": grid,
             "objectList": objectList,
+            "currentObjectid": currentObjectId
         }
     }
 }

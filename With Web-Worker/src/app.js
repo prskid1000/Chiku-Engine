@@ -97,13 +97,27 @@ function App() {
       "args": {
         "grid": grid,
         "objectList": objectList,
+        "currentObjectId": currentObjectId
       }
     })
     
     worker.onmessage = (message) => {
       grid = message.data.grid
       objectList = message.data.objectList  
+      currentObjectId = message.data.currentObjectId
       processDOM(grid)
+      if (objectList[currentObjectId] != undefined && objectList[currentObjectId] != null) {
+        var str = "objectId: " + objectList[currentObjectId].objectId.toString() + " | "
+        str += "mass: " + objectList[currentObjectId].mass.toString() + " | "
+        str += "fx: " + objectList[currentObjectId].forceX.toString() + " | "
+        str += "fy: " + objectList[currentObjectId].forceY.toString() + " | "
+        str += "vx: " + objectList[currentObjectId].velocityX.toString() + " | "
+        str += "vy: " + objectList[currentObjectId].velocityY.toString() + " | "
+        str += "el: " + objectList[currentObjectId].energyLoss.toString() + " | "
+        str += "of: " + objectList[currentObjectId].opposingForce.toString() + " | "
+        cellInfoPanel.current.innerHTML = str
+      }
+      
       if (runState == true) {
         setTimeout(() => {
           worker.postMessage({
@@ -111,6 +125,7 @@ function App() {
             "args": {
               "grid": grid,
               "objectList": objectList,
+              "currentObjectId": currentObjectId
             }
           })
         }, 60000 / simulationSpeed);
@@ -162,69 +177,6 @@ function App() {
     link.remove();
   }
 
-  var handleUp = () => {
-    if (currentKey == null || currentKey == undefined) return
-    if (currentObjectId == undefined || currentObjectId == "-1" || objectList[currentObjectId] == undefined) return
-
-    switch (currentProperty) {
-      case "density": {
-        objectList[currentObjectId].density += 1;
-        objectList[currentObjectId].mass = objectList[currentObjectId].density * objectList[currentObjectId].cellCount
-      } break
-      case "cell": {
-        if (grid[currentKey].objectId == "-1") return
-        expandUp(grid, objectList, currentKey)
-        objectList[currentObjectId].mass = objectList[currentObjectId].density * objectList[currentObjectId].cellCount
-      } break
-      case "force": {
-        objectList[currentObjectId].forceY += 1;
-      } break
-      case "push": {
-        if (grid[currentKey].objectId == "-1") return
-        grid[currentKey].pushY += 1;
-      } break
-      case "velocity": {
-        objectList[currentObjectId].velocityY += 1;
-      } break
-      case "move": {
-        currentObjectId = moveUp(grid, objectList, currentObjectId)
-        processDOM(grid)
-      } break
-      default: {
-        var rowStart = computeCircularRow((Math.floor(parseInt(currentKey) / computeNumber)) * computeNumber - computeNumber)
-        var rowEnd = rowStart + computeNumber - 1
-        var column = rowStart + parseInt(currentKey) % computeNumber
-        var futureKey = computeCircularColumn(column, rowStart, rowEnd).toString()
-
-        var cell = document.getElementById(currentKey)
-        cell.style.backgroundColor = grid[currentKey].color
-        cell = document.getElementById(futureKey)
-        cell.style.backgroundColor = "red"
-        currentKey = futureKey
-        colorPanel.current.hidden = true
-
-        cellInfoPanel.current.style.top = (10 + cell.offsetTop).toString() + "px"
-        cellInfoPanel.current.style.left = (10 + cell.offsetLeft).toString() + "px"
-        colorPanel.current.style.top = (cell.offsetTop).toString() + "px"
-        colorPanel.current.style.left = (cell.offsetLeft).toString() + "px"
-
-        if (grid[futureKey].objectId != undefined && grid[futureKey].objectId != "-1") {
-          currentObjectId = grid[futureKey].objectId
-
-          var str = "objectId: " + objectList[currentObjectId].objectId.toString() + " | "
-          str += "mass: " + objectList[currentObjectId].mass.toString() + " | "
-          str += "fx: " + objectList[currentObjectId].forceX.toString() + " | "
-          str += "fy: " + objectList[currentObjectId].forceY.toString() + " | "
-          str += "px: " + grid[futureKey].pushX.toString() + " | "
-          str += "py: " + grid[futureKey].pushY.toString() + " | "
-          str += "vx: " + objectList[currentObjectId].velocityX.toString() + " | "
-          str += "vy: " + objectList[currentObjectId].velocityY.toString() + " | "
-          cellInfoPanel.current.innerHTML = str
-        }
-      }
-    }
-  }
-
   var handleDown = () => {
     if (currentKey == null || currentKey == undefined) return
     if (currentObjectId == undefined || currentObjectId == "-1" || objectList[currentObjectId] == undefined) return
@@ -245,6 +197,12 @@ function App() {
       case "push": {
         if (grid[currentKey].objectId == "-1") return
         grid[currentKey].pushY = grid[currentKey].pushY - 1 >= 0 ? grid[currentKey].pushY - 1 : 0;
+      } break
+      case "eloss": {
+        objectList[currentObjectId].energyLoss = objectList[currentObjectId].energyLoss - 1 >= 0 ? objectList[currentObjectId].energyLoss - 1 : 0;
+      } break
+      case "oppforce": {
+        objectList[currentObjectId].opposingForce = objectList[currentObjectId].opposingForce - 1 >= 0 ? objectList[currentObjectId].opposingForce - 1 : 0;
       } break
       case "velocity": {
         objectList[currentObjectId].velocityY -= 1;
@@ -307,6 +265,12 @@ function App() {
       case "force": {
         objectList[currentObjectId].forceX -= 1;
       } break
+      case "eloss": {
+        objectList[currentObjectId].energyLoss = objectList[currentObjectId].energyLoss - 1 >= 0 ? objectList[currentObjectId].energyLoss - 1 : 0;
+      } break
+      case "oppforce": {
+        objectList[currentObjectId].opposingForce = objectList[currentObjectId].opposingForce - 1 >= 0 ? objectList[currentObjectId].opposingForce - 1 : 0;
+      } break
       case "push": {
         if (grid[currentKey].objectId == "-1") return
         grid[currentKey].pushX = grid[currentKey].pushX - 1 >= 0 ? grid[currentKey].pushX - 1 : 0;
@@ -358,7 +322,6 @@ function App() {
   var handleRight = () => {
     if (currentKey == null || currentKey == undefined) return
     if (currentObjectId == undefined || currentObjectId == "-1" || objectList[currentObjectId] == undefined) return
-
     switch (currentProperty) {
       case "density": {
         objectList[currentObjectId].density += 1;
@@ -378,6 +341,12 @@ function App() {
       } break
       case "velocity": {
         objectList[currentObjectId].velocityX += 1;
+      } break
+      case "eloss": {
+        objectList[currentObjectId].energyLoss += 1;
+      } break
+      case "oppforce": {
+        objectList[currentObjectId].opposingForce += 1;
       } break
       case "move": {
         currentObjectId = moveRight(grid, objectList, currentObjectId)
@@ -431,6 +400,7 @@ function App() {
   var onKeyDown = (event) => {
     switch (event.key) {
       case "1": {
+        colorPanel.current.hidden = true
         if (runState == false) {
           runState = true
           simulate()
@@ -439,26 +409,34 @@ function App() {
         }
       } break
       case "2": {
+        colorPanel.current.hidden = true
+        cellInfoPanel.current.hidden = true
         runState = false
         sceneUpload()
       } break
       case "3": {
+        colorPanel.current.hidden = true
+        cellInfoPanel.current.hidden = true
         runState = false
         sceneDownload()
       } break
       case "4": {
+        colorPanel.current.hidden = true
         runState = false
         createObject(grid, objectList, currentKey)
         processDOM(grid)
         currentObjectId = currentKey
       } break
       case "5": {
+        colorPanel.current.hidden = true
+        cellInfoPanel.current.hidden = true
         runState = false
         destroyObject(grid, objectList, currentKey)
         processDOM(grid)
         currentObjectId = "-1"
       } break
       case "6": {
+        colorPanel.current.hidden = true
         runState = false
         var newObjectId = contractObject(grid, objectList, currentKey)
         processDOM(grid)
@@ -475,7 +453,7 @@ function App() {
         } else {
           cellInfoPanel.current.hidden = true
         }
-      }break
+      } break
       case "9": {
         if (colorPanel.current.hidden == true) {
           colorPanel.current.hidden = false
@@ -510,6 +488,16 @@ function App() {
           currentProperty = "push"
         }
       } break
+      case "n": {
+        if (currentProperty == null) {
+          currentProperty = "oppforce"
+        }
+      } break
+      case "m": {
+        if (currentProperty == null) {
+          currentProperty = "eloss"
+        }
+      } break
       case "ArrowUp": {
         if (currentKey != null) {
           runState = false
@@ -538,7 +526,7 @@ function App() {
   }
 
   var onKeyUp = (event) => {
-    
+
     switch (event.key) {
       case "7": {
         currentProperty = null
@@ -558,6 +546,12 @@ function App() {
       case "v": {
         currentProperty = null
       } break
+      case "n": {
+        currentProperty = null
+      } break
+      case "m": {
+        currentProperty = null
+      } break
     }
     if (objectList[currentObjectId] == undefined) return
     var str = "objectId: " + objectList[currentObjectId].objectId.toString() + " | "
@@ -568,6 +562,8 @@ function App() {
     str += "py: " + grid[currentKey].pushY.toString() + " | "
     str += "vx: " + objectList[currentObjectId].velocityX.toString() + " | "
     str += "vy: " + objectList[currentObjectId].velocityY.toString() + " | "
+    str += "el: " + objectList[currentObjectId].energyLoss.toString() + " | "
+    str += "of: " + objectList[currentObjectId].opposingForce.toString() + " | "
     cellInfoPanel.current.innerHTML = str
     //console.log(objectList[currentObjectId])
   }
@@ -577,6 +573,7 @@ function App() {
     var cell = document.getElementById(event.target.id)
     cell.style.backgroundColor = "red"
     currentKey = event.target.id
+    colorPanel.current.hidden = true
 
     cellInfoPanel.current.style.top = (10 + cell.offsetTop).toString() + "px"
     cellInfoPanel.current.style.left = (10 + cell.offsetLeft).toString() + "px"
@@ -594,6 +591,8 @@ function App() {
       str += "py: " + grid[event.target.id].pushY.toString() + " | "
       str += "vx: " + objectList[currentObjectId].velocityX.toString() + " | "
       str += "vy: " + objectList[currentObjectId].velocityY.toString() + " | "
+      str += "el: " + objectList[currentObjectId].energyLoss.toString() + " | "
+      str += "of: " + objectList[currentObjectId].opposingForce.toString() + " | "
       cellInfoPanel.current.innerHTML = str
     }
   }

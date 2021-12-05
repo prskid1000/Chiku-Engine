@@ -90,8 +90,20 @@ function App() {
   }
 
   var simulate = () => {
-    processGrid(grid, objectList)
+    currentObjectId = processGrid(grid, objectList, currentObjectId)
     processDOM(grid)
+
+    if (objectList[currentObjectId] != undefined && objectList[currentObjectId] != null) {
+      var str = "objectId: " + objectList[currentObjectId].objectId.toString() + " | "
+      str += "mass: " + objectList[currentObjectId].mass.toString() + " | "
+      str += "fx: " + objectList[currentObjectId].forceX.toString() + " | "
+      str += "fy: " + objectList[currentObjectId].forceY.toString() + " | "
+      str += "vx: " + objectList[currentObjectId].velocityX.toString() + " | "
+      str += "vy: " + objectList[currentObjectId].velocityY.toString() + " | "
+      str += "el: " + objectList[currentObjectId].energyLoss.toString() + " | "
+      str += "of: " + objectList[currentObjectId].opposingForce.toString() + " | "
+      cellInfoPanel.current.innerHTML = str
+    }
     if (runState == true) {
       setTimeout(() => {
         simulate()
@@ -435,7 +447,6 @@ function App() {
   var onKeyDown = (event) => {
     switch (event.key) {
       case "1": {
-        cellInfoPanel.current.hidden = true
         colorPanel.current.hidden = true
         if (runState == false) {
           runState = true

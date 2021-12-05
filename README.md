@@ -5,8 +5,6 @@
 
 ### A Simulation Engine that Simulate a Pixel Playground
 
-#### It can't be deployed in production environment due to some restricted usage of Web Worker
-
 ## Getting started
 
 - Fork the repository.
@@ -50,17 +48,38 @@
     )
 
 - Char Key F(Hold) -> Force(
-    ArrowUp-> Increase force by 1, 
-    ArrowDown-> Decrease force by 1, 
-    ArrowLeft-> Decrease force by 1, 
-    ArrowRight-> Increase force by 1
+    ArrowUp-> Increase forceY by 1, 
+    ArrowDown-> Decrease forceY by 1, 
+    ArrowLeft-> Decrease forceX by 1, 
+    ArrowRight-> Increase forceX by 1
     )
 
 - Char Key V(Hold) -> Veloctiy(
-    ArrowUp-> Increase velocity by 1, 
-    ArrowDown-> Decrease velocity by 1, 
-    ArrowLeft-> Decrease velocity by 1, 
-    ArrowRight-> Increase velocity by 1
+    ArrowUp-> Increase velocityY by 1, 
+    ArrowDown-> Decrease velocityY by 1, 
+    ArrowLeft-> Decrease velocityX by 1, 
+    ArrowRight-> Increase velocityX by 1
+    )
+
+- Char Key P(Hold) -> Push Force(
+    ArrowUp-> Increase forceY by 1, 
+    ArrowDown-> Decrease forceY by 1, 
+    ArrowLeft-> Decrease forceX by 1, 
+    ArrowRight-> Increase forceX by 1
+    )
+
+- Char Key N(Hold) -> Opposing force(
+    ArrowUp-> Increase opposing force by 1, 
+    ArrowDown-> Decrease opposing force by 1, 
+    ArrowLeft-> Decrease opposing force by 1,
+    ArrowRight-> Increase opposing force by 1
+    )
+
+- Char Key M(Hold) -> Energy Loss(
+    ArrowUp-> Increase energy loss by 1, 
+    ArrowDown-> Decrease energy loss by 1, 
+    ArrowLeft-> Decrease energy loss by 1,  
+    ArrowRight-> Increase energy loss by 1, 
     )
 
 
