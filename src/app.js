@@ -163,7 +163,8 @@ function App() {
         objectList[currentObjectId].forceY += 1;
       } break
       case "push": {
-        objectList[currentObjectId].pushY += 1;
+        if (grid[currentKey].objectId == "-1") return
+        grid[currentKey].pushY += 1;
       } break
       case "velocity": {
         objectList[currentObjectId].velocityY += 1;
@@ -193,7 +194,8 @@ function App() {
         objectList[currentObjectId].forceY -= 1;
       } break
       case "push": {
-        objectList[currentObjectId].pushY -= 1;
+        if (grid[currentKey].objectId == "-1") return
+        grid[currentKey].pushY = grid[currentKey].pushY - 1 >= 0 ? grid[currentKey].pushY - 1 : 0;
       } break
       case "velocity": {
         objectList[currentObjectId].velocityY -= 1;
@@ -223,7 +225,8 @@ function App() {
         objectList[currentObjectId].forceX -= 1;
       } break
       case "push": {
-        objectList[currentObjectId].pushX -= 1;
+        if (grid[currentKey].objectId == "-1") return
+        grid[currentKey].pushX = grid[currentKey].pushX - 1 >= 0 ? grid[currentKey].pushX - 1 : 0;
       } break
       case "velocity": {
         objectList[currentObjectId].velocityX -= 1;
@@ -253,7 +256,8 @@ function App() {
         objectList[currentObjectId].forceX += 1;
       } break
       case "push": {
-        objectList[currentObjectId].pushX += 1;
+        if (grid[currentKey].objectId == "-1") return
+        grid[currentKey].pushX += 1;
       } break
       case "velocity": {
         objectList[currentObjectId].velocityX += 1;
@@ -368,7 +372,7 @@ function App() {
   var onKeyUp = (event) => {
     
     switch (event.key) {
-      case "6": {
+      case "7": {
         currentProperty = null
       } break
       case "d": {
@@ -380,10 +384,10 @@ function App() {
       case "f": {
         currentProperty = null
       } break
-      case "v": {
+      case "p": {
         currentProperty = null
       } break
-      case "6": {
+      case "v": {
         currentProperty = null
       } break
     }
@@ -392,8 +396,8 @@ function App() {
     str += "mass: " + objectList[currentObjectId].mass.toString() + " | "
     str += "fx: " + objectList[currentObjectId].forceX.toString() + " | "
     str += "fy: " + objectList[currentObjectId].forceY.toString() + " | "
-    str += "px: " + objectList[currentObjectId].pushX.toString() + " | "
-    str += "py: " + objectList[currentObjectId].pushY.toString() + " | "
+    str += "px: " + grid[currentKey].pushX.toString() + " | "
+    str += "py: " + grid[currentKey].pushY.toString() + " | "
     str += "vx: " + objectList[currentObjectId].velocityX.toString() + " | "
     str += "vy: " + objectList[currentObjectId].velocityY.toString() + " | "
     cellInfoPanel.current.innerHTML = str
@@ -416,8 +420,8 @@ function App() {
       str += "mass: " + objectList[currentObjectId].mass.toString() + " | "
       str += "fx: " + objectList[currentObjectId].forceX.toString() + " | "
       str += "fy: " + objectList[currentObjectId].forceY.toString() + " | "
-      str += "px: " + objectList[currentObjectId].pushX.toString() + " | "
-      str += "py: " + objectList[currentObjectId].pushY.toString() + " | "
+      str += "px: " + grid[event.target.id].pushX.toString() + " | "
+      str += "py: " + grid[event.target.id].pushY.toString() + " | "
       str += "vx: " + objectList[currentObjectId].velocityX.toString() + " | "
       str += "vy: " + objectList[currentObjectId].velocityY.toString() + " | "
       cellInfoPanel.current.innerHTML = str

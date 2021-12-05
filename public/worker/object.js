@@ -50,8 +50,6 @@ var getProperty = (key) => {
         "mass": 1,
         "forceX": 0,
         "forceY": 0,
-        "pushX": 0,
-        "pushY": 0,
         "velocityX": 0,
         "velocityY": 0,
         "cellList": [key],
@@ -130,7 +128,7 @@ var collisionLeft = (grid, objectList, key) => {
         var target = objectList[grid[key].objectId].boundaryList.left[i]
         var neighbours = getNeighbourKV(target)
         if (grid[neighbours.left].type == "object") {
-            collision[grid[neighbours.left].objectId] = neighbours.left
+            collision[grid[neighbours.left].objectId] = target
         }
     }
     delete collision["-1"]
@@ -143,7 +141,7 @@ var collisionRight = (grid, objectList, key) => {
         var target = objectList[grid[key].objectId].boundaryList.right[i]
         var neighbours = getNeighbourKV(target)
         if (grid[neighbours.right].type == "object") {
-            collision[grid[neighbours.right].objectId] = neighbours.right
+            collision[grid[neighbours.right].objectId] = target
         }
     }
     delete collision["-1"]
@@ -156,7 +154,7 @@ var collisionTop = (grid, objectList, key) => {
         var target = objectList[grid[key].objectId].boundaryList.top[i]
         var neighbours = getNeighbourKV(target)
         if (grid[neighbours.top].type == "object") {
-            collision[grid[neighbours.top].objectId] = neighbours.top
+            collision[grid[neighbours.top].objectId] = target
         }
     }
     delete collision["-1"]
@@ -169,18 +167,20 @@ var collisionBottom = (grid, objectList, key) => {
         var target = objectList[grid[key].objectId].boundaryList.bottom[i]
         var neighbours = getNeighbourKV(target)
         if (grid[neighbours.bottom].type == "object") {
-            collision[grid[neighbours.bottom].objectId] = neighbours.bottom
+            collision[grid[neighbours.bottom].objectId] = target
         }
     }
     delete collision["-1"]
     objectList[grid[key].objectId].collisionList.bottom = collision
 }
 
-var addCell = (grid, objectId, futureKey) => {
+var addCell = (grid, objectId, futureKey, pushX, pushY) => {
     if (grid[futureKey].color == "black") {
         grid[futureKey].color = "white"
         grid[futureKey].type = "object"
         grid[futureKey].objectId = objectId
+        grid[futureKey].pushX = pushX
+        grid[futureKey].pushY = pushY
     }
 }
 
@@ -188,6 +188,8 @@ var removeCell = (grid, currentKey) => {
     grid[currentKey].color = "black"
     grid[currentKey].type = "empty"
     grid[currentKey].objectId = "-1"
+    grid[currentKey].pushX = 0
+    grid[currentKey].pushY = 0
 }
 
 var forceLeft = (grid, objectList, key) => {
@@ -195,8 +197,8 @@ var forceLeft = (grid, objectList, key) => {
     setBoundary(grid, objectList, key)
     collisionLeft(grid, objectList, key)
     Object.keys(objectList[key].collisionList.left).map((target) => {
-        objectList[target].forceX -= objectList[key].pushX
-        objectList[key].forceX += objectList[key].pushX
+        objectList[target].forceX -= grid[objectList[key].collisionList.left[target]].pushX
+        objectList[key].forceX += grid[objectList[key].collisionList.left[target]].pushX
     })
 
 }
@@ -206,8 +208,8 @@ var forceRight = (grid, objectList, key) => {
     setBoundary(grid, objectList, key)
     collisionRight(grid, objectList, key)
     Object.keys(objectList[key].collisionList.right).map((target) => {
-        objectList[target].forceX += objectList[key].pushX
-        objectList[key].forceX -= objectList[key].pushX
+        objectList[target].forceX += grid[objectList[key].collisionList.right[target]].pushX
+        objectList[key].forceX -= grid[objectList[key].collisionList.right[target]].pushX
     })
 
 }
@@ -217,8 +219,8 @@ var forceTop = (grid, objectList, key) => {
     setBoundary(grid, objectList, key)
     collisionTop(grid, objectList, key)
     Object.keys(objectList[key].collisionList.top).map((target) => {
-        objectList[target].forceY += objectList[key].pushY
-        objectList[key].forceY -= objectList[key].pushY
+        objectList[target].forceY += grid[objectList[key].collisionList.top[target]].pushY
+        objectList[key].forceY -= grid[objectList[key].collisionList.top[target]].pushY
     })
 
 }
@@ -228,8 +230,8 @@ var forceBottom = (grid, objectList, key) => {
     setBoundary(grid, objectList, key)
     collisionBottom(grid, objectList, key)
     Object.keys(objectList[key].collisionList.bottom).map((target) => {
-        objectList[target].forceY -= objectList[key].pushY
-        objectList[key].forceY += objectList[key].pushY
+        objectList[target].forceY -= grid[objectList[key].collisionList.bottom[target]].pushY
+        objectList[key].forceY += grid[objectList[key].collisionList.bottom[target]].pushY
     })
 
 }
@@ -248,6 +250,8 @@ var moveLeft = (grid, objectList, key) => {
     objectList[objectId] = JSON.parse(JSON.stringify(objectList[key]))
     objectList[objectId].objectId = objectId
     var newCellList = []
+    var pushX = { "-1": "-1" }
+    var pushY = { "-1": "-1" }
 
     objectList[objectId].cellList.map((cellKey) => {
         rowStart = computeCircularRow((Math.floor(parseInt(cellKey) / computeNumber)) * computeNumber)
@@ -255,13 +259,15 @@ var moveLeft = (grid, objectList, key) => {
         column = rowStart + parseInt(cellKey) % computeNumber - 1
         var futureKey = computeCircularColumn(column, rowStart, rowEnd).toString()
         newCellList.push(futureKey)
+        pushX[futureKey] = grid[cellKey].pushX
+        pushY[futureKey] = grid[cellKey].pushY
         removeCell(grid, cellKey)
     })
 
     objectList[objectId].cellList = newCellList
 
     objectList[objectId].cellList.map((cellKey) => {
-        addCell(grid, objectId, cellKey)
+        addCell(grid, objectId, cellKey, pushX[cellKey], pushY[cellKey])
     })
 
     delete objectList[key]
@@ -282,12 +288,16 @@ var moveRight = (grid, objectList, key) => {
     objectList[objectId] = JSON.parse(JSON.stringify(objectList[key]))
     objectList[objectId].objectId = objectId
     var newCellList = []
+    var pushX = { "-1": "-1" }
+    var pushY = { "-1": "-1" }
 
     objectList[objectId].cellList.map((cellKey) => {
         rowStart = computeCircularRow((Math.floor(parseInt(cellKey) / computeNumber)) * computeNumber)
         rowEnd = rowStart + computeNumber - 1
         column = rowStart + parseInt(cellKey) % computeNumber + 1
         var futureKey = computeCircularColumn(column, rowStart, rowEnd).toString()
+        pushX[futureKey] = grid[cellKey].pushX
+        pushY[futureKey] = grid[cellKey].pushY
         newCellList.push(futureKey)
         removeCell(grid, cellKey)
     })
@@ -295,7 +305,7 @@ var moveRight = (grid, objectList, key) => {
     objectList[objectId].cellList = newCellList
 
     objectList[objectId].cellList.map((cellKey) => {
-        addCell(grid, objectId, cellKey)
+        addCell(grid, objectId, cellKey, pushX[cellKey], pushY[cellKey])
     })
 
     delete objectList[key]
@@ -316,12 +326,16 @@ var moveUp = (grid, objectList, key) => {
     objectList[objectId] = JSON.parse(JSON.stringify(objectList[key]))
     objectList[objectId].objectId = objectId
     var newCellList = []
+    var pushX = { "-1": "-1" }
+    var pushY = { "-1": "-1" }
 
     objectList[objectId].cellList.map((cellKey) => {
         rowStart = computeCircularRow((Math.floor(parseInt(cellKey) / computeNumber)) * computeNumber - computeNumber)
         rowEnd = rowStart + computeNumber - 1
         column = rowStart + parseInt(cellKey) % computeNumber
         var futureKey = computeCircularColumn(column, rowStart, rowEnd).toString()
+        pushX[futureKey] = grid[cellKey].pushX
+        pushY[futureKey] = grid[cellKey].pushY
         newCellList.push(futureKey)
         removeCell(grid, cellKey)
     })
@@ -329,7 +343,7 @@ var moveUp = (grid, objectList, key) => {
     objectList[objectId].cellList = newCellList
 
     objectList[objectId].cellList.map((cellKey) => {
-        addCell(grid, objectId, cellKey)
+        addCell(grid, objectId, cellKey, pushX[cellKey], pushY[cellKey])
     })
 
     delete objectList[key]
@@ -350,12 +364,16 @@ var moveDown = (grid, objectList, key) => {
     objectList[objectId] = JSON.parse(JSON.stringify(objectList[key]))
     objectList[objectId].objectId = objectId
     var newCellList = []
+    var pushX = { "-1": "-1" }
+    var pushY = { "-1": "-1" }
 
     objectList[objectId].cellList.map((cellKey) => {
         rowStart = computeCircularRow((Math.floor(parseInt(cellKey) / computeNumber)) * computeNumber + computeNumber)
         rowEnd = rowStart + computeNumber - 1
         column = rowStart + parseInt(cellKey) % computeNumber
         var futureKey = computeCircularColumn(column, rowStart, rowEnd).toString()
+        pushX[futureKey] = grid[cellKey].pushX
+        pushY[futureKey] = grid[cellKey].pushY
         newCellList.push(futureKey)
         removeCell(grid, cellKey)
     })
@@ -363,7 +381,7 @@ var moveDown = (grid, objectList, key) => {
     objectList[objectId].cellList = newCellList
 
     objectList[objectId].cellList.map((cellKey) => {
-        addCell(grid, objectId, cellKey)
+        addCell(grid, objectId, cellKey, pushX[cellKey], pushY[cellKey])
     })
 
     delete objectList[key]
@@ -378,6 +396,8 @@ var expandUp = (grid, objectList, currentKey) => {
     if (grid[upKey].type == "empty") {
         grid[upKey].color = "white";
         grid[upKey].type = "object";
+        grid[upKey].pushX = 0;
+        grid[upKey].pushY = 0;
         grid[upKey].objectId = grid[currentKey].objectId;
         var cell = document.getElementById(upKey)
         cell.style.backgroundColor = grid[upKey].color
@@ -394,6 +414,8 @@ var expandDown = (grid, objectList, currentKey) => {
     if (grid[downKey].type == "empty") {
         grid[downKey].color = "white";
         grid[downKey].type = "object";
+        grid[downKey].pushX = 0;
+        grid[downKey].pushY = 0;
         grid[downKey].objectId = grid[currentKey].objectId;
         var cell = document.getElementById(downKey)
         cell.style.backgroundColor = grid[downKey].color
@@ -410,6 +432,8 @@ var expandLeft = (grid, objectList, currentKey) => {
     if (grid[upKey].type == "empty") {
         grid[upKey].color = "white";
         grid[upKey].type = "object";
+        grid[upKey].pushX = 0;
+        grid[upKey].pushY = 0;
         grid[upKey].objectId = grid[currentKey].objectId;
         var cell = document.getElementById(upKey)
         cell.style.backgroundColor = grid[upKey].color
@@ -426,6 +450,8 @@ var expandRight = (grid, objectList, currentKey) => {
     if (grid[upKey].type == "empty") {
         grid[upKey].color = "white";
         grid[upKey].type = "object";
+        grid[upKey].pushX = 0;
+        grid[upKey].pushY = 0;
         grid[upKey].objectId = grid[currentKey].objectId;
         var cell = document.getElementById(upKey)
         cell.style.backgroundColor = grid[upKey].color
@@ -438,8 +464,47 @@ var createObject = (grid, objectList, currentKey) => {
     if (grid[currentKey].type == "empty") {
         objectList[currentKey] = getProperty(currentKey)
         grid[currentKey].color = "white";
+        grid[currentKey].pushX = 0;
+        grid[currentKey].pushY = 0;
         grid[currentKey].type = "object";
         grid[currentKey].objectId = currentKey;
+
+    }
+}
+
+var contractObject = (grid, objectList, currentKey) => {
+    if (grid[currentKey].type == "object") {
+
+        var objectId = grid[currentKey].objectId
+        objectList[objectId].cellCount--
+
+        grid[currentKey].color = "black";
+        grid[currentKey].type = "empty";
+        grid[currentKey].objectId = "-1";
+        grid[currentKey].pushX = 0;
+        grid[currentKey].pushY = 0;
+
+        var cellList = []
+        for (let i = 0; i < objectList[objectId].cellList.length; i++) {
+            if (objectList[objectId].cellList[i] != currentKey) {
+                cellList.push(objectList[objectId].cellList[i])
+            }
+        }
+
+        objectList[objectId].cellList = cellList
+
+        if (objectId == currentKey) {
+            var newObjectId = objectList[objectId].cellList[0]
+            objectList[newObjectId] = JSON.parse(JSON.stringify(objectList[objectId]))
+            delete objectList[objectId]
+
+            for (let i = 0; i < objectList[newObjectId].cellList.length; i++) {
+                grid[objectList[newObjectId].cellList[i]].objectId = newObjectId
+            }
+
+            return newObjectId
+        }
+
     }
 }
 
@@ -450,7 +515,11 @@ var destroyObject = (grid, objectList, currentKey) => {
             grid[objectList[objectId].cellList[i]].color = "black";
             grid[objectList[objectId].cellList[i]].type = "empty";
             grid[objectList[objectId].cellList[i]].objectId = "-1";
+            grid[objectList[objectId].cellList[i]].pushX = 0;
+            grid[objectList[objectId].cellList[i]].pushY = 0;
         }
         delete objectList[objectId];
     }
 }
+
+
