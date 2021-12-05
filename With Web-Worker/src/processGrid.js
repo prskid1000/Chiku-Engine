@@ -1,19 +1,10 @@
-const { forceLeft, 
-    forceRight, 
-    forceTop,
-    moveDown,
-    moveLeft,
-    moveUp,
-    moveRight,
-    collisionLeft,
-    collisionBottom,
-    collisionRight,
-    collisionTop,
-    setBoundary,
-    forceBottom, } = require("./object")
+const { forceLeft, forceRight, forceTop, forceBottom } = require("./object")
 
 module.exports = {
-    processGrid: (grid, objectList) => {
+    processGrid: (message) => {
+
+        var grid = message.grid
+        var objectList = message.objectList
 
         //Process Force, Velocity, and Movement
         Object.keys(objectList).map((key) => {
@@ -144,5 +135,10 @@ module.exports = {
             })
 
         })
+
+        return {
+            "grid": grid,
+            "objectList": objectList,
+        }
     }
 }

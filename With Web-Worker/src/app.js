@@ -41,6 +41,7 @@ function App() {
   var currentObjectId = null
   var cellInfoPanel = useRef()
   var colorPanel = useRef()
+  var [cellInfo, setCellInfo] = useState()
 
   var appStyle = {
     height: Math.min(height * 0.99, width * 0.99),
@@ -91,12 +92,29 @@ function App() {
   }
 
   var simulate = () => {
-    processGrid(grid, objectList)
-    processDOM(grid)
-    if (runState == true) {
-      setTimeout(() => {
-        simulate()
-      }, 60000 / simulationSpeed);
+    worker.postMessage({
+      "statement": processGrid.toString(),
+      "args": {
+        "grid": grid,
+        "objectList": objectList,
+      }
+    })
+    
+    worker.onmessage = (message) => {
+      grid = message.data.grid
+      objectList = message.data.objectList  
+      processDOM(grid)
+      if (runState == true) {
+        setTimeout(() => {
+          worker.postMessage({
+            "statement": processGrid.toString(),
+            "args": {
+              "grid": grid,
+              "objectList": objectList,
+            }
+          })
+        }, 60000 / simulationSpeed);
+      }
     }
   }
 
@@ -453,11 +471,24 @@ function App() {
   }
 
   useEffect(() => {
+
     upload.current.hidden = true
     cellInfoPanel.current.hidden = true
     colorPanel.current.hidden = true
-    initGrid(grid)
-    processDOM(grid)
+
+    worker.postMessage({
+      "statement": initGrid.toString(),
+      "args": {
+        "grid": grid,
+        "objectList": objectList,
+      }
+    })
+    
+    worker.onmessage = (message) => {
+      grid = message.data.grid
+      objectList = message.data.objectList
+      processDOM(grid)
+    }
   }, [])
 
   return (
