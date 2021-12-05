@@ -129,7 +129,7 @@ var collisionLeft = (grid, objectList, key) => {
     for (let i = 0; i < objectList[grid[key].objectId].boundaryList.left.length; i++) {
         var target = objectList[grid[key].objectId].boundaryList.left[i]
         var neighbours = getNeighbourKV(target)
-        if (grid[neighbours.left].type == "object") {
+        if (grid[neighbours.left].type == "object" && grid[neighbours.left].objectId != grid[key].objectId) {
             collision[grid[neighbours.left].objectId] = target
         }
     }
@@ -142,7 +142,7 @@ var collisionRight = (grid, objectList, key) => {
     for (let i = 0; i < objectList[grid[key].objectId].boundaryList.right.length; i++) {
         var target = objectList[grid[key].objectId].boundaryList.right[i]
         var neighbours = getNeighbourKV(target)
-        if (grid[neighbours.right].type == "object") {
+        if (grid[neighbours.right].type == "object" && grid[neighbours.right].objectId != grid[key].objectId) {
             collision[grid[neighbours.right].objectId] = target
         }
     }
@@ -155,7 +155,7 @@ var collisionTop = (grid, objectList, key) => {
     for (let i = 0; i < objectList[grid[key].objectId].boundaryList.top.length; i++) {
         var target = objectList[grid[key].objectId].boundaryList.top[i]
         var neighbours = getNeighbourKV(target)
-        if (grid[neighbours.top].type == "object") {
+        if (grid[neighbours.top].type == "object" && grid[neighbours.top].objectId != grid[key].objectId) {
             collision[grid[neighbours.top].objectId] = target
         }
     }
@@ -168,7 +168,7 @@ var collisionBottom = (grid, objectList, key) => {
     for (let i = 0; i < objectList[grid[key].objectId].boundaryList.bottom.length; i++) {
         var target = objectList[grid[key].objectId].boundaryList.bottom[i]
         var neighbours = getNeighbourKV(target)
-        if (grid[neighbours.bottom].type == "object") {
+        if (grid[neighbours.bottom].type == "object" && grid[neighbours.bottom].objectId != grid[key].objectId) {
             collision[grid[neighbours.bottom].objectId] = target
         }
     }
