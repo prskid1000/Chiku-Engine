@@ -20,18 +20,18 @@ module.exports = {
 
             if (objectList[key].forceX > 0) {
                 objectList[key].velocityX = Math.floor(objectList[key].forceX / objectList[key].mass)
-                objectList[key].forceX -= 1
+                objectList[key].forceX -= objectList[key].opposingForce
             } else if (objectList[key].forceX  < 0) {
                 objectList[key].velocityX = Math.floor(objectList[key].forceX / objectList[key].mass)
-                objectList[key].forceX += 1
+                objectList[key].forceX += objectList[key].opposingForce
             }
 
             if (objectList[key].forceY > 0) {
                 objectList[key].velocityY = Math.floor(objectList[key].forceY / objectList[key].mass)
-                objectList[key].forceY -= 1
+                objectList[key].forceY -= objectList[key].opposingForce
             } else if (objectList[key].forceY < 0) {
                 objectList[key].velocityY = Math.floor(objectList[key].forceY / objectList[key].mass)
-                objectList[key].forceY += 1
+                objectList[key].forceY += objectList[key].opposingForce
             }
 
             if (objectList[key].velocityX > 0) {
@@ -40,14 +40,14 @@ module.exports = {
                     if(tkey == undefined) break
                     key = tkey
                 }
-                objectList[key].velocityX -= 1
+                objectList[key].velocityX -= objectList[key].energyLoss
             } else if (objectList[key].velocityX < 0) {
                 for (let i = 0; i < Math.abs(objectList[key].velocityX); i++) {
                     var tkey = moveLeft(grid, objectList, key)
                     if (tkey == undefined) break
                     key = tkey
                 }
-                objectList[key].velocityX += 1
+                objectList[key].velocityX += objectList[key].energyLoss
             }
 
             if (objectList[key].velocityY > 0) {
@@ -56,14 +56,14 @@ module.exports = {
                     if (tkey == undefined) break
                     key = tkey
                 }
-                objectList[key].velocityY -= 1
+                objectList[key].velocityY -= objectList[key].energyLoss
             } else if (objectList[key].velocityY < 0) {
                 for (let i = 0; i < Math.abs(objectList[key].velocityY); i++) {
                     var tkey = moveDown(grid, objectList, key)
                     if (tkey == undefined) break
                     key = tkey
                 }
-                objectList[key].velocityY += 1
+                objectList[key].velocityY += objectList[key].energyLoss
             }
 
         })

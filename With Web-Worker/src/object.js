@@ -53,6 +53,8 @@ var getProperty = (key) => {
         "velocityX": 0,
         "velocityY": 0,
         "cellList": [key],
+        "opposingForce": 0,
+        "energyLoss": 0,
         "boundaryList": {
             "left": [key],
             "right": [key],

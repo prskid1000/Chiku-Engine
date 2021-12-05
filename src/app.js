@@ -164,6 +164,12 @@ function App() {
         if (grid[currentKey].objectId == "-1") return
         grid[currentKey].pushY += 1;
       } break
+      case "eloss": {
+        objectList[currentObjectId].energyLoss += 1;
+      } break
+      case "oppforce": {
+        objectList[currentObjectId].opposingForce += 1;
+      } break
       case "velocity": {
         objectList[currentObjectId].velocityY += 1;
       } break
@@ -227,6 +233,12 @@ function App() {
         if (grid[currentKey].objectId == "-1") return
         grid[currentKey].pushY = grid[currentKey].pushY - 1 >= 0 ? grid[currentKey].pushY - 1 : 0;
       } break
+      case "eloss": {
+        objectList[currentObjectId].energyLoss = objectList[currentObjectId].energyLoss - 1 >= 0 ? objectList[currentObjectId].energyLoss - 1 : 0 ;
+      } break
+      case "oppforce": {
+        objectList[currentObjectId].opposingForce = objectList[currentObjectId].opposingForce - 1 >= 0 ? objectList[currentObjectId].opposingForce - 1 : 0;
+      } break
       case "velocity": {
         objectList[currentObjectId].velocityY -= 1;
       } break
@@ -287,6 +299,12 @@ function App() {
       } break
       case "force": {
         objectList[currentObjectId].forceX -= 1;
+      } break
+      case "eloss": {
+        objectList[currentObjectId].energyLoss = objectList[currentObjectId].energyLoss - 1 >= 0 ? objectList[currentObjectId].energyLoss - 1 : 0;
+      } break
+      case "oppforce": {
+        objectList[currentObjectId].opposingForce = objectList[currentObjectId].opposingForce - 1 >= 0 ? objectList[currentObjectId].opposingForce - 1 : 0;
       } break
       case "push": {
         if (grid[currentKey].objectId == "-1") return
@@ -358,6 +376,12 @@ function App() {
       } break
       case "velocity": {
         objectList[currentObjectId].velocityX += 1;
+      } break
+      case "eloss": {
+        objectList[currentObjectId].energyLoss += 1;
+      } break
+      case "oppforce": {
+        objectList[currentObjectId].opposingForce += 1;
       } break
       case "move": {
         currentObjectId = moveRight(grid, objectList, currentObjectId)
@@ -500,6 +524,16 @@ function App() {
           currentProperty = "push"
         }
       } break
+      case "n": {
+        if (currentProperty == null) {
+          currentProperty = "oppforce"
+        }
+      } break
+      case "m": {
+        if (currentProperty == null) {
+          currentProperty = "eloss"
+        }
+      } break
       case "ArrowUp": {
         if (currentKey != null) {
           runState = false
@@ -548,6 +582,12 @@ function App() {
       case "v": {
         currentProperty = null
       } break
+      case "n": {
+        currentProperty = null
+      } break
+      case "m": {
+        currentProperty = null
+      } break
     }
     if (objectList[currentObjectId] == undefined) return
     var str = "objectId: " + objectList[currentObjectId].objectId.toString() + " | "
@@ -558,6 +598,8 @@ function App() {
     str += "py: " + grid[currentKey].pushY.toString() + " | "
     str += "vx: " + objectList[currentObjectId].velocityX.toString() + " | "
     str += "vy: " + objectList[currentObjectId].velocityY.toString() + " | "
+    str += "el: " + objectList[currentObjectId].energyLoss.toString() + " | "
+    str += "of: " + objectList[currentObjectId].opposingForce.toString() + " | "
     cellInfoPanel.current.innerHTML = str
     //console.log(objectList[currentObjectId])
   }
@@ -585,6 +627,8 @@ function App() {
       str += "py: " + grid[event.target.id].pushY.toString() + " | "
       str += "vx: " + objectList[currentObjectId].velocityX.toString() + " | "
       str += "vy: " + objectList[currentObjectId].velocityY.toString() + " | "
+      str += "el: " + objectList[currentObjectId].energyLoss.toString() + " | "
+      str += "of: " + objectList[currentObjectId].opposingForce.toString() + " | "
       cellInfoPanel.current.innerHTML = str
     }
   }

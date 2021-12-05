@@ -52,6 +52,8 @@ var getProperty = (key) => {
         "forceY": 0,
         "velocityX": 0,
         "velocityY": 0,
+        "opposingForce": 0,
+        "energyLoss": 0,
         "cellList": [key],
         "boundaryList": {
             "left": [key],
@@ -401,7 +403,7 @@ var expandUp = (grid, objectList, currentKey) => {
     var rowEnd = rowStart + computeNumber - 1
     var column = rowStart + parseInt(currentKey) % computeNumber
     var upKey = computeCircularColumn(column, rowStart, rowEnd).toString()
-    if (grid[upKey].type == "empty") {
+    if (grid[upKey].type == "empty" && grid[upKey].color == "#000000") {
         grid[upKey].color = grid[currentKey].color;
         grid[upKey].type = "object";
         grid[upKey].pushX = 0;
@@ -419,7 +421,7 @@ var expandDown = (grid, objectList, currentKey) => {
     var rowEnd = rowStart + computeNumber - 1
     var column = rowStart + parseInt(currentKey) % computeNumber
     var upKey = computeCircularColumn(column, rowStart, rowEnd).toString()
-    if (grid[upKey].type == "empty") {
+    if (grid[upKey].type == "empty" && grid[upKey].color == "#000000") {
         grid[upKey].color = grid[currentKey].color;
         grid[upKey].type = "object";
         grid[upKey].pushX = 0;
@@ -437,7 +439,7 @@ var expandLeft = (grid, objectList, currentKey) => {
     var rowEnd = rowStart + computeNumber - 1
     var column = rowStart + parseInt(currentKey) % computeNumber - 1
     var upKey = computeCircularColumn(column, rowStart, rowEnd).toString()
-    if (grid[upKey].type == "empty") {
+    if (grid[upKey].type == "empty" && grid[upKey].color == "#000000") {
         grid[upKey].color = grid[currentKey].color;
         grid[upKey].pushX = 0;
         grid[upKey].pushY = 0;
@@ -454,7 +456,7 @@ var expandRight = (grid, objectList, currentKey) => {
     var rowEnd = rowStart + computeNumber - 1
     var column = rowStart + parseInt(currentKey) % computeNumber + 1
     var upKey = computeCircularColumn(column, rowStart, rowEnd).toString()
-    if (grid[upKey].type == "empty") {
+    if (grid[upKey].type == "empty" && grid[upKey].color == "#000000") {
         grid[upKey].color = grid[currentKey].color;
         grid[upKey].pushX = 0;
         grid[upKey].pushY = 0;
