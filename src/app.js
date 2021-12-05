@@ -279,6 +279,8 @@ function App() {
   var onKeyDown = (event) => {
     switch (event.key) {
       case "1": {
+        cellInfoPanel.current.hidden = true
+        colorPanel.current.hidden = true
         if (runState == false) {
           runState = true
           simulate()
@@ -287,37 +289,47 @@ function App() {
         }
       } break
       case "2": {
+        colorPanel.current.hidden = true
+        cellInfoPanel.current.hidden = true
         runState = false
         sceneUpload()
       } break
       case "3": {
+        colorPanel.current.hidden = true
+        cellInfoPanel.current.hidden = true
         runState = false
         sceneDownload()
       } break
       case "4": {
+        colorPanel.current.hidden = true
         runState = false
         createObject(grid, objectList, currentKey)
         processDOM(grid)
         currentObjectId = currentKey
       } break
       case "5": {
+        colorPanel.current.hidden = true
+        cellInfoPanel.current.hidden = true
         runState = false
         destroyObject(grid, objectList, currentKey)
         processDOM(grid)
         currentObjectId = "-1"
       } break
       case "6": {
+        colorPanel.current.hidden = true
         runState = false
         var newObjectId = contractObject(grid, objectList, currentKey)
         processDOM(grid)
         if (currentKey == currentObjectId) currentObjectId = newObjectId
       } break
       case "7": {
+        colorPanel.current.hidden = true
         if (currentProperty == null) {
           currentProperty = "move"
         }
       } break
       case "8": {
+        colorPanel.current.hidden = true
         if (cellInfoPanel.current.hidden == true) {
           cellInfoPanel.current.hidden = false
         } else {
@@ -390,21 +402,27 @@ function App() {
     switch (event.key) {
       case "7": {
         currentProperty = null
+        colorPanel.current.hidden = true
       } break
       case "d": {
         currentProperty = null
+        colorPanel.current.hidden = true
       } break
       case "c": {
         currentProperty = null
+        colorPanel.current.hidden = true
       } break
       case "f": {
         currentProperty = null
+        colorPanel.current.hidden = true
       } break
       case "p": {
         currentProperty = null
+        colorPanel.current.hidden = true
       } break
       case "v": {
         currentProperty = null
+        colorPanel.current.hidden = true
       } break
     }
     if (objectList[currentObjectId] == undefined) return
