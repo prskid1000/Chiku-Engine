@@ -187,6 +187,20 @@ function App() {
         if (grid[currentKey].objectId == "-1") return
         grid[currentKey].pushY += 1;
       } break
+      case "produce": {
+        if (grid[currentKey].produceTop == false) {
+          grid[currentKey].produceTop = true;
+        } else {
+          grid[currentKey].produceTop = false;
+        }
+      } break
+      case "destory": {
+        if (grid[currentKey].destroyTop == false) {
+          grid[currentKey].destroyTop = true;
+        } else {
+          grid[currentKey].destoryTop = false;
+        }
+      } break
       case "eloss": {
         objectList[currentObjectId].energyLoss += 1;
       } break
@@ -255,6 +269,20 @@ function App() {
       case "push": {
         if (grid[currentKey].objectId == "-1") return
         grid[currentKey].pushY = grid[currentKey].pushY - 1 >= 0 ? grid[currentKey].pushY - 1 : 0;
+      } break
+      case "produce": {
+        if (grid[currentKey].produceBottom == false) {
+          grid[currentKey].produceBottom = true;
+        } else {
+          grid[currentKey].produceBottom = false;
+        }
+      } break
+      case "destory": {
+        if (grid[currentKey].destroyBottom == false) {
+          grid[currentKey].destroyBottom = true;
+        } else {
+          grid[currentKey].destoryBottom = false;
+        }
       } break
       case "eloss": {
         objectList[currentObjectId].energyLoss = objectList[currentObjectId].energyLoss - 1 >= 0 ? objectList[currentObjectId].energyLoss - 1 : 0 ;
@@ -333,6 +361,20 @@ function App() {
         if (grid[currentKey].objectId == "-1") return
         grid[currentKey].pushX = grid[currentKey].pushX - 1 >= 0 ? grid[currentKey].pushX - 1 : 0;
       } break
+      case "produce": {
+        if (grid[currentKey].produceLeft == false) {
+          grid[currentKey].produceLeft = true;
+        } else {
+          grid[currentKey].produceLeft = false;
+        }
+      } break
+      case "destory": {
+        if (grid[currentKey].destroyLeft == false) {
+          grid[currentKey].destroyleft = true;
+        } else {
+          grid[currentKey].destoryLeft = false;
+        }
+      } break
       case "velocity": {
         objectList[currentObjectId].velocityX -= 1;
       } break
@@ -396,6 +438,13 @@ function App() {
       case "push": {
         if (grid[currentKey].objectId == "-1") return
         grid[currentKey].pushX += 1;
+      } break
+      case "produce": {
+        if (grid[currentKey].produceRight == false) {
+          grid[currentKey].produceRight = true;
+        } else {
+          grid[currentKey].produceRight = false;
+        }
       } break
       case "velocity": {
         objectList[currentObjectId].velocityX += 1;
@@ -538,6 +587,16 @@ function App() {
           currentProperty = "cell"
         }
       } break
+      case "x": {
+        if (currentProperty == null) {
+          currentProperty = "produce"
+        }
+      } break
+      case "z": {
+        if (currentProperty == null) {
+          currentProperty = "destroy"
+        }
+      } break
       case "f": {
         if (currentProperty == null) {
           currentProperty = "force"
@@ -609,6 +668,12 @@ function App() {
         currentProperty = null
       } break
       case "v": {
+        currentProperty = null
+      } break
+      case "x": {
+        currentProperty = null
+      } break
+      case "z": {
         currentProperty = null
       } break
       case "n": {

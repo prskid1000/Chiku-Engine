@@ -10,7 +10,10 @@ const { forceLeft,
     collisionRight,
     collisionTop,
     setBoundary,
-    forceBottom, } = require("./object")
+    forceBottom,
+    getNeighbourKV,
+    createObject,
+    destroyObject, } = require("./object")
 
     
 module.exports = {
@@ -148,6 +151,36 @@ module.exports = {
 
             })
 
+        })
+
+        //Produce and Destroy
+        Object.keys(grid).map((key) => {
+            var neighbours = getNeighbourKV(key)
+            if(grid[key].produceLeft == true) {
+                createObject(grid, objectList, neighbours.left)
+            }
+            if (grid[key].produceTop == true) {
+                createObject(grid, objectList, neighbours.top)
+            }
+            if (grid[key].produceBottom == true) {
+                createObject(grid, objectList, neighbours.bottom)
+            }
+            if (grid[key].produceRight == true) {
+                createObject(grid, objectList, neighbours.right)
+            }
+
+            if (grid[key].destroyLeft == true) {
+                destroyObject(grid, objectList, neighbours.left)
+            }
+            if (grid[key].destroyTop == true) {
+                destroyObject(grid, objectList, neighbours.top)
+            }
+            if (grid[key].destroyBottom == true) {
+                destroyObject(grid, objectList, neighbours.bottom)
+            }
+            if (grid[key].destroyRight == true) {
+                destroyObject(grid, objectList, neighbours.right)
+            }
         })
 
         return currentObjectId

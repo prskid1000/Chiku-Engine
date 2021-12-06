@@ -556,5 +556,6 @@ module.exports = {
     expandLeft: expandLeft,
     expandRight: expandRight,
     computeCircularColumn: computeCircularColumn,
-    computeCircularRow: computeCircularRow
+    computeCircularRow: computeCircularRow,
+    getNeighbourKV: getNeighbourKV
 }
