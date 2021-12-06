@@ -40,6 +40,7 @@ function App() {
   var currentObjectId = null
   var cellInfoPanel = useRef()
   var colorPanel = useRef()
+  var controlTable = useRef()
 
   var appStyle = {
     height: Math.min(height * 0.99, width * 0.99),
@@ -87,6 +88,16 @@ function App() {
     zIndex: "999999",
     fontSize: "12px",
     width: width * 0.20
+  }
+
+  var controlTableStyle = {
+    position: "absolute",
+    backgroundColor: "transparent",
+    top: "50px",
+    left: width * 0.30,
+    zIndex: "999999",
+    fontSize: "12px",
+    width: width * 0.40
   }
 
   var simulate = () => {
@@ -446,6 +457,13 @@ function App() {
 
   var onKeyDown = (event) => {
     switch (event.key) {
+      case "0": {
+        if (controlTable.current.hidden == true) {
+          controlTable.current.hidden = false
+        } else {
+          controlTable.current.hidden = true
+        } 
+      } break
       case "1": {
         colorPanel.current.hidden = true
         if (runState == false) {
@@ -654,6 +672,8 @@ function App() {
     upload.current.hidden = true
     cellInfoPanel.current.hidden = true
     colorPanel.current.hidden = true
+    controlTable.current.hidden = true
+    alert("Press O to view Keyboard Controls")
     initGrid(grid)
     processDOM(grid)
   }, [])
@@ -689,6 +709,159 @@ function App() {
       <div ref={cellInfoPanel} style={infoPanelStyle}>
       </div>
       <input type="color" ref={colorPanel} style={colorPanelStyle} className="form-control form-control-color" onChange={onColorChange}></input>
+      <table onKeyDown={onKeyDown} ref={controlTable} style={controlTableStyle} className="table">
+        <thead className="thead-dark">
+          <tr>
+            <th scope="col">Engine Controls</th>
+            <th scope="col">Keyboard Combination</th>
+          </tr>
+        </thead>
+        <tbody className="table-light">
+          <tr>
+            <td>Help</td>
+            <td>0(Toggle)</td>
+          </tr>
+          <tr>
+            <td>Start/Stop Simulator </td>
+            <td>1(Toggle)</td>
+          </tr>
+          <tr>
+            <td>Upload Scene </td>
+            <td>2</td>
+          </tr>
+          <tr>
+            <td>Download Scene </td>
+            <td>3</td>
+          </tr>
+          <tr>
+            <td>Create Object at Current Cell </td>
+            <td>4</td>
+          </tr>
+          <tr>
+            <td>Delete Object at Current Cell </td>
+            <td>5</td>
+          </tr>
+          <tr>
+            <td>Delete Current Cell of Object </td>
+            <td>6</td>
+          </tr>
+          <tr><td><hr></hr></td><td><hr></hr></td></tr>
+          <tr>
+            <td>View/Hide Object Info of Current(Last Selected) Object </td>
+            <td>8</td>
+          </tr>
+          <tr>
+            <td>Change Current Cell Color of a Object  </td>
+            <td>9</td>
+          </tr>
+          <tr><td><hr></hr></td><td><hr></hr></td></tr>
+          <tr>
+            <td>Move Object Upward </td>
+            <td>7(Hold) + ArrowUp</td>
+          </tr>
+          <tr>
+            <td>Move Object Downward </td>
+            <td>7(Hold) + ArrowDown</td>
+          </tr>
+          <tr>
+            <td>Move Object Leftward </td>
+            <td>7(Hold) + ArrowLeft</td>
+          </tr>
+          <tr>
+            <td>Move Object Rightward </td>
+            <td>7(Hold) + ArrowRight</td>
+          </tr>
+          <tr><td><hr></hr></td><td><hr></hr></td></tr>
+          <tr>
+            <td>Expand Object Upward of Current Cell</td>
+            <td>C(Hold) + ArrowUp</td>
+          </tr>
+          <tr>
+            <td>Expand Object Downward of Current Cell</td>
+            <td>C(Hold) + ArrowDown</td>
+          </tr>
+          <tr>
+            <td>Expand Object Leftward of Current Cell </td>
+            <td>C(Hold) + ArrowLeft</td>
+          </tr>
+          <tr>
+            <td>Expand Object Rightward of Current Cell </td>
+            <td>C(Hold) + ArrowRight</td>
+          </tr>
+          <tr><td><hr></hr></td><td><hr></hr></td></tr>
+          <tr>
+            <td>Increase Density by 1(Mass = Density X Cell Count) </td>
+            <td>D(Hold) + ArrowUp or D(Hold) + ArrowRight</td>
+          </tr>
+          <tr>
+            <td>Decrease Density by 1(Mass = Density X Cell Count) </td>
+            <td>D(Hold) + ArrowDown or D(Hold) + ArrowLeft</td>
+          </tr>
+          <tr><td><hr></hr></td><td><hr></hr></td></tr>
+          <tr>
+            <td>Increase Force by 1 in direction of +ve axes</td>
+            <td>F(Hold) + ArrowUp(y-axis) or F(Hold) + ArrowRight(x-axis)</td>
+          </tr>
+          <tr>
+            <td>Increase Force by 1 in direction of -ve axes </td>
+            <td>F(Hold) + ArrowDown(y-axis) or F(Hold) + ArrowLeft(x-axis)</td>
+          </tr>
+          <tr><td><hr></hr></td><td><hr></hr></td></tr>
+          <tr>
+            <td>Increase Velocity by 1 in direction of +ve axes</td>
+            <td>V(Hold) + ArrowUp(y-axis) or V(Hold) + ArrowRight(x-axis)</td>
+          </tr>
+          <tr>
+            <td>Increase Velocity by 1 in direction of -ve axes </td>
+            <td>V(Hold) + ArrowDown(y-axis) or V(Hold) + ArrowLeft(x-axis)</td>
+          </tr>
+          <tr><td><hr></hr></td><td><hr></hr></td></tr>
+          <tr>
+            <td>Increase Push Force by 1 in direction of +ve axes of Current Cell</td>
+            <td>P(Hold) + ArrowUp(y-axis) or P(Hold) + ArrowRight(x-axis)</td>
+          </tr>
+          <tr>
+            <td>Increase Push Force by 1 in direction of -ve axes of Current Cell</td>
+            <td>P(Hold) + ArrowDown(y-axis) or P(Hold) + ArrowLeft(x-axis)</td>
+          </tr>
+          <tr><td><hr></hr></td><td><hr></hr></td></tr>
+          <tr>
+            <td>Increase Opposing Force/Cycle by 1 in direction of +ve axes</td>
+            <td>N(Hold) + ArrowUp(y-axis) or N(Hold) + ArrowRight(x-axis)</td>
+          </tr>
+          <tr>
+            <td>Increase Opposing Force/Cycle by 1 in direction of -ve axes </td>
+            <td>N(Hold) + ArrowDown(y-axis) or N(Hold) + ArrowLeft(x-axis)</td>
+          </tr>
+          <tr><td><hr></hr></td><td><hr></hr></td></tr>
+          <tr>
+            <td>Increase Kinetic Energy Loss/Cycle by 1 in direction of +ve axes</td>
+            <td>M(Hold) + ArrowUp(y-axis) or M(Hold) + ArrowRight(x-axis)</td>
+          </tr>
+          <tr>
+            <td>Increase Kinetic Energy Loss/Cycle by 1 in direction of -ve axes </td>
+            <td>M(Hold) + ArrowDown(y-axis) or M(Hold) + ArrowLeft(x-axis)</td>
+          </tr>
+          <tr><td><hr></hr></td><td><hr></hr></td></tr>
+          <tr>
+            <td>Move Cursor(Red) Upward </td>
+            <td>7(Hold) + ArrowUp</td>
+          </tr>
+          <tr>
+            <td>Move Cursor(Red) Downward </td>
+            <td>7(Hold) + ArrowDown</td>
+          </tr>
+          <tr>
+            <td>Move Cursor(Red) Leftward </td>
+            <td>7(Hold) + ArrowLeft</td>
+          </tr>
+          <tr>
+            <td>Move Cursor(Red) Rightward </td>
+            <td>7(Hold) + ArrowRight</td>
+          </tr>
+          <tr><td><hr></hr></td><td><hr></hr></td></tr>
+        </tbody>
+      </table>
     </div>
   );
 }
