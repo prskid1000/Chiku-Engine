@@ -925,6 +925,40 @@ function App() {
             <td>7(Hold) + ArrowRight</td>
           </tr>
           <tr><td><hr></hr></td><td><hr></hr></td></tr>
+          <tr>
+            <td>Produce Upward Ability of Current Cell </td>
+            <td>X(Hold) + ArrowUp(Toggle)</td>
+          </tr>
+          <tr>
+            <td>Produce Downward Ability of Current Cell </td>
+            <td>X(Hold) + ArrowDown(Toggle)</td>
+          </tr>
+          <tr>
+            <td>Produce Leftward Ability of Current Cell </td>
+            <td>X(Hold) + ArrowLeft(Toggle)</td>
+          </tr>
+          <tr>
+            <td>Produce Rightward Ability of Current Cell </td>
+            <td>X(Hold) + ArrowRight(Toggle)</td>
+          </tr>
+          <tr><td><hr></hr></td><td><hr></hr></td></tr>
+          <tr>
+            <td>Destroy Upward Ability of Current Cell </td>
+            <td>Z(Hold) + ArrowUp(Toggle)</td>
+          </tr>
+          <tr>
+            <td>Destroy Downward Ability of Current Cell </td>
+            <td>Z(Hold) + ArrowDown(Toggle)</td>
+          </tr>
+          <tr>
+            <td>Destroy Leftward Ability of Current Cell </td>
+            <td>Z(Hold) + ArrowLeft(Toggle)</td>
+          </tr>
+          <tr>
+            <td>Destroy Rightward Ability of Current Cell </td>
+            <td>Z(Hold) + ArrowRight(Toggle)</td>
+          </tr>
+          <tr><td><hr></hr></td><td><hr></hr></td></tr>
         </tbody>
       </table>
     </div>

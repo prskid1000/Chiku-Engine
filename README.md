@@ -17,6 +17,7 @@
 ## Key Control
 ![1](https://github.com/prskid1000/Pixel-Engine/blob/main/Preview/10.png?raw=true)
 ![1](https://github.com/prskid1000/Pixel-Engine/blob/main/Preview/11.png?raw=true)
+![1](https://github.com/prskid1000/Pixel-Engine/blob/main/Preview/12.png?raw=true)
 
 
 ## Example Scenes

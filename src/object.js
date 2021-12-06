@@ -176,13 +176,24 @@ var collisionBottom = (grid, objectList, key) => {
     objectList[grid[key].objectId].collisionList.bottom = collision
 }
 
-var addCell = (grid, objectId, futureKey, pushX, pushY, color) => {
+var addCell = (grid, objectId, futureKey, pushX, pushY, color, produce, destroy) => {
     if (grid[futureKey].color == "#000000") {
         grid[futureKey].color = color
         grid[futureKey].type = "object"
         grid[futureKey].objectId = objectId
+
         grid[futureKey].pushX = pushX
         grid[futureKey].pushY = pushY
+
+        grid[futureKey].produceLeft = produce.produceLeft
+        grid[futureKey].produceRight = produce.produceRight
+        grid[futureKey].produceTop = produce.produceTop
+        grid[futureKey].produceBottom = produce.produceBottom
+
+        grid[futureKey].destroyLeft = destroy.destroyLeft
+        grid[futureKey].destroyRight = destroy.destroyRight
+        grid[futureKey].destroyTop = destroy.destroyTop
+        grid[futureKey].destroyBottom = destroy.destroyBottom
     }
 }
 
@@ -190,8 +201,19 @@ var removeCell = (grid, currentKey) => {
     grid[currentKey].color = "#000000"
     grid[currentKey].type = "empty"
     grid[currentKey].objectId = "-1"
+
     grid[currentKey].pushX = 0
     grid[currentKey].pushY = 0
+
+    grid[currentKey].produceLeft = false
+    grid[currentKey].produceRight = false
+    grid[currentKey].produceTop = false
+    grid[currentKey].produceBottom = false
+
+    grid[currentKey].destroyLeft = false
+    grid[currentKey].destroyRight = false
+    grid[currentKey].destroyTop = false
+    grid[currentKey].destroyBottom = false
 }
 
 var forceLeft = (grid, objectList, key) => {
@@ -259,6 +281,8 @@ var moveLeft = (grid, objectList, key) => {
     var pushX = { "-1": "-1" }
     var pushY = { "-1": "-1" }
     var color = { "-1": "-1" }
+    var produce = { "-1": "-1" }
+    var destroy = { "-1": "-1" }
 
     objectList[objectId].cellList.map((cellKey) => {
         rowStart = computeCircularRow((Math.floor(parseInt(cellKey) / computeNumber)) * computeNumber)
@@ -269,13 +293,25 @@ var moveLeft = (grid, objectList, key) => {
         pushX[futureKey] = grid[cellKey].pushX
         pushY[futureKey] = grid[cellKey].pushY
         color[futureKey] = grid[cellKey].color
+        produce[futureKey] = {
+            produceLeft: grid[cellKey].produceLeft,
+            produceRight: grid[cellKey].produceRight,
+            produceTop: grid[cellKey].produceTop,
+            produceBottom: grid[cellKey].produceBottom,
+        }
+        destroy[futureKey] = {
+            destroyLeft: grid[cellKey].destroyLeft,
+            destroyRight: grid[cellKey].destroyRight,
+            destroyTop: grid[cellKey].destroyTop,
+            destroyBottom: grid[cellKey].destroyBottom,
+        }
         removeCell(grid, cellKey)
     })
 
     objectList[objectId].cellList = newCellList
   
     objectList[objectId].cellList.map((cellKey) => {
-        addCell(grid, objectId, cellKey, pushX[cellKey], pushY[cellKey], color[cellKey])
+        addCell(grid, objectId, cellKey, pushX[cellKey], pushY[cellKey], color[cellKey], produce[cellKey], destroy[cellKey])
     })
 
     delete objectList[key]
@@ -299,6 +335,8 @@ var moveRight = (grid, objectList, key) => {
     var pushX = { "-1": "-1" }
     var pushY = { "-1": "-1" }
     var color = { "-1": "-1" }
+    var produce = { "-1": "-1" }
+    var destroy = { "-1": "-1" }
 
     objectList[objectId].cellList.map((cellKey) => {
         rowStart = computeCircularRow((Math.floor(parseInt(cellKey) / computeNumber)) * computeNumber)
@@ -308,6 +346,18 @@ var moveRight = (grid, objectList, key) => {
         pushX[futureKey] = grid[cellKey].pushX
         pushY[futureKey] = grid[cellKey].pushY
         color[futureKey] = grid[cellKey].color
+        produce[futureKey] = {
+            produceLeft: grid[cellKey].produceLeft,
+            produceRight: grid[cellKey].produceRight,
+            produceTop: grid[cellKey].produceTop,
+            produceBottom: grid[cellKey].produceBottom,
+        }
+        destroy[futureKey] = {
+            destroyLeft: grid[cellKey].destroyLeft,
+            destroyRight: grid[cellKey].destroyRight,
+            destroyTop: grid[cellKey].destroyTop,
+            destroyBottom: grid[cellKey].destroyBottom,
+        }
         newCellList.push(futureKey)
         removeCell(grid, cellKey)
     })
@@ -315,7 +365,7 @@ var moveRight = (grid, objectList, key) => {
     objectList[objectId].cellList = newCellList
 
     objectList[objectId].cellList.map((cellKey) => {
-        addCell(grid, objectId, cellKey, pushX[cellKey], pushY[cellKey], color[cellKey])
+        addCell(grid, objectId, cellKey, pushX[cellKey], pushY[cellKey], color[cellKey], produce[cellKey], destroy[cellKey])
     })
 
     delete objectList[key]
@@ -339,6 +389,8 @@ var moveUp = (grid, objectList, key) => {
     var pushX = { "-1": "-1" }
     var pushY = { "-1": "-1" }
     var color = { "-1": "-1" }
+    var produce = { "-1": "-1" }
+    var destroy = { "-1": "-1" }
 
     objectList[objectId].cellList.map((cellKey) => {
         rowStart = computeCircularRow((Math.floor(parseInt(cellKey) / computeNumber)) * computeNumber - computeNumber)
@@ -348,6 +400,18 @@ var moveUp = (grid, objectList, key) => {
         pushX[futureKey] = grid[cellKey].pushX
         pushY[futureKey] = grid[cellKey].pushY
         color[futureKey] = grid[cellKey].color
+        produce[futureKey] = {
+            produceLeft: grid[cellKey].produceLeft,
+            produceRight: grid[cellKey].produceRight,
+            produceTop: grid[cellKey].produceTop,
+            produceBottom: grid[cellKey].produceBottom,
+        }
+        destroy[futureKey] = {
+            destroyLeft: grid[cellKey].destroyLeft,
+            destroyRight: grid[cellKey].destroyRight,
+            destroyTop: grid[cellKey].destroyTop,
+            destroyBottom: grid[cellKey].destroyBottom,
+        }
         newCellList.push(futureKey)
         removeCell(grid, cellKey)
     })
@@ -355,7 +419,7 @@ var moveUp = (grid, objectList, key) => {
     objectList[objectId].cellList = newCellList
 
     objectList[objectId].cellList.map((cellKey) => {
-        addCell(grid, objectId, cellKey, pushX[cellKey], pushY[cellKey], color[cellKey])
+        addCell(grid, objectId, cellKey, pushX[cellKey], pushY[cellKey], color[cellKey], produce[cellKey], destroy[cellKey])
     })
 
     delete objectList[key]
@@ -379,6 +443,8 @@ var moveDown = (grid, objectList, key) => {
     var pushX = { "-1": "-1" }
     var pushY = { "-1": "-1" }
     var color = { "-1": "-1" }
+    var produce = { "-1": "-1" }
+    var destroy = { "-1": "-1" }
 
     objectList[objectId].cellList.map((cellKey) => {
         rowStart = computeCircularRow((Math.floor(parseInt(cellKey) / computeNumber)) * computeNumber + computeNumber)
@@ -388,6 +454,18 @@ var moveDown = (grid, objectList, key) => {
         pushX[futureKey] = grid[cellKey].pushX
         pushY[futureKey] = grid[cellKey].pushY
         color[futureKey] = grid[cellKey].color
+        produce[futureKey] = {
+            produceLeft: grid[cellKey].produceLeft,
+            produceRight: grid[cellKey].produceRight,
+            produceTop: grid[cellKey].produceTop,
+            produceBottom: grid[cellKey].produceBottom,
+        }
+        destroy[futureKey] = {
+            destroyLeft: grid[cellKey].destroyLeft,
+            destroyRight: grid[cellKey].destroyRight,
+            destroyTop: grid[cellKey].destroyTop,
+            destroyBottom: grid[cellKey].destroyBottom,
+        }
         newCellList.push(futureKey)
         removeCell(grid, cellKey)
     })
@@ -395,7 +473,7 @@ var moveDown = (grid, objectList, key) => {
     objectList[objectId].cellList = newCellList
 
     objectList[objectId].cellList.map((cellKey) => {
-        addCell(grid, objectId, cellKey, pushX[cellKey], pushY[cellKey], color[cellKey])
+        addCell(grid, objectId, cellKey, pushX[cellKey], pushY[cellKey], color[cellKey], produce[cellKey], destroy[cellKey])
     })
 
     delete objectList[key]
