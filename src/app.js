@@ -251,9 +251,6 @@ function App() {
         objectList[currentObjectId].childObject.density += 1;
         objectList[currentObjectId].childObject.mass = objectList[currentObjectId].childObject.density * objectList[currentObjectId].childObject.cellCount
       } break
-      case "cell": {
-        if (grid[currentKey].objectId == "-1") return
-      } break
       case "force": {
         objectList[currentObjectId].childObject.forceY += 1;
       } break
@@ -277,9 +274,6 @@ function App() {
       case "density": {
         objectList[currentObjectId].childObject.density = objectList[currentObjectId].childObject.density - 1 >= 0 ? objectList[currentObjectId].childObject.density - 1 : 0;
         objectList[currentObjectId].childObject.mass = objectList[currentObjectId].childObject.density * objectList[currentObjectId].childObject.cellCount
-      } break
-      case "cell": {
-        if (grid[currentKey].childObject.objectId == "-1") return
       } break
       case "force": {
         objectList[currentObjectId].childObject.forceY -= 1;
@@ -305,9 +299,6 @@ function App() {
         objectList[currentObjectId].childObject.density = objectList[currentObjectId].childObject.density - 1 >= 0 ? objectList[currentObjectId].childObject.density - 1 : 0;
         objectList[currentObjectId].childObject.mass = objectList[currentObjectId].childObject.density * objectList[currentObjectId].childObject.cellCount
       } break
-      case "cell": {
-        if (grid[currentKey].objectId == "-1") return
-      } break
       case "force": {
         objectList[currentObjectId].childObject.forceX -= 1;
       } break
@@ -330,9 +321,6 @@ function App() {
       case "density": {
         objectList[currentObjectId].childObject.density += 1;
         objectList[currentObjectId].childObject.mass = objectList[currentObjectId].childObject.density * objectList[currentObjectId].childObject.cellCount
-      } break
-      case "cell": {
-        if (grid[currentKey].objectId == "-1") return
       } break
       case "force": {
         objectList[currentObjectId].childObject.forceX += 1;
@@ -947,6 +935,7 @@ function App() {
         } 
       } break
       case "1": {
+        if(mode == "child") break
         colorPanel.current.hidden = true
         if (runState == false) {
           runState = true
@@ -956,18 +945,21 @@ function App() {
         }
       } break
       case "2": {
+        if (mode == "child") break
         colorPanel.current.hidden = true
         cellInfoPanel.current.hidden = true
         runState = false
         sceneUpload()
       } break
       case "3": {
+        if (mode == "child") break
         colorPanel.current.hidden = true
         cellInfoPanel.current.hidden = true
         runState = false
         sceneDownload()
       } break
       case "4": {
+        if (mode == "child") break
         colorPanel.current.hidden = true
         runState = false
         createObject(grid, objectList, currentKey)
@@ -975,6 +967,7 @@ function App() {
         currentObjectId = currentKey
       } break
       case "5": {
+        if (mode == "child") break
         colorPanel.current.hidden = true
         cellInfoPanel.current.hidden = true
         runState = false
@@ -983,6 +976,7 @@ function App() {
         currentObjectId = "-1"
       } break
       case "6": {
+        if (mode == "child") break
         colorPanel.current.hidden = true
         runState = false
         var newObjectId = contractObject(grid, objectList, currentKey)
@@ -990,6 +984,7 @@ function App() {
         if (currentKey == currentObjectId) currentObjectId = newObjectId
       } break
       case "7": {
+        if (mode == "child") break
         if (currentProperty == null) {
           currentProperty = "move"
         }
@@ -1002,6 +997,7 @@ function App() {
         }
       }break
       case "9": {
+        if (mode == "child") break
         if (colorPanel.current.hidden == true) {
           colorPanel.current.hidden = false
           colorPanel.current.value = grid[currentKey].color
@@ -1011,6 +1007,7 @@ function App() {
         }
       } break
       case "d": {
+
         if (currentProperty == null) {
           currentProperty = "density"
         }
@@ -1035,15 +1032,21 @@ function App() {
       } break
       case "c": {
         if (currentProperty == null) {
-          currentProperty = "cell"
+          if(mode == "parent") {
+            currentProperty = "cell"
+          } else {
+
+          }
         }
       } break
       case "x": {
+        if (mode == "child") break
         if (currentProperty == null) {
           currentProperty = "produce"
         }
       } break
       case "z": {
+        if (mode == "child") break
         if (currentProperty == null) {
           currentProperty = "destroy"
         }
@@ -1059,6 +1062,7 @@ function App() {
         }
       } break
       case "p": {
+        if (mode == "child") break
         if (currentProperty == null) {
           currentProperty = "push"
         }
@@ -1615,10 +1619,16 @@ function App() {
             <td>Edit Object Script </td>
             <td>Tab</td>
           </tr>
+          <tr><td><hr></hr></td><td><hr></hr></td></tr>
           <tr>
             <td>Parent-Child Mode Switch </td>
             <td>S(Toggle)</td>
           </tr>
+          <tr>
+            <td>Create Child Design(In Child Mode) </td>
+            <td>C</td>
+          </tr>
+
         </tbody>
       </table>
       <textarea onKeyDown={handleTab} ref={textPanel} rows="20" style={textAreaStyle} onChange={onTextChange}></textarea>
