@@ -76,19 +76,28 @@ module.exports = {
 
         })
 
-        //Detect Collision and Apply Action-Reaction Force Pair
+        //Detect Collision and Apply Push Force
         Object.keys(objectList).map((key) => {
             setBoundary(grid, objectList, key)
-            collisionLeft(grid, objectList, key)
-            collisionRight(grid, objectList, key)
-            collisionTop(grid, objectList, key)
-            collisionBottom(grid, objectList, key)
-            forceLeft(grid, objectList, key)
-            forceRight(grid, objectList, key)
-            forceTop(grid, objectList, key)
-            forceBottom(grid, objectList, key)
-        })
 
+            collisionLeft(grid, objectList, key)
+            forceLeft(grid, objectList, key)
+            collisionLeft(grid, objectList, key)
+
+            collisionTop(grid, objectList, key)
+            forceTop(grid, objectList, key)
+            collisionTop(grid, objectList, key)
+
+            collisionRight(grid, objectList, key)
+            forceRight(grid, objectList, key)
+            collisionRight(grid, objectList, key)
+
+            collisionBottom(grid, objectList, key)
+            forceBottom(grid, objectList, key)
+            collisionBottom(grid, objectList, key)
+           
+        })
+        
         //Process Collision
         Object.keys(objectList).map((key) => {
 
@@ -153,10 +162,15 @@ module.exports = {
 
         })
 
+        //Process Scripts
+        Object.keys(objectList).map((key) => {
+            eval(objectList[key].script)(grid, objectList, key)
+        })
+
         //Produce and Destroy
         Object.keys(grid).map((key) => {
             var neighbours = getNeighbourKV(key)
-            if(grid[key].produceLeft == true) {
+            if (grid[key].produceLeft == true) {
                 createObject(grid, objectList, neighbours.left)
             }
             if (grid[key].produceTop == true) {

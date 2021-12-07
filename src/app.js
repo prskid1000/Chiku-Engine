@@ -37,10 +37,12 @@ function App() {
   var currentProperty = null
   var currentKey = 0
   var colorTarget = 0
-  var currentObjectId = null
+  var currentObjectId = undefined
   var cellInfoPanel = useRef()
   var colorPanel = useRef()
   var controlTable = useRef()
+  var textPanel = useRef()
+  var scriptData = ""
 
   var appStyle = {
     height: Math.min(height * 0.99, width * 0.99),
@@ -97,14 +99,25 @@ function App() {
     left: width * 0.30,
     zIndex: "999999",
     fontSize: "12px",
-    width: width * 0.40
+    width: width * 0.40,
+  }
+
+  var textAreaStyle = {
+    position: "absolute",
+    color: "white",
+    backgroundColor: "transparent",
+    top: "0px",
+    fontSize: "16px",
+    left: "0px",
+    zIndex: "999999",
+    width: width * 0.30
   }
 
   var simulate = () => {
     currentObjectId = processGrid(grid, objectList, currentObjectId)
     processDOM(grid)
 
-    if (currentObjectId != undefined && currentObjectId!= "-1") {
+    if (currentObjectId != undefined && currentObjectId != "-1") {
       var res = `
       <table onKeyDown={onKeyDown} ref={controlTable} style={controlTableStyle} className="table">
         <thead className="thead-dark">
@@ -358,10 +371,10 @@ function App() {
            <tr>
             <td>Destory Object[L \| R \| T \| B]</td>
             <td>`
-            + grid[currentKey].destroyLeft.toString() + ` \| `
-            + grid[currentKey].destroyRight.toString() + ` \| `
-            + grid[currentKey].destroyTop.toString() + ` \| `
-            + grid[currentKey].destroyBottom.toString() + ` \| ` +
+            + grid[futureKey].destroyLeft.toString() + ` \| `
+            + grid[futureKey].destroyRight.toString() + ` \| `
+            + grid[futureKey].destroyTop.toString() + ` \| `
+            + grid[futureKey].destroyBottom.toString() + ` \| ` +
             `</td>
           </tr>
             </tbody>
@@ -504,10 +517,10 @@ function App() {
            <tr>
             <td>Destory Object[L \| R \| T \| B]</td>
             <td>`
-            + grid[currentKey].destroyLeft.toString() + ` \| `
-            + grid[currentKey].destroyRight.toString() + ` \| `
-            + grid[currentKey].destroyTop.toString() + ` \| `
-            + grid[currentKey].destroyBottom.toString() + ` \| ` +
+            + grid[futureKey].destroyLeft.toString() + ` \| `
+            + grid[futureKey].destroyRight.toString() + ` \| `
+            + grid[futureKey].destroyTop.toString() + ` \| `
+            + grid[futureKey].destroyBottom.toString() + ` \| ` +
             `</td>
           </tr>
             </tbody>
@@ -649,10 +662,10 @@ function App() {
            <tr>
             <td>Destory Object[L \| R \| T \| B]</td>
             <td>`
-            + grid[currentKey].destroyLeft.toString() + ` \| `
-            + grid[currentKey].destroyRight.toString() + ` \| `
-            + grid[currentKey].destroyTop.toString() + ` \| `
-            + grid[currentKey].destroyBottom.toString() + ` \| ` +
+            + grid[futureKey].destroyLeft.toString() + ` \| `
+            + grid[futureKey].destroyRight.toString() + ` \| `
+            + grid[futureKey].destroyTop.toString() + ` \| `
+            + grid[futureKey].destroyBottom.toString() + ` \| ` +
             `</td>
           </tr>
             </tbody>
@@ -793,10 +806,10 @@ function App() {
            <tr>
             <td>Destory Object[L \| R \| T \| B]</td>
             <td>`
-            + grid[currentKey].destroyLeft.toString() + ` \| `
-            + grid[currentKey].destroyRight.toString() + ` \| `
-            + grid[currentKey].destroyTop.toString() + ` \| `
-            + grid[currentKey].destroyBottom.toString() + ` \| ` +
+            + grid[futureKey].destroyLeft.toString() + ` \| `
+            + grid[futureKey].destroyRight.toString() + ` \| `
+            + grid[futureKey].destroyTop.toString() + ` \| `
+            + grid[futureKey].destroyBottom.toString() + ` \| ` +
             `</td>
           </tr>
             </tbody>
@@ -894,8 +907,14 @@ function App() {
           currentProperty = "density"
         }
       } break
-      case "i": {
-        //Edit Object Script
+      case "Tab": {
+        if (textPanel.current.hidden == true && currentObjectId != undefined && currentObjectId != "-1") {
+          textPanel.current.hidden = false
+          scriptData = objectList[currentObjectId].script
+          textPanel.current.value = scriptData
+        } else {
+          textPanel.current.hidden = true
+        }
       } break
       case "S": {
         //Switch between parent and child mode
@@ -1045,19 +1064,19 @@ function App() {
           </tr>
            <tr>
             <td>Push Force(x-axis)(y-axis[L-Down \| R-Up])</td>
-            <td>`+ grid[event.target.id].pushX.toString() + `</td>
+            <td>`+ grid[currentKey].pushX.toString() + `</td>
           </tr>
            <tr>
             <td>Push Force(y-axis)(x-axis[T-Right \| B-Left])</td>
-            <td>`+ grid[event.target.id].pushY.toString() + `</td>
+            <td>`+ grid[currentKey].pushY.toString() + `</td>
           </tr>
            <tr>
             <td>Create Object[L \| R \| T \| B]</td>
             <td>`
-      + grid[event.target.id].produceLeft.toString() + ` \| `
-      + grid[event.target.id].produceRight.toString() + ` \| `
-      + grid[event.target.id].produceTop.toString() + ` \| `
-      + grid[event.target.id].produceBottom.toString() + ` \| ` +
+      + grid[currentKey].produceLeft.toString() + ` \| `
+      + grid[currentKey].produceRight.toString() + ` \| `
+      + grid[currentKey].produceTop.toString() + ` \| `
+      + grid[currentKey].produceBottom.toString() + ` \| ` +
       `</td>
           </tr>
            <tr>
@@ -1084,11 +1103,13 @@ function App() {
 
     cellInfoPanel.current.style.top = (10 + cell.offsetTop).toString() + "px"
     cellInfoPanel.current.style.left = (10 + cell.offsetLeft).toString() + "px"
+    textPanel.current.style.top = (cell.offsetTop).toString() + "px"
+    textPanel.current.style.left = (cell.offsetLeft).toString() + "px"
     colorPanel.current.style.top = (cell.offsetTop).toString() + "px"
     colorPanel.current.style.left = (cell.offsetLeft).toString() + "px"
 
-    if (grid[event.target.id].objectId != undefined && grid[event.target.id].objectId != "-1") {
-      currentObjectId = grid[event.target.id].objectId
+    if (grid[currentKey].objectId != undefined && grid[currentKey].objectId != "-1") {
+      currentObjectId = grid[currentKey].objectId
 
       var res = `
       <table onKeyDown={onKeyDown} ref={controlTable} style={controlTableStyle} className="table">
@@ -1105,7 +1126,7 @@ function App() {
           </tr>
           <tr>
             <td>Mass(Cell Count X Density)</td>
-            <td>`+ objectList[currentObjectId].forceX.toString() +`</td>
+            <td>`+ objectList[currentObjectId].mass.toString() +`</td>
           </tr>
            <tr>
             <td>Force(x-axis)</td>
@@ -1170,7 +1191,19 @@ function App() {
     cell.style.backgroundColor = grid[event.target.id].color
   }
 
+  var onTextChange = (event) => {
+    scriptData = event.target.value
+  }
+
+  var handleTab = (event) => {
+    if(event.key == "Tab") {
+      textPanel.current.hidden = true
+      objectList[currentObjectId].script = scriptData
+    }
+  }
+
   useEffect(() => {
+    textPanel.current.hidden = true
     upload.current.hidden = true
     cellInfoPanel.current.hidden = true
     colorPanel.current.hidden = true
@@ -1398,7 +1431,7 @@ function App() {
           <tr><td><hr></hr></td><td><hr></hr></td></tr>
           <tr>
             <td>Edit Object Script </td>
-            <td>i</td>
+            <td>Tab</td>
           </tr>
           <tr>
             <td>Parent-Child Mode Switch </td>
@@ -1406,6 +1439,7 @@ function App() {
           </tr>
         </tbody>
       </table>
+      <textarea onKeyDown={handleTab} ref={textPanel} rows="20" style={textAreaStyle} onChange={onTextChange}></textarea>
     </div>
   );
 }
