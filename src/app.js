@@ -43,6 +43,7 @@ function App() {
   var controlTable = useRef()
   var textPanel = useRef()
   var scriptData = ""
+  var mode = "parent"
 
   var appStyle = {
     height: Math.min(height * 0.99, width * 0.99),
@@ -117,7 +118,7 @@ function App() {
     currentObjectId = processGrid(grid, objectList, currentObjectId)
     processDOM(grid)
 
-    if (currentObjectId != undefined && currentObjectId != "-1") {
+    if (currentObjectId != undefined && currentObjectId != "-1" && mode == "parent") {
       var res = `
       <table onKeyDown={onKeyDown} ref={controlTable} style={controlTableStyle} className="table">
         <thead className="thead-dark">
@@ -239,6 +240,113 @@ function App() {
     document.body.appendChild(link);
     link.click();
     link.remove();
+  }
+
+  var handleUpC = () => {
+    if (currentKey == null || currentKey == undefined) return
+    if (currentObjectId == undefined || currentObjectId == "-1" || objectList[currentObjectId] == undefined) return
+
+    switch (currentProperty) {
+      case "density": {
+        objectList[currentObjectId].childObject.density += 1;
+        objectList[currentObjectId].childObject.mass = objectList[currentObjectId].childObject.density * objectList[currentObjectId].childObject.cellCount
+      } break
+      case "cell": {
+        if (grid[currentKey].objectId == "-1") return
+      } break
+      case "force": {
+        objectList[currentObjectId].childObject.forceY += 1;
+      } break
+      case "eloss": {
+        objectList[currentObjectId].childObject.energyLoss += 1;
+      } break
+      case "oppforce": {
+        objectList[currentObjectId].childObject.opposingForce += 1;
+      } break
+      case "velocity": {
+        objectList[currentObjectId].childObject.velocityY += 1;
+      } break
+    }
+  }
+
+  var handleDownC = () => {
+    if (currentKey == null || currentKey == undefined) return
+    if (currentObjectId == undefined || currentObjectId == "-1" || objectList[currentObjectId] == undefined) return
+
+    switch (currentProperty) {
+      case "density": {
+        objectList[currentObjectId].childObject.density = objectList[currentObjectId].childObject.density - 1 >= 0 ? objectList[currentObjectId].childObject.density - 1 : 0;
+        objectList[currentObjectId].childObject.mass = objectList[currentObjectId].childObject.density * objectList[currentObjectId].childObject.cellCount
+      } break
+      case "cell": {
+        if (grid[currentKey].childObject.objectId == "-1") return
+      } break
+      case "force": {
+        objectList[currentObjectId].childObject.forceY -= 1;
+      } break
+      case "eloss": {
+        objectList[currentObjectId].childObject.energyLoss = objectList[currentObjectId].childObject.energyLoss - 1 >= 0 ? objectList[currentObjectId].childObject.energyLoss - 1 : 0;
+      } break
+      case "oppforce": {
+        objectList[currentObjectId].childObject.opposingForce = objectList[currentObjectId].childObject.opposingForce - 1 >= 0 ? objectList[currentObjectId].childObject.opposingForce - 1 : 0;
+      } break
+      case "velocity": {
+        objectList[currentObjectId].childObject.velocityY -= 1;
+      } break
+    }
+  }
+
+  var handleLeftC = () => {
+    if (currentKey == null || currentKey == undefined) return
+    if (currentObjectId == undefined || currentObjectId == "-1" || objectList[currentObjectId] == undefined) return
+
+    switch (currentProperty) {
+      case "density": {
+        objectList[currentObjectId].childObject.density = objectList[currentObjectId].childObject.density - 1 >= 0 ? objectList[currentObjectId].childObject.density - 1 : 0;
+        objectList[currentObjectId].childObject.mass = objectList[currentObjectId].childObject.density * objectList[currentObjectId].childObject.cellCount
+      } break
+      case "cell": {
+        if (grid[currentKey].objectId == "-1") return
+      } break
+      case "force": {
+        objectList[currentObjectId].childObject.forceX -= 1;
+      } break
+      case "eloss": {
+        objectList[currentObjectId].childObject.energyLoss = objectList[currentObjectId].childObject.energyLoss - 1 >= 0 ? objectList[currentObjectId].childObject.energyLoss - 1 : 0;
+      } break
+      case "oppforce": {
+        objectList[currentObjectId].childObject.opposingForce = objectList[currentObjectId].childObject.opposingForce - 1 >= 0 ? objectList[currentObjectId].childObject.opposingForce - 1 : 0;
+      } break
+      case "velocity": {
+        objectList[currentObjectId].childObject.velocityX -= 1;
+      } break
+    }
+  }
+
+  var handleRightC = () => {
+    if (currentKey == null || currentKey == undefined) return
+    if (currentObjectId == undefined || currentObjectId == "-1" || objectList[currentObjectId] == undefined) return
+    switch (currentProperty) {
+      case "density": {
+        objectList[currentObjectId].childObject.density += 1;
+        objectList[currentObjectId].childObject.mass = objectList[currentObjectId].childObject.density * objectList[currentObjectId].childObject.cellCount
+      } break
+      case "cell": {
+        if (grid[currentKey].objectId == "-1") return
+      } break
+      case "force": {
+        objectList[currentObjectId].childObject.forceX += 1;
+      } break
+      case "velocity": {
+        objectList[currentObjectId].childObject.velocityX += 1;
+      } break
+      case "eloss": {
+        objectList[currentObjectId].childObject.energyLoss += 1;
+      } break
+      case "oppforce": {
+        objectList[currentObjectId].childObject.opposingForce += 1;
+      } break
+    }
   }
 
   var handleUp = () => {
@@ -916,8 +1024,14 @@ function App() {
           textPanel.current.hidden = true
         }
       } break
-      case "S": {
-        //Switch between parent and child mode
+      case "s": {
+        if (mode == "child") {
+          mode = "parent" 
+          alert("Switched to Parent Mode")
+        } else {
+          mode = "child"
+          alert("Switched to Child Mode")
+        }
       } break
       case "c": {
         if (currentProperty == null) {
@@ -962,25 +1076,41 @@ function App() {
       case "ArrowUp": {
         if (currentKey != null) {
           runState = false
-          handleUp()
+          if (mode == "parent") {
+            handleUp()
+          } else {
+            handleUpC()
+          }
         }
       } break
       case "ArrowLeft": {
         if (currentKey != null) {
           runState = false
-          handleLeft()
+          if (mode == "parent") {
+            handleLeft()
+          } else {
+            handleLeftC()
+          }
         }
       } break
       case "ArrowRight": {
         if (currentKey != null) {
           runState = false
-          handleRight()
+          if (mode == "parent") {
+            handleRight()
+          } else {
+            handleRightC()
+          }
         }
       } break
       case "ArrowDown": {
         if (currentKey != null) {
           runState = false
-          handleDown()
+          if (mode == "parent") {
+            handleDown()
+          } else {
+            handleDownC()
+          }
         }
       } break
     }
@@ -1020,8 +1150,10 @@ function App() {
         currentProperty = null
       } break
     }
+
     if (objectList[currentObjectId] == undefined) return
-    var res = `
+    if(mode == "parent") {
+      var res = `
       <table onKeyDown={onKeyDown} ref={controlTable} style={controlTableStyle} className="table">
         <thead className="thead-dark">
           <tr>
@@ -1073,25 +1205,71 @@ function App() {
            <tr>
             <td>Create Object[L \| R \| T \| B]</td>
             <td>`
-      + grid[currentKey].produceLeft.toString() + ` \| `
-      + grid[currentKey].produceRight.toString() + ` \| `
-      + grid[currentKey].produceTop.toString() + ` \| `
-      + grid[currentKey].produceBottom.toString() + ` \| ` +
-      `</td>
+        + grid[currentKey].produceLeft.toString() + ` \| `
+        + grid[currentKey].produceRight.toString() + ` \| `
+        + grid[currentKey].produceTop.toString() + ` \| `
+        + grid[currentKey].produceBottom.toString() + ` \| ` +
+        `</td>
           </tr>
            <tr>
             <td>Destory Object[L \| R \| T \| B]</td>
             <td>`
-      + grid[currentKey].destroyLeft.toString() + ` \| `
-      + grid[currentKey].destroyRight.toString() + ` \| `
-      + grid[currentKey].destroyTop.toString() + ` \| `
-      + grid[currentKey].destroyBottom.toString() + ` \| ` +
-      `</td>
+        + grid[currentKey].destroyLeft.toString() + ` \| `
+        + grid[currentKey].destroyRight.toString() + ` \| `
+        + grid[currentKey].destroyTop.toString() + ` \| `
+        + grid[currentKey].destroyBottom.toString() + ` \| ` +
+        `</td>
           </tr>
             </tbody>
       </table>`
 
-    cellInfoPanel.current.innerHTML = res
+      cellInfoPanel.current.innerHTML = res
+    } else {
+      var res = `
+      <table onKeyDown={onKeyDown} ref={controlTable} style={controlTableStyle} className="table">
+        <thead className="thead-dark">
+          <tr>
+            <th scope="col">Parameters</th>
+            <th scope="col">Value</th>
+          </tr>
+        </thead>
+         <tbody className="table-light">
+          <tr>
+            <td>ObjectId</td>
+            <td>`+ currentObjectId + `</td>
+          </tr>
+          <tr>
+            <td>Mass(Cell Count X Density)</td>
+            <td>`+ objectList[currentObjectId].childObject.mass.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Force(x-axis)</td>
+            <td>`+ objectList[currentObjectId].childObject.forceX.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Force(y-axis)</td>
+            <td>`+ objectList[currentObjectId].childObject.forceY.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Velocity(x-axis)</td>
+            <td>`+ objectList[currentObjectId].childObject.velocityX.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Velocity(y-axis)</td>
+            <td>`+ objectList[currentObjectId].childObject.velocityY.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Energy Loss/Cycle</td>
+            <td>`+ objectList[currentObjectId].childObject.energyLoss.toString() + `</td>
+          </tr>
+          <tr>
+            <td>Opposing Force/Cycle</td>
+            <td>`+ objectList[currentObjectId].childObject.opposingForce.toString() + `</td>
+          </tr>
+            </tbody>
+      </table>`
+      cellInfoPanel.current.innerHTML = res
+    }
   }
 
   var onMouseEnterOrClick = (event) => {
@@ -1108,7 +1286,7 @@ function App() {
     colorPanel.current.style.top = (cell.offsetTop).toString() + "px"
     colorPanel.current.style.left = (cell.offsetLeft).toString() + "px"
 
-    if (grid[currentKey].objectId != undefined && grid[currentKey].objectId != "-1") {
+    if (grid[currentKey].objectId != undefined && grid[currentKey].objectId != "-1" && mode == "parent") {
       currentObjectId = grid[currentKey].objectId
 
       var res = `
@@ -1198,7 +1376,11 @@ function App() {
   var handleTab = (event) => {
     if(event.key == "Tab") {
       textPanel.current.hidden = true
-      objectList[currentObjectId].script = scriptData
+      if(mode == "parent") {
+        objectList[currentObjectId].script = scriptData
+      } else {
+        objectList[currentObjectId].childObject.script = scriptData
+      }
     }
   }
 
