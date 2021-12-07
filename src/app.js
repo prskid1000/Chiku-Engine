@@ -28,10 +28,20 @@ for (let i = 0; i < computeNumber * computeNumber; i++) {
   grid[i.toString()] = {}
 }
 
+var childGrid = []
+for(let i = 0; i < 9; i++) {
+  var subGrid = []
+  for(let j = 0; j < 9; j++) {
+    subGrid.push({i, j})
+  }
+  childGrid.push(subGrid)
+}
+
 function App() {
 
   var { height, width } = useWindowDimensions();
   var idx = 0
+  var cidx = 0
   var runState = false
   var upload = useRef()
   var currentProperty = null
@@ -42,17 +52,22 @@ function App() {
   var colorPanel = useRef()
   var controlTable = useRef()
   var textPanel = useRef()
+  var childPanel = useRef()
   var scriptData = ""
   var mode = "parent"
+  var childI = 0
+  var childJ = 0
 
   var appStyle = {
     height: Math.min(height * 0.99, width * 0.99),
     width: width * 0.99,
+    zIndex: "0",
     margin: "2px",
   }
 
   var cellStyle = {
     backgroundColor: "black",
+    zIndex: "1",
     height: Math.min(height * 0.99, width * 0.99) / computeNumber,
     width: Math.min(height * 0.99, width * 0.99) / computeNumber,
   }
@@ -63,7 +78,7 @@ function App() {
     color: "white",
     top: "0",
     left: "0",
-    zIndex: "999999",
+    zIndex: "7",
     fontSize: "16px",
     fontWeight: "bold"
   }
@@ -78,7 +93,7 @@ function App() {
     left: "0",
     height: Math.min(height * 0.99, width * 0.99) / computeNumber,
     width: Math.min(height * 0.99, width * 0.99) / computeNumber,
-    zIndex: "999999",
+    zIndex: "3",
     fontSize: "16px",
     fontWeight: "bold"
   }
@@ -88,7 +103,7 @@ function App() {
     backgroundColor: "transparent",
     top: "50%",
     left: width * 0.40,
-    zIndex: "999999",
+    zIndex: "3",
     fontSize: "12px",
     width: width * 0.20
   }
@@ -98,7 +113,7 @@ function App() {
     backgroundColor: "transparent",
     top: "50px",
     left: width * 0.30,
-    zIndex: "999999",
+    zIndex: "3",
     fontSize: "12px",
     width: width * 0.40,
   }
@@ -110,8 +125,28 @@ function App() {
     top: "0px",
     fontSize: "16px",
     left: "0px",
-    zIndex: "999999",
+    zIndex: "3",
     width: width * 0.30
+  }
+
+  var childGridStyle = {
+    position: "absolute",
+    color: "white",
+    backgroundColor: "transparent",
+    top: "0",
+    left: "0",
+    width: Math.min(height , width ) * 0.50,
+    height: Math.min(height, width ) * 0.505,
+    zIndex: "4",
+    border: "solid",
+    borderColor: "white"
+  }
+
+  var childCellStyle = {
+    backgroundColor: "tranparent",
+    zIndex: "5",
+    height: Math.min(height * 0.99, width * 0.99) * 0.50 / 9,
+    width: Math.min(height * 0.99, width * 0.99) * 0.50 / 9,
   }
 
   var simulate = () => {
@@ -1007,7 +1042,6 @@ function App() {
         }
       } break
       case "d": {
-
         if (currentProperty == null) {
           currentProperty = "density"
         }
@@ -1025,17 +1059,31 @@ function App() {
         if (mode == "child") {
           mode = "parent" 
           alert("Switched to Parent Mode")
+          childPanel.current.hidden = true
         } else {
-          mode = "child"
-          alert("Switched to Child Mode")
+          if (objectList[currentObjectId] != undefined && currentObjectId != "-1"){
+            mode = "child"
+            alert("Switched to Child Mode")
+            childPanel.current.hidden = false
+          }
         }
       } break
       case "c": {
-        if (currentProperty == null) {
-          if(mode == "parent") {
-            currentProperty = "cell"
+        if (mode == "child") {
+          var val = objectList[currentObjectId].childObject.childGrid[childI][childJ]
+          var childKey = "CH" + childI.toString() + childJ.toString()
+          if(val == 0) {
+            objectList[currentObjectId].childObject.childGrid[childI][childJ] = 1
+            var cell = document.getElementById(childKey)
+            cell.style.backgroundColor = "white"
           } else {
-
+            objectList[currentObjectId].childObject.childGrid[childI][childJ] = 0
+            var cell = document.getElementById(childKey)
+            cell.style.backgroundColor = "transparent"
+          }
+        } else {
+          if (currentProperty == null) {
+            currentProperty = "cell"
           }
         }
       } break
@@ -1277,23 +1325,26 @@ function App() {
   }
 
   var onMouseEnterOrClick = (event) => {
-    event.preventDefault()
-    var cell = document.getElementById(event.target.id)
-    cell.style.backgroundColor = "red"
-    currentKey = event.target.id
-    colorPanel.current.hidden = true
+    if(mode != "child") {
+      event.preventDefault()
+      var cell = document.getElementById(event.target.id)
+      cell.style.backgroundColor = "red"
+      currentKey = event.target.id
+      colorPanel.current.hidden = true
 
-    cellInfoPanel.current.style.top = (10 + cell.offsetTop).toString() + "px"
-    cellInfoPanel.current.style.left = (10 + cell.offsetLeft).toString() + "px"
-    textPanel.current.style.top = (cell.offsetTop).toString() + "px"
-    textPanel.current.style.left = (cell.offsetLeft).toString() + "px"
-    colorPanel.current.style.top = (cell.offsetTop).toString() + "px"
-    colorPanel.current.style.left = (cell.offsetLeft).toString() + "px"
+      cellInfoPanel.current.style.top = (10 + cell.offsetTop).toString() + "px"
+      cellInfoPanel.current.style.left = (10 + cell.offsetLeft).toString() + "px"
+      textPanel.current.style.top = (cell.offsetTop).toString() + "px"
+      textPanel.current.style.left = (cell.offsetLeft).toString() + "px"
+      colorPanel.current.style.top = (cell.offsetTop).toString() + "px"
+      colorPanel.current.style.left = (cell.offsetLeft).toString() + "px"
+      childPanel.current.style.top = (cell.offsetTop).toString() + "px"
+      childPanel.current.style.left = (cell.offsetLeft).toString() + "px"
 
-    if (grid[currentKey].objectId != undefined && grid[currentKey].objectId != "-1" && mode == "parent") {
-      currentObjectId = grid[currentKey].objectId
+      if (grid[currentKey].objectId != undefined && grid[currentKey].objectId != "-1" && mode == "parent") {
+        currentObjectId = grid[currentKey].objectId
 
-      var res = `
+        var res = `
       <table onKeyDown={onKeyDown} ref={controlTable} style={controlTableStyle} className="table">
         <thead className="thead-dark">
           <tr>
@@ -1304,73 +1355,100 @@ function App() {
          <tbody className="table-light">
           <tr>
             <td>ObjectId</td>
-            <td>`+ currentObjectId +`</td>
+            <td>`+ currentObjectId + `</td>
           </tr>
           <tr>
             <td>Mass(Cell Count X Density)</td>
-            <td>`+ objectList[currentObjectId].mass.toString() +`</td>
+            <td>`+ objectList[currentObjectId].mass.toString() + `</td>
           </tr>
            <tr>
             <td>Force(x-axis)</td>
-            <td>`+ objectList[currentObjectId].forceX.toString() +`</td>
+            <td>`+ objectList[currentObjectId].forceX.toString() + `</td>
           </tr>
            <tr>
             <td>Force(y-axis)</td>
-            <td>`+ objectList[currentObjectId].forceY.toString() +`</td>
+            <td>`+ objectList[currentObjectId].forceY.toString() + `</td>
           </tr>
            <tr>
             <td>Velocity(x-axis)</td>
-            <td>`+ objectList[currentObjectId].velocityX.toString() +`</td>
+            <td>`+ objectList[currentObjectId].velocityX.toString() + `</td>
           </tr>
            <tr>
             <td>Velocity(y-axis)</td>
-            <td>`+ objectList[currentObjectId].velocityY.toString() +`</td>
+            <td>`+ objectList[currentObjectId].velocityY.toString() + `</td>
           </tr>
            <tr>
             <td>Energy Loss/Cycle</td>
-            <td>`+ objectList[currentObjectId].energyLoss.toString() +`</td>
+            <td>`+ objectList[currentObjectId].energyLoss.toString() + `</td>
           </tr>
           <tr>
             <td>Opposing Force/Cycle</td>
-            <td>`+ objectList[currentObjectId].opposingForce.toString() +`</td>
+            <td>`+ objectList[currentObjectId].opposingForce.toString() + `</td>
           </tr>
            <tr>
             <td>Push Force(x-axis)(y-axis[L-Down \| R-Up])</td>
-            <td>`+ grid[event.target.id].pushX.toString() +`</td>
+            <td>`+ grid[event.target.id].pushX.toString() + `</td>
           </tr>
            <tr>
             <td>Push Force(y-axis)(x-axis[T-Right \| B-Left])</td>
-            <td>`+ grid[event.target.id].pushY.toString() +`</td>
+            <td>`+ grid[event.target.id].pushY.toString() + `</td>
           </tr>
            <tr>
             <td>Create Object[L \| R \| T \| B]</td>
             <td>`
-            + grid[event.target.id].produceLeft.toString() + ` \| `
-            + grid[event.target.id].produceRight.toString() + ` \| `
-            + grid[event.target.id].produceTop.toString() + ` \| `
-            + grid[event.target.id].produceBottom.toString() + ` \| ` +
-            `</td>
+          + grid[event.target.id].produceLeft.toString() + ` \| `
+          + grid[event.target.id].produceRight.toString() + ` \| `
+          + grid[event.target.id].produceTop.toString() + ` \| `
+          + grid[event.target.id].produceBottom.toString() + ` \| ` +
+          `</td>
           </tr>
            <tr>
             <td>Destory Object[L \| R \| T \| B]</td>
             <td>`
-        + grid[currentKey].destroyLeft.toString() + ` \| `
-        + grid[currentKey].destroyRight.toString() + ` \| `
-        + grid[currentKey].destroyTop.toString() + ` \| `
-        + grid[currentKey].destroyBottom.toString() + ` \| ` +
-            `</td>
+          + grid[currentKey].destroyLeft.toString() + ` \| `
+          + grid[currentKey].destroyRight.toString() + ` \| `
+          + grid[currentKey].destroyTop.toString() + ` \| `
+          + grid[currentKey].destroyBottom.toString() + ` \| ` +
+          `</td>
           </tr>
             </tbody>
       </table>`
 
-      cellInfoPanel.current.innerHTML = res
+        cellInfoPanel.current.innerHTML = res
+      }
+    }
+  }
+
+  var onMouseEnterOrClickChild = (event) => {
+    if(mode == "child") {
+      event.preventDefault()
+      var cell = document.getElementById(event.target.id)
+      cell.style.backgroundColor = "red"
+      childI = event.target.dataset.i
+      childJ = event.target.dataset.j
+      //console.log(objectList[currentObjectId].childObject.childGrid[childI][childJ])
+    }
+  }
+
+  var onMouseLeaveChild = (event) => {
+    if(mode == "child") {
+      event.preventDefault()
+      var val = objectList[currentObjectId].childObject.childGrid[childI][childJ]
+      var cell = document.getElementById(event.target.id)
+      if (val == 0) {
+        cell.style.backgroundColor = "transparent"
+      } else {
+        cell.style.backgroundColor = "white"
+      }
     }
   }
 
   var onMouseLeave = (event) => {
-    event.preventDefault()
-    var cell = document.getElementById(event.target.id)
-    cell.style.backgroundColor = grid[event.target.id].color
+   if(mode != "child") {
+     event.preventDefault()
+     var cell = document.getElementById(event.target.id)
+     cell.style.backgroundColor = grid[event.target.id].color
+   }
   }
 
   var onTextChange = (event) => {
@@ -1394,6 +1472,7 @@ function App() {
     cellInfoPanel.current.hidden = true
     colorPanel.current.hidden = true
     controlTable.current.hidden = true
+    childPanel.current.hidden = true
     alert("Press O to view Keyboard Controls")
     initGrid(grid)
     processDOM(grid)
@@ -1625,13 +1704,31 @@ function App() {
             <td>S(Toggle)</td>
           </tr>
           <tr>
-            <td>Create Child Design(In Child Mode) </td>
-            <td>C</td>
+            <td>Mark/Unmark Child Cell(In Child Mode) </td>
+            <td>C(Toggle)</td>
           </tr>
-
         </tbody>
       </table>
       <textarea onKeyDown={handleTab} ref={textPanel} rows="20" style={textAreaStyle} onChange={onTextChange}></textarea>
+      <div ref={childPanel} style={childGridStyle}>
+        {childGrid.map((subGrid) => (
+          <div key={cidx++} className="d-flex justify-content-center">{subGrid.map((index) => (
+            <div 
+              id={"CH"+index.i.toString() + index.j.toString()}
+              key={"CH" + index.i.toString() + index.j.toString()}
+              data-i={index.i.toString()}
+              data-j={index.j.toString()}
+              style={childCellStyle}
+              onMouseEnter={onMouseEnterOrClickChild}
+              onMouseLeave={onMouseLeaveChild}
+              onTouchStart={onMouseEnterOrClickChild}
+              onTouchEnd={onMouseLeaveChild}
+              onClick={onMouseEnterOrClickChild}
+              onKeyDown={onKeyDown}
+            ></div>
+          ))}</div>
+        ))}
+      </div>
     </div>
   );
 }

@@ -66,14 +66,17 @@ var getProperty = (key) => {
             "opposingForce": 0,
             "energyLoss": 0,
             "script": "(grid, objectList, objectId) => {\n}",
-            "root": {
-                "left": null,
-                "right": null,
-                "top": null,
-                "bottom": null,
-                "width": 1,
-                "height": 1
-            },
+            "childGrid": [
+                [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        ],
             "cellList": []
         },
         "cellList": [key],
