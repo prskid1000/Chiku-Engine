@@ -104,16 +104,78 @@ function App() {
     currentObjectId = processGrid(grid, objectList, currentObjectId)
     processDOM(grid)
 
-    if (objectList[currentObjectId] != undefined && objectList[currentObjectId] != null) {
-      var str = "objectId: " + objectList[currentObjectId].objectId.toString() + " | "
-      str += "mass: " + objectList[currentObjectId].mass.toString() + " | "
-      str += "fx: " + objectList[currentObjectId].forceX.toString() + " | "
-      str += "fy: " + objectList[currentObjectId].forceY.toString() + " | "
-      str += "vx: " + objectList[currentObjectId].velocityX.toString() + " | "
-      str += "vy: " + objectList[currentObjectId].velocityY.toString() + " | "
-      str += "el: " + objectList[currentObjectId].energyLoss.toString() + " | "
-      str += "of: " + objectList[currentObjectId].opposingForce.toString() + " | "
-      cellInfoPanel.current.innerHTML = str
+    if (currentObjectId != undefined && currentObjectId!= "-1") {
+      var res = `
+      <table onKeyDown={onKeyDown} ref={controlTable} style={controlTableStyle} className="table">
+        <thead className="thead-dark">
+          <tr>
+            <th scope="col">Parameters</th>
+            <th scope="col">Value</th>
+          </tr>
+        </thead>
+         <tbody className="table-light">
+          <tr>
+            <td>ObjectId</td>
+            <td>`+ currentObjectId + `</td>
+          </tr>
+          <tr>
+            <td>Mass(Cell Count X Density)</td>
+            <td>`+ objectList[currentObjectId].mass.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Force(x-axis)</td>
+            <td>`+ objectList[currentObjectId].forceX.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Force(y-axis)</td>
+            <td>`+ objectList[currentObjectId].forceY.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Velocity(x-axis)</td>
+            <td>`+ objectList[currentObjectId].velocityX.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Velocity(y-axis)</td>
+            <td>`+ objectList[currentObjectId].velocityY.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Energy Loss/Cycle</td>
+            <td>`+ objectList[currentObjectId].energyLoss.toString() + `</td>
+          </tr>
+          <tr>
+            <td>Opposing Force/Cycle</td>
+            <td>`+ objectList[currentObjectId].opposingForce.toString() + `</td>
+          </tr>
+            <tr>
+            <td>Push Force(x-axis)(y-axis[L-Down \| R-Up])</td>
+            <td>`+ grid[currentKey].pushX.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Push Force(y-axis)(x-axis[T-Right \| B-Left])</td>
+            <td>`+ grid[currentKey].pushY.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Create Object[L \| R \| T \| B]</td>
+            <td>`
+                 + grid[currentKey].produceLeft.toString() + ` \| `
+                 + grid[currentKey].produceRight.toString() + ` \| `
+                 + grid[currentKey].produceTop.toString() + ` \| `
+                 + grid[currentKey].produceBottom.toString() + ` \| ` +
+        `</td>
+          </tr>
+           <tr>
+            <td>Destory Object[L \| R \| T \| B]</td>
+            <td>`
+        + grid[currentKey].destroyLeft.toString() + ` \| `
+        + grid[currentKey].destroyRight.toString() + ` \| `
+        + grid[currentKey].destroyTop.toString() + ` \| `
+        + grid[currentKey].destroyBottom.toString() + ` \| ` +
+            `</td>
+          </tr>
+            </tbody>
+      </table>`
+
+      cellInfoPanel.current.innerHTML = res
     }
     if (runState == true) {
       setTimeout(() => {
@@ -194,11 +256,11 @@ function App() {
           grid[currentKey].produceTop = false;
         }
       } break
-      case "destory": {
+      case "destroy": {
         if (grid[currentKey].destroyTop == false) {
           grid[currentKey].destroyTop = true;
         } else {
-          grid[currentKey].destoryTop = false;
+          grid[currentKey].destroyTop = false;
         }
       } break
       case "eloss": {
@@ -235,16 +297,79 @@ function App() {
         if (grid[futureKey].objectId != undefined && grid[futureKey].objectId != "-1") {
           currentObjectId = grid[futureKey].objectId
 
-          var str = "objectId: " + objectList[currentObjectId].objectId.toString() + " | "
-          str += "mass: " + objectList[currentObjectId].mass.toString() + " | "
-          str += "fx: " + objectList[currentObjectId].forceX.toString() + " | "
-          str += "fy: " + objectList[currentObjectId].forceY.toString() + " | "
-          str += "px: " + grid[futureKey].pushX.toString() + " | "
-          str += "py: " + grid[futureKey].pushY.toString() + " | "
-          str += "vx: " + objectList[currentObjectId].velocityX.toString() + " | "
-          str += "vy: " + objectList[currentObjectId].velocityY.toString() + " | "
-          cellInfoPanel.current.innerHTML = str
+          var res = `
+      <table onKeyDown={onKeyDown} ref={controlTable} style={controlTableStyle} className="table">
+        <thead className="thead-dark">
+          <tr>
+            <th scope="col">Parameters</th>
+            <th scope="col">Value</th>
+          </tr>
+        </thead>
+         <tbody className="table-light">
+          <tr>
+            <td>ObjectId</td>
+            <td>`+ currentObjectId + `</td>
+          </tr>
+          <tr>
+            <td>Mass(Cell Count X Density)</td>
+            <td>`+ objectList[currentObjectId].mass.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Force(x-axis)</td>
+            <td>`+ objectList[currentObjectId].forceX.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Force(y-axis)</td>
+            <td>`+ objectList[currentObjectId].forceY.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Velocity(x-axis)</td>
+            <td>`+ objectList[currentObjectId].velocityX.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Velocity(y-axis)</td>
+            <td>`+ objectList[currentObjectId].velocityY.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Energy Loss/Cycle</td>
+            <td>`+ objectList[currentObjectId].energyLoss.toString() + `</td>
+          </tr>
+          <tr>
+            <td>Opposing Force/Cycle</td>
+            <td>`+ objectList[currentObjectId].opposingForce.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Push Force(x-axis)(y-axis[L-Down \| R-Up])</td>
+            <td>`+ grid[futureKey].pushX.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Push Force(y-axis)(x-axis[T-Right \| B-Left])</td>
+            <td>`+ grid[futureKey].pushY.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Create Object[L \| R \| T \| B]</td>
+            <td>`
+            + grid[futureKey].produceLeft.toString() + ` \| `
+            + grid[futureKey].produceRight.toString() + ` \| `
+            + grid[futureKey].produceTop.toString() + ` \| `
+            + grid[futureKey].produceBottom.toString() + ` \| ` +
+            `</td>
+          </tr>
+           <tr>
+            <td>Destory Object[L \| R \| T \| B]</td>
+            <td>`
+            + grid[currentKey].destroyLeft.toString() + ` \| `
+            + grid[currentKey].destroyRight.toString() + ` \| `
+            + grid[currentKey].destroyTop.toString() + ` \| `
+            + grid[currentKey].destroyBottom.toString() + ` \| ` +
+            `</td>
+          </tr>
+            </tbody>
+      </table>`
+
+          cellInfoPanel.current.innerHTML = res
         }
+
       }
     }
   }
@@ -277,11 +402,11 @@ function App() {
           grid[currentKey].produceBottom = false;
         }
       } break
-      case "destory": {
+      case "destroy": {
         if (grid[currentKey].destroyBottom == false) {
           grid[currentKey].destroyBottom = true;
         } else {
-          grid[currentKey].destoryBottom = false;
+          grid[currentKey].destroyBottom = false;
         }
       } break
       case "eloss": {
@@ -318,18 +443,78 @@ function App() {
         if (grid[futureKey].objectId != undefined && grid[futureKey].objectId != "-1") {
           currentObjectId = grid[futureKey].objectId
 
-          var str = "objectId: " + objectList[currentObjectId].objectId.toString() + " | "
-          str += "mass: " + objectList[currentObjectId].mass.toString() + " | "
-          str += "fx: " + objectList[currentObjectId].forceX.toString() + " | "
-          str += "fy: " + objectList[currentObjectId].forceY.toString() + " | "
-          str += "px: " + grid[futureKey].pushX.toString() + " | "
-          str += "py: " + grid[futureKey].pushY.toString() + " | "
-          str += "vx: " + objectList[currentObjectId].velocityX.toString() + " | "
-          str += "vy: " + objectList[currentObjectId].velocityY.toString() + " | "
-          cellInfoPanel.current.innerHTML = str
+          var res = `
+      <table onKeyDown={onKeyDown} ref={controlTable} style={controlTableStyle} className="table">
+        <thead className="thead-dark">
+          <tr>
+            <th scope="col">Parameters</th>
+            <th scope="col">Value</th>
+          </tr>
+        </thead>
+         <tbody className="table-light">
+          <tr>
+            <td>ObjectId</td>
+            <td>`+ currentObjectId + `</td>
+          </tr>
+          <tr>
+            <td>Mass(Cell Count X Density)</td>
+            <td>`+ objectList[currentObjectId].mass.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Force(x-axis)</td>
+            <td>`+ objectList[currentObjectId].forceX.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Force(y-axis)</td>
+            <td>`+ objectList[currentObjectId].forceY.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Velocity(x-axis)</td>
+            <td>`+ objectList[currentObjectId].velocityX.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Velocity(y-axis)</td>
+            <td>`+ objectList[currentObjectId].velocityY.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Energy Loss/Cycle</td>
+            <td>`+ objectList[currentObjectId].energyLoss.toString() + `</td>
+          </tr>
+          <tr>
+            <td>Opposing Force/Cycle</td>
+            <td>`+ objectList[currentObjectId].opposingForce.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Push Force(x-axis)(y-axis[L-Down \| R-Up])</td>
+            <td>`+ grid[futureKey].pushX.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Push Force(y-axis)(x-axis[T-Right \| B-Left])</td>
+            <td>`+ grid[futureKey].pushY.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Create Object[L \| R \| T \| B]</td>
+            <td>`
+            + grid[futureKey].produceLeft.toString() + ` \| `
+            + grid[futureKey].produceRight.toString() + ` \| `
+            + grid[futureKey].produceTop.toString() + ` \| `
+            + grid[futureKey].produceBottom.toString() + ` \| ` +
+            `</td>
+          </tr>
+           <tr>
+            <td>Destory Object[L \| R \| T \| B]</td>
+            <td>`
+            + grid[currentKey].destroyLeft.toString() + ` \| `
+            + grid[currentKey].destroyRight.toString() + ` \| `
+            + grid[currentKey].destroyTop.toString() + ` \| `
+            + grid[currentKey].destroyBottom.toString() + ` \| ` +
+            `</td>
+          </tr>
+            </tbody>
+      </table>`
+
+          cellInfoPanel.current.innerHTML = res
         }
-
-
       }
     }
   }
@@ -368,11 +553,11 @@ function App() {
           grid[currentKey].produceLeft = false;
         }
       } break
-      case "destory": {
+      case "destroy": {
         if (grid[currentKey].destroyLeft == false) {
-          grid[currentKey].destroyleft = true;
+          grid[currentKey].destroyLeft = true;
         } else {
-          grid[currentKey].destoryLeft = false;
+          grid[currentKey].destroyLeft = false;
         }
       } break
       case "velocity": {
@@ -403,18 +588,78 @@ function App() {
         if (grid[futureKey].objectId != undefined && grid[futureKey].objectId != "-1") {
           currentObjectId = grid[futureKey].objectId
 
-          var str = "objectId: " + objectList[currentObjectId].objectId.toString() + " | "
-          str += "mass: " + objectList[currentObjectId].mass.toString() + " | "
-          str += "fx: " + objectList[currentObjectId].forceX.toString() + " | "
-          str += "fy: " + objectList[currentObjectId].forceY.toString() + " | "
-          str += "px: " + grid[futureKey].pushX.toString() + " | "
-          str += "py: " + grid[futureKey].pushY.toString() + " | "
-          str += "vx: " + objectList[currentObjectId].velocityX.toString() + " | "
-          str += "vy: " + objectList[currentObjectId].velocityY.toString() + " | "
-          cellInfoPanel.current.innerHTML = str
+          var res = `
+      <table onKeyDown={onKeyDown} ref={controlTable} style={controlTableStyle} className="table">
+        <thead className="thead-dark">
+          <tr>
+            <th scope="col">Parameters</th>
+            <th scope="col">Value</th>
+          </tr>
+        </thead>
+         <tbody className="table-light">
+          <tr>
+            <td>ObjectId</td>
+            <td>`+ currentObjectId + `</td>
+          </tr>
+          <tr>
+            <td>Mass(Cell Count X Density)</td>
+            <td>`+ objectList[currentObjectId].mass.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Force(x-axis)</td>
+            <td>`+ objectList[currentObjectId].forceX.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Force(y-axis)</td>
+            <td>`+ objectList[currentObjectId].forceY.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Velocity(x-axis)</td>
+            <td>`+ objectList[currentObjectId].velocityX.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Velocity(y-axis)</td>
+            <td>`+ objectList[currentObjectId].velocityY.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Energy Loss/Cycle</td>
+            <td>`+ objectList[currentObjectId].energyLoss.toString() + `</td>
+          </tr>
+          <tr>
+            <td>Opposing Force/Cycle</td>
+            <td>`+ objectList[currentObjectId].opposingForce.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Push Force(x-axis)(y-axis[L-Down \| R-Up])</td>
+            <td>`+ grid[futureKey].pushX.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Push Force(y-axis)(x-axis[T-Right \| B-Left])</td>
+            <td>`+ grid[futureKey].pushY.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Create Object[L \| R \| T \| B]</td>
+            <td>`
+            + grid[futureKey].produceLeft.toString() + ` \| `
+            + grid[futureKey].produceRight.toString() + ` \| `
+            + grid[futureKey].produceTop.toString() + ` \| `
+            + grid[futureKey].produceBottom.toString() + ` \| ` +
+            `</td>
+          </tr>
+           <tr>
+            <td>Destory Object[L \| R \| T \| B]</td>
+            <td>`
+            + grid[currentKey].destroyLeft.toString() + ` \| `
+            + grid[currentKey].destroyRight.toString() + ` \| `
+            + grid[currentKey].destroyTop.toString() + ` \| `
+            + grid[currentKey].destroyBottom.toString() + ` \| ` +
+            `</td>
+          </tr>
+            </tbody>
+      </table>`
+
+          cellInfoPanel.current.innerHTML = res
         }
-
-
       }
     }
   }
@@ -444,6 +689,13 @@ function App() {
           grid[currentKey].produceRight = true;
         } else {
           grid[currentKey].produceRight = false;
+        }
+      } break
+      case "destroy": {
+        if (grid[currentKey].destroyRight == false) {
+          grid[currentKey].destroyRight = true;
+        } else {
+          grid[currentKey].destroyRight = false;
         }
       } break
       case "velocity": {
@@ -480,18 +732,78 @@ function App() {
         if (grid[futureKey].objectId != undefined && grid[futureKey].objectId != "-1") {
           currentObjectId = grid[futureKey].objectId
 
-          var str = "objectId: " + objectList[currentObjectId].objectId.toString() + " | "
-          str += "mass: " + objectList[currentObjectId].mass.toString() + " | "
-          str += "fx: " + objectList[currentObjectId].forceX.toString() + " | "
-          str += "fy: " + objectList[currentObjectId].forceY.toString() + " | "
-          str += "px: " + grid[futureKey].pushX.toString() + " | "
-          str += "py: " + grid[futureKey].pushY.toString() + " | "
-          str += "vx: " + objectList[currentObjectId].velocityX.toString() + " | "
-          str += "vy: " + objectList[currentObjectId].velocityY.toString() + " | "
-          cellInfoPanel.current.innerHTML = str
+          var res = `
+      <table onKeyDown={onKeyDown} ref={controlTable} style={controlTableStyle} className="table">
+        <thead className="thead-dark">
+          <tr>
+            <th scope="col">Parameters</th>
+            <th scope="col">Value</th>
+          </tr>
+        </thead>
+         <tbody className="table-light">
+          <tr>
+            <td>ObjectId</td>
+            <td>`+ currentObjectId + `</td>
+          </tr>
+          <tr>
+            <td>Mass(Cell Count X Density)</td>
+            <td>`+ objectList[currentObjectId].mass.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Force(x-axis)</td>
+            <td>`+ objectList[currentObjectId].forceX.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Force(y-axis)</td>
+            <td>`+ objectList[currentObjectId].forceY.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Velocity(x-axis)</td>
+            <td>`+ objectList[currentObjectId].velocityX.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Velocity(y-axis)</td>
+            <td>`+ objectList[currentObjectId].velocityY.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Energy Loss/Cycle</td>
+            <td>`+ objectList[currentObjectId].energyLoss.toString() + `</td>
+          </tr>
+          <tr>
+            <td>Opposing Force/Cycle</td>
+            <td>`+ objectList[currentObjectId].opposingForce.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Push Force(x-axis)(y-axis[L-Down \| R-Up])</td>
+            <td>`+ grid[futureKey].pushX.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Push Force(y-axis)(x-axis[T-Right \| B-Left])</td>
+            <td>`+ grid[futureKey].pushY.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Create Object[L \| R \| T \| B]</td>
+            <td>`
+            + grid[futureKey].produceLeft.toString() + ` \| `
+            + grid[futureKey].produceRight.toString() + ` \| `
+            + grid[futureKey].produceTop.toString() + ` \| `
+            + grid[futureKey].produceBottom.toString() + ` \| ` +
+            `</td>
+          </tr>
+           <tr>
+            <td>Destory Object[L \| R \| T \| B]</td>
+            <td>`
+            + grid[currentKey].destroyLeft.toString() + ` \| `
+            + grid[currentKey].destroyRight.toString() + ` \| `
+            + grid[currentKey].destroyTop.toString() + ` \| `
+            + grid[currentKey].destroyBottom.toString() + ` \| ` +
+            `</td>
+          </tr>
+            </tbody>
+      </table>`
+
+          cellInfoPanel.current.innerHTML = res
         }
-
-
       }
     }
   }
@@ -581,6 +893,12 @@ function App() {
         if (currentProperty == null) {
           currentProperty = "density"
         }
+      } break
+      case "i": {
+        //Edit Object Script
+      } break
+      case "S": {
+        //Switch between parent and child mode
       } break
       case "c": {
         if (currentProperty == null) {
@@ -684,18 +1002,77 @@ function App() {
       } break
     }
     if (objectList[currentObjectId] == undefined) return
-    var str = "objectId: " + objectList[currentObjectId].objectId.toString() + " | "
-    str += "mass: " + objectList[currentObjectId].mass.toString() + " | "
-    str += "fx: " + objectList[currentObjectId].forceX.toString() + " | "
-    str += "fy: " + objectList[currentObjectId].forceY.toString() + " | "
-    str += "px: " + grid[currentKey].pushX.toString() + " | "
-    str += "py: " + grid[currentKey].pushY.toString() + " | "
-    str += "vx: " + objectList[currentObjectId].velocityX.toString() + " | "
-    str += "vy: " + objectList[currentObjectId].velocityY.toString() + " | "
-    str += "el: " + objectList[currentObjectId].energyLoss.toString() + " | "
-    str += "of: " + objectList[currentObjectId].opposingForce.toString() + " | "
-    cellInfoPanel.current.innerHTML = str
-    //console.log(objectList[currentObjectId])
+    var res = `
+      <table onKeyDown={onKeyDown} ref={controlTable} style={controlTableStyle} className="table">
+        <thead className="thead-dark">
+          <tr>
+            <th scope="col">Parameters</th>
+            <th scope="col">Value</th>
+          </tr>
+        </thead>
+         <tbody className="table-light">
+          <tr>
+            <td>ObjectId</td>
+            <td>`+ currentObjectId + `</td>
+          </tr>
+          <tr>
+            <td>Mass(Cell Count X Density)</td>
+            <td>`+ objectList[currentObjectId].mass.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Force(x-axis)</td>
+            <td>`+ objectList[currentObjectId].forceX.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Force(y-axis)</td>
+            <td>`+ objectList[currentObjectId].forceY.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Velocity(x-axis)</td>
+            <td>`+ objectList[currentObjectId].velocityX.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Velocity(y-axis)</td>
+            <td>`+ objectList[currentObjectId].velocityY.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Energy Loss/Cycle</td>
+            <td>`+ objectList[currentObjectId].energyLoss.toString() + `</td>
+          </tr>
+          <tr>
+            <td>Opposing Force/Cycle</td>
+            <td>`+ objectList[currentObjectId].opposingForce.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Push Force(x-axis)(y-axis[L-Down \| R-Up])</td>
+            <td>`+ grid[event.target.id].pushX.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Push Force(y-axis)(x-axis[T-Right \| B-Left])</td>
+            <td>`+ grid[event.target.id].pushY.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Create Object[L \| R \| T \| B]</td>
+            <td>`
+      + grid[event.target.id].produceLeft.toString() + ` \| `
+      + grid[event.target.id].produceRight.toString() + ` \| `
+      + grid[event.target.id].produceTop.toString() + ` \| `
+      + grid[event.target.id].produceBottom.toString() + ` \| ` +
+      `</td>
+          </tr>
+           <tr>
+            <td>Destory Object[L \| R \| T \| B]</td>
+            <td>`
+      + grid[currentKey].destroyLeft.toString() + ` \| `
+      + grid[currentKey].destroyRight.toString() + ` \| `
+      + grid[currentKey].destroyTop.toString() + ` \| `
+      + grid[currentKey].destroyBottom.toString() + ` \| ` +
+      `</td>
+          </tr>
+            </tbody>
+      </table>`
+
+    cellInfoPanel.current.innerHTML = res
   }
 
   var onMouseEnterOrClick = (event) => {
@@ -713,17 +1090,77 @@ function App() {
     if (grid[event.target.id].objectId != undefined && grid[event.target.id].objectId != "-1") {
       currentObjectId = grid[event.target.id].objectId
 
-      var str = "objectId: " + objectList[currentObjectId].objectId.toString() + " | "
-      str += "mass: " + objectList[currentObjectId].mass.toString() + " | "
-      str += "fx: " + objectList[currentObjectId].forceX.toString() + " | "
-      str += "fy: " + objectList[currentObjectId].forceY.toString() + " | "
-      str += "px: " + grid[event.target.id].pushX.toString() + " | "
-      str += "py: " + grid[event.target.id].pushY.toString() + " | "
-      str += "vx: " + objectList[currentObjectId].velocityX.toString() + " | "
-      str += "vy: " + objectList[currentObjectId].velocityY.toString() + " | "
-      str += "el: " + objectList[currentObjectId].energyLoss.toString() + " | "
-      str += "of: " + objectList[currentObjectId].opposingForce.toString() + " | "
-      cellInfoPanel.current.innerHTML = str
+      var res = `
+      <table onKeyDown={onKeyDown} ref={controlTable} style={controlTableStyle} className="table">
+        <thead className="thead-dark">
+          <tr>
+            <th scope="col">Parameters</th>
+            <th scope="col">Value</th>
+          </tr>
+        </thead>
+         <tbody className="table-light">
+          <tr>
+            <td>ObjectId</td>
+            <td>`+ currentObjectId +`</td>
+          </tr>
+          <tr>
+            <td>Mass(Cell Count X Density)</td>
+            <td>`+ objectList[currentObjectId].forceX.toString() +`</td>
+          </tr>
+           <tr>
+            <td>Force(x-axis)</td>
+            <td>`+ objectList[currentObjectId].forceX.toString() +`</td>
+          </tr>
+           <tr>
+            <td>Force(y-axis)</td>
+            <td>`+ objectList[currentObjectId].forceY.toString() +`</td>
+          </tr>
+           <tr>
+            <td>Velocity(x-axis)</td>
+            <td>`+ objectList[currentObjectId].velocityX.toString() +`</td>
+          </tr>
+           <tr>
+            <td>Velocity(y-axis)</td>
+            <td>`+ objectList[currentObjectId].velocityY.toString() +`</td>
+          </tr>
+           <tr>
+            <td>Energy Loss/Cycle</td>
+            <td>`+ objectList[currentObjectId].energyLoss.toString() +`</td>
+          </tr>
+          <tr>
+            <td>Opposing Force/Cycle</td>
+            <td>`+ objectList[currentObjectId].opposingForce.toString() +`</td>
+          </tr>
+           <tr>
+            <td>Push Force(x-axis)(y-axis[L-Down \| R-Up])</td>
+            <td>`+ grid[event.target.id].pushX.toString() +`</td>
+          </tr>
+           <tr>
+            <td>Push Force(y-axis)(x-axis[T-Right \| B-Left])</td>
+            <td>`+ grid[event.target.id].pushY.toString() +`</td>
+          </tr>
+           <tr>
+            <td>Create Object[L \| R \| T \| B]</td>
+            <td>`
+            + grid[event.target.id].produceLeft.toString() + ` \| `
+            + grid[event.target.id].produceRight.toString() + ` \| `
+            + grid[event.target.id].produceTop.toString() + ` \| `
+            + grid[event.target.id].produceBottom.toString() + ` \| ` +
+            `</td>
+          </tr>
+           <tr>
+            <td>Destory Object[L \| R \| T \| B]</td>
+            <td>`
+        + grid[currentKey].destroyLeft.toString() + ` \| `
+        + grid[currentKey].destroyRight.toString() + ` \| `
+        + grid[currentKey].destroyTop.toString() + ` \| `
+        + grid[currentKey].destroyBottom.toString() + ` \| ` +
+            `</td>
+          </tr>
+            </tbody>
+      </table>`
+
+      cellInfoPanel.current.innerHTML = res
     }
   }
 
@@ -926,39 +1363,47 @@ function App() {
           </tr>
           <tr><td><hr></hr></td><td><hr></hr></td></tr>
           <tr>
-            <td>Produce Upward Ability of Current Cell </td>
+            <td>Upward Produce Ability of Current Cell </td>
             <td>X(Hold) + ArrowUp(Toggle)</td>
           </tr>
           <tr>
-            <td>Produce Downward Ability of Current Cell </td>
+            <td>Downward Produce Ability of Current Cell </td>
             <td>X(Hold) + ArrowDown(Toggle)</td>
           </tr>
           <tr>
-            <td>Produce Leftward Ability of Current Cell </td>
+            <td>Leftward Produce Ability of Current Cell </td>
             <td>X(Hold) + ArrowLeft(Toggle)</td>
           </tr>
           <tr>
-            <td>Produce Rightward Ability of Current Cell </td>
+            <td>Rightward Produce Ability of Current Cell </td>
             <td>X(Hold) + ArrowRight(Toggle)</td>
           </tr>
           <tr><td><hr></hr></td><td><hr></hr></td></tr>
           <tr>
-            <td>Destroy Upward Ability of Current Cell </td>
+            <td>Upward Destroy  Ability of Current Cell </td>
             <td>Z(Hold) + ArrowUp(Toggle)</td>
           </tr>
           <tr>
-            <td>Destroy Downward Ability of Current Cell </td>
+            <td>Downward Destroy Ability of Current Cell </td>
             <td>Z(Hold) + ArrowDown(Toggle)</td>
           </tr>
           <tr>
-            <td>Destroy Leftward Ability of Current Cell </td>
+            <td>Leftward Destroy Ability of Current Cell </td>
             <td>Z(Hold) + ArrowLeft(Toggle)</td>
           </tr>
           <tr>
-            <td>Destroy Rightward Ability of Current Cell </td>
+            <td>Rightward Destroy Ability of Current Cell </td>
             <td>Z(Hold) + ArrowRight(Toggle)</td>
           </tr>
           <tr><td><hr></hr></td><td><hr></hr></td></tr>
+          <tr>
+            <td>Edit Object Script </td>
+            <td>i</td>
+          </tr>
+          <tr>
+            <td>Parent-Child Mode Switch </td>
+            <td>S(Toggle)</td>
+          </tr>
         </tbody>
       </table>
     </div>

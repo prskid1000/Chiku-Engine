@@ -5,14 +5,14 @@ module.exports = {
             grid[key].type = "empty",
             grid[key].pushX = 0,
             grid[key].pushY = 0,
-            grid[key].produceLeft = 0,
-            grid[key].produceRight = 0,
-            grid[key].produceTop = 0,
-            grid[key].produceBottom = 0,
-            grid[key].destroyLeft = 0,
-            grid[key].destroyRight = 0,
-            grid[key].destroyTop = 0,
-            grid[key].destroyBottom = 0,
+            grid[key].produceLeft = false,
+            grid[key].produceRight = false,
+            grid[key].produceTop = false,
+            grid[key].produceBottom = false,
+            grid[key].destroyLeft = false,
+            grid[key].destroyRight = false,
+            grid[key].destroyTop = false,
+            grid[key].destroyBottom = false,
             grid[key].objectId = "-1"
         })
     }
