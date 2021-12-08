@@ -66,6 +66,8 @@ function App() {
   var mode = "parent"
   var childI = 0
   var childJ = 0
+  var targetI = 0
+  var targetJ = 0
 
   var appStyle = {
     height: Math.min(height * 0.99, width * 0.99),
@@ -159,10 +161,11 @@ function App() {
   }
 
   var simulate = () => {
+    console.log(objectList)
     currentObjectId = processGrid(grid, objectList, currentObjectId)
     processDOM(grid)
 
-    if (currentObjectId != undefined && currentObjectId != "-1" && mode == "parent") {
+    if (currentObjectId != undefined && objectList[currentObjectId] != undefined && currentObjectId != "-1" && mode == "parent") {
       var res = `
       <table onKeyDown={onKeyDown} ref={controlTable} style={controlTableStyle} className="table">
         <thead className="thead-dark">
@@ -229,6 +232,10 @@ function App() {
         + grid[currentKey].destroyTop.toString() + ` \| `
         + grid[currentKey].destroyBottom.toString() + ` \| ` +
             `</td>
+          </tr>
+           <tr>
+            <td>Self Destroy</td>
+            <td>`+ objectList[currentObjectId].destroySelf.toString() + `</td>
           </tr>
             </tbody>
       </table>`
@@ -307,6 +314,14 @@ function App() {
       case "velocity": {
         objectList[currentObjectId].childObject.velocityY += 1;
       } break
+      case "destroy": {
+        if (objectList[currentObjectId].childObject.destroyTop == false) {
+          objectList[currentObjectId].childObject.destroyTop = true;
+        } else {
+          objectList[currentObjectId].childObject.destroyTop = false;
+        }
+      } break
+      
       default: {
         var childKey = "CH" + childI.toString() + childJ.toString()
         var cell = document.getElementById(childKey)
@@ -357,6 +372,19 @@ function App() {
             <td>Opposing Force/Cycle</td>
             <td>`+ objectList[currentObjectId].childObject.opposingForce.toString() + `</td>
           </tr>
+           <tr>
+            <td>Destory Object[L \| R \| T \| B]</td>
+            <td>`
+          + objectList[currentObjectId].childObject.destroyLeft.toString() + ` \| `
+          + objectList[currentObjectId].childObject.destroyRight.toString() + ` \| `
+          + objectList[currentObjectId].childObject.destroyTop.toString() + ` \| `
+          + objectList[currentObjectId].childObject.destroyBottom.toString() + ` \| ` +
+            `</td>
+          </tr>
+           <tr>
+            <td>Self Destroy</td>
+            <td>`+ objectList[currentObjectId].childObject.destroySelf.toString() + `</td>
+          </tr>
             </tbody>
       </table>`
         cellInfoPanel.current.innerHTML = res
@@ -384,6 +412,13 @@ function App() {
       } break
       case "velocity": {
         objectList[currentObjectId].childObject.velocityY -= 1;
+      } break
+      case "destroy": {
+        if (objectList[currentObjectId].childObject.destroyBottom == false) {
+          objectList[currentObjectId].childObject.destroyBottom = true;
+        } else {
+          objectList[currentObjectId].childObject.destroyBottom = false;
+        }
       } break
       default: {
         var childKey = "CH" + childI.toString() + childJ.toString()
@@ -435,6 +470,19 @@ function App() {
             <td>Opposing Force/Cycle</td>
             <td>`+ objectList[currentObjectId].childObject.opposingForce.toString() + `</td>
           </tr>
+           <tr>
+            <td>Destory Object[L \| R \| T \| B]</td>
+            <td>`
+          + objectList[currentObjectId].childObject.destroyLeft.toString() + ` \| `
+          + objectList[currentObjectId].childObject.destroyRight.toString() + ` \| `
+          + objectList[currentObjectId].childObject.destroyTop.toString() + ` \| `
+          + objectList[currentObjectId].childObject.destroyBottom.toString() + ` \| ` +
+            `</td>
+          </tr>
+           <tr>
+            <td>Self Destroy</td>
+            <td>`+ objectList[currentObjectId].childObject.destroySelf.toString() + `</td>
+          </tr>
             </tbody>
       </table>`
         cellInfoPanel.current.innerHTML = res
@@ -462,6 +510,13 @@ function App() {
       } break
       case "velocity": {
         objectList[currentObjectId].childObject.velocityX -= 1;
+      } break
+      case "destroy": {
+        if (objectList[currentObjectId].childObject.destroyLeft == false) {
+          objectList[currentObjectId].childObject.destroyLeft = true;
+        } else {
+          objectList[currentObjectId].childObject.destroyLeft = false;
+        }
       } break
       default: {
         var childKey = "CH" + childI.toString() + childJ.toString()
@@ -513,6 +568,19 @@ function App() {
             <td>Opposing Force/Cycle</td>
             <td>`+ objectList[currentObjectId].childObject.opposingForce.toString() + `</td>
           </tr>
+           <tr>
+            <td>Destory Object[L \| R \| T \| B]</td>
+            <td>`
+          + objectList[currentObjectId].childObject.destroyLeft.toString() + ` \| `
+          + objectList[currentObjectId].childObject.destroyRight.toString() + ` \| `
+          + objectList[currentObjectId].childObject.destroyTop.toString() + ` \| `
+          + objectList[currentObjectId].childObject.destroyBottom.toString() + ` \| ` +
+            `</td>
+          </tr>
+           <tr>
+            <td>Self Destroy</td>
+            <td>`+ objectList[currentObjectId].childObject.destroySelf.toString() + `</td>
+          </tr>
             </tbody>
       </table>`
         cellInfoPanel.current.innerHTML = res
@@ -539,6 +607,13 @@ function App() {
       } break
       case "oppforce": {
         objectList[currentObjectId].childObject.opposingForce += 1;
+      } break
+      case "destroy": {
+        if (objectList[currentObjectId].childObject.destroyRight == false) {
+          objectList[currentObjectId].childObject.destroyRight = true;
+        } else {
+          objectList[currentObjectId].childObject.destroyRight = false;
+        }
       } break
       default: {
         var childKey = "CH" + childI.toString() + childJ.toString()
@@ -589,6 +664,19 @@ function App() {
           <tr>
             <td>Opposing Force/Cycle</td>
             <td>`+ objectList[currentObjectId].childObject.opposingForce.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Destory Object[L \| R \| T \| B]</td>
+            <td>`
+          + objectList[currentObjectId].childObject.destroyLeft.toString() + ` \| `
+          + objectList[currentObjectId].childObject.destroyRight.toString() + ` \| `
+          + objectList[currentObjectId].childObject.destroyTop.toString() + ` \| `
+          + objectList[currentObjectId].childObject.destroyBottom.toString() + ` \| ` +
+            `</td>
+          </tr>
+           <tr>
+            <td>Self Destroy</td>
+            <td>`+ objectList[currentObjectId].childObject.destroySelf.toString() + `</td>
           </tr>
             </tbody>
       </table>`
@@ -732,6 +820,10 @@ function App() {
             + grid[futureKey].destroyTop.toString() + ` \| `
             + grid[futureKey].destroyBottom.toString() + ` \| ` +
             `</td>
+          </tr>
+           <tr>
+            <td>Self Destroy</td>
+            <td>`+ objectList[currentObjectId].destroySelf.toString() + `</td>
           </tr>
             </tbody>
       </table>`
@@ -879,6 +971,10 @@ function App() {
             + grid[futureKey].destroyBottom.toString() + ` \| ` +
             `</td>
           </tr>
+           <tr>
+            <td>Self Destroy</td>
+            <td>`+ objectList[currentObjectId].destroySelf.toString() + `</td>
+          </tr>
             </tbody>
       </table>`
 
@@ -1024,6 +1120,10 @@ function App() {
             + grid[futureKey].destroyBottom.toString() + ` \| ` +
             `</td>
           </tr>
+           <tr>
+            <td>Self Destroy</td>
+            <td>`+ objectList[currentObjectId].destroySelf.toString() + `</td>
+          </tr>
             </tbody>
       </table>`
 
@@ -1168,6 +1268,10 @@ function App() {
             + grid[futureKey].destroyBottom.toString() + ` \| ` +
             `</td>
           </tr>
+           <tr>
+            <td>Self Destroy</td>
+            <td>`+ objectList[currentObjectId].destroySelf.toString() + `</td>
+          </tr>
             </tbody>
       </table>`
 
@@ -1182,11 +1286,11 @@ function App() {
       grid[colorTarget].color = event.target.value
       processDOM(grid)
     } else {
-      if (objectList[currentObjectId].childObject.childGridC[childI][childJ] == "#000000") return
-      objectList[currentObjectId].childObject.childGridC[childI][childJ] = event.target.value
-      var childKey = "CH" + childI.toString() + childJ.toString()
+      if (objectList[currentObjectId].childObject.childGridC[targetI][targetJ] == "#000000") return
+      objectList[currentObjectId].childObject.childGridC[targetI][targetJ] = event.target.value
+      var childKey = "CH" + targetI.toString() + targetJ.toString()
       var cell = document.getElementById(childKey)
-      cell.style.backgroundColor = objectList[currentObjectId].childObject.childGridC[childI][childJ]
+      cell.style.backgroundColor = objectList[currentObjectId].childObject.childGridC[targetI][targetJ]
     }
     colorPanel.current.hidden = true
   }
@@ -1278,6 +1382,8 @@ function App() {
             colorPanel.current.style.height = (Math.min(height * 0.99, width * 0.99) * 0.50 / 9).toString() + "px"
             colorPanel.current.style.width = (Math.min(height * 0.99, width * 0.99) * 0.50 / 9).toString() + "px"
             colorPanel.current.value = objectList[currentObjectId].childObject.childGridC[childI][childJ]
+            targetI = childI
+            targetJ = childJ
           }
         } else {
           colorPanel.current.hidden = true
@@ -1349,7 +1455,6 @@ function App() {
         }
       } break
       case "z": {
-        if (mode == "child") break
         if (currentProperty == null) {
           currentProperty = "destroy"
         }
@@ -1542,6 +1647,10 @@ function App() {
         + grid[currentKey].destroyBottom.toString() + ` \| ` +
         `</td>
           </tr>
+           <tr>
+            <td>Self Destroy</td>
+            <td>`+ objectList[currentObjectId].destroySelf.toString() + `</td>
+          </tr>
             </tbody>
       </table>`
 
@@ -1587,6 +1696,19 @@ function App() {
           <tr>
             <td>Opposing Force/Cycle</td>
             <td>`+ objectList[currentObjectId].childObject.opposingForce.toString() + `</td>
+          </tr>
+            <tr>
+            <td>Destory Object[L \| R \| T \| B]</td>
+            <td>`
+        + objectList[currentObjectId].childObject.destroyLeft.toString() + ` \| `
+        + objectList[currentObjectId].childObject.destroyRight.toString() + ` \| `
+        + objectList[currentObjectId].childObject.destroyTop.toString() + ` \| `
+        + objectList[currentObjectId].childObject.destroyBottom.toString() + ` \| ` +
+            `</td>
+          </tr>
+           <tr>
+            <td>Self Destroy</td>
+            <td>`+ objectList[currentObjectId].childObject.destroySelf.toString() + `</td>
           </tr>
             </tbody>
       </table>`
@@ -1681,6 +1803,10 @@ function App() {
           + grid[currentKey].destroyBottom.toString() + ` \| ` +
           `</td>
           </tr>
+           <tr>
+            <td>Self Destroy</td>
+            <td>`+ objectList[currentObjectId].destroySelf.toString() + `</td>
+          </tr>
             </tbody>
       </table>`
 
@@ -1749,6 +1875,19 @@ function App() {
           <tr>
             <td>Opposing Force/Cycle</td>
             <td>`+ objectList[currentObjectId].childObject.opposingForce.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Destory Object[L \| R \| T \| B]</td>
+            <td>`
+        + objectList[currentObjectId].childObject.destroyLeft.toString() + ` \| `
+        + objectList[currentObjectId].childObject.destroyRight.toString() + ` \| `
+        + objectList[currentObjectId].childObject.destroyTop.toString() + ` \| `
+        + objectList[currentObjectId].childObject.destroyBottom.toString() + ` \| ` +
+            `</td>
+          </tr>
+           <tr>
+            <td>Self Destroy</td>
+            <td>`+ objectList[currentObjectId].childObject.destroySelf.toString() + `</td>
           </tr>
             </tbody>
       </table>`
@@ -2020,6 +2159,10 @@ function App() {
           <tr>
             <td>Edit Object Script </td>
             <td>Tab</td>
+          </tr>
+          <tr>
+            <td>Self Destroy </td>
+            <td>i(Toggle)</td>
           </tr>
           <tr><td><hr></hr></td><td><hr></hr></td></tr>
           <tr>

@@ -24,69 +24,65 @@ module.exports = {
 
         //Process Force, Velocity, and Movement
         Object.keys(objectList).map((key) => {
-
-            if (grid[key] != undefined && objectList[key] != undefined && objectList[grid[key].objectId] != undefined) {
-                if (objectList[key].forceX > 0) {
-                    objectList[key].velocityX = Math.floor(objectList[key].forceX / objectList[key].mass)
-                    objectList[key].forceX -= objectList[key].opposingForce
-                } else if (objectList[key].forceX < 0) {
-                    objectList[key].velocityX = Math.floor(objectList[key].forceX / objectList[key].mass)
-                    objectList[key].forceX += objectList[key].opposingForce
-                }
-
-                if (objectList[key].forceY > 0) {
-                    objectList[key].velocityY = Math.floor(objectList[key].forceY / objectList[key].mass)
-                    objectList[key].forceY -= objectList[key].opposingForce
-                } else if (objectList[key].forceY < 0) {
-                    objectList[key].velocityY = Math.floor(objectList[key].forceY / objectList[key].mass)
-                    objectList[key].forceY += objectList[key].opposingForce
-                }
-
-                if (objectList[key].velocityX > 0) {
-                    for (let i = 0; i < objectList[key].velocityX; i++) {
-                        var tkey = moveRight(grid, objectList, key)
-                        if (tkey == undefined) break
-                        if (key == currentObjectId) currentObjectId = tkey
-                        key = tkey
-                    }
-                    objectList[key].velocityX -= objectList[key].energyLoss
-                } else if (objectList[key].velocityX < 0) {
-                    for (let i = 0; i < Math.abs(objectList[key].velocityX); i++) {
-                        var tkey = moveLeft(grid, objectList, key)
-                        if (tkey == undefined) break
-                        if (key == currentObjectId) currentObjectId = tkey
-                        key = tkey
-                    }
-                    objectList[key].velocityX += objectList[key].energyLoss
-                }
-
-                if (objectList[key].velocityY > 0) {
-                    for (let i = 0; i < objectList[key].velocityY; i++) {
-                        var tkey = moveUp(grid, objectList, key)
-                        if (tkey == undefined) break
-                        if (key == currentObjectId) currentObjectId = tkey
-                        key = tkey
-                    }
-                    objectList[key].velocityY -= objectList[key].energyLoss
-                } else if (objectList[key].velocityY < 0) {
-                    for (let i = 0; i < Math.abs(objectList[key].velocityY); i++) {
-                        var tkey = moveDown(grid, objectList, key)
-                        if (tkey == undefined) break
-                        if (key == currentObjectId) currentObjectId = tkey
-                        key = tkey
-                    }
-                    objectList[key].velocityY += objectList[key].energyLoss
-                }
+            if (objectList[key].forceX > 0) {
+                objectList[key].velocityX = Math.floor(objectList[key].forceX / objectList[key].mass)
+                objectList[key].forceX -= objectList[key].opposingForce
+            } else if (objectList[key].forceX < 0) {
+                objectList[key].velocityX = Math.floor(objectList[key].forceX / objectList[key].mass)
+                objectList[key].forceX += objectList[key].opposingForce
             }
 
+            if (objectList[key].forceY > 0) {
+                objectList[key].velocityY = Math.floor(objectList[key].forceY / objectList[key].mass)
+                objectList[key].forceY -= objectList[key].opposingForce
+            } else if (objectList[key].forceY < 0) {
+                objectList[key].velocityY = Math.floor(objectList[key].forceY / objectList[key].mass)
+                objectList[key].forceY += objectList[key].opposingForce
+            }
+
+            if (objectList[key].velocityX > 0) {
+                for (let i = 0; i < objectList[key].velocityX; i++) {
+                    var tkey = moveRight(grid, objectList, key)
+                    if (tkey == undefined) break
+                    if (key == currentObjectId) currentObjectId = tkey
+                    key = tkey
+                }
+                objectList[key].velocityX -= objectList[key].energyLoss
+            } else if (objectList[key].velocityX < 0) {
+                for (let i = 0; i < Math.abs(objectList[key].velocityX); i++) {
+                    var tkey = moveLeft(grid, objectList, key)
+                    if (tkey == undefined) break
+                    if (key == currentObjectId) currentObjectId = tkey
+                    key = tkey
+                }
+                objectList[key].velocityX += objectList[key].energyLoss
+            }
+
+            if (objectList[key].velocityY > 0) {
+                for (let i = 0; i < objectList[key].velocityY; i++) {
+                    var tkey = moveUp(grid, objectList, key)
+                    if (tkey == undefined) break
+                    if (key == currentObjectId) currentObjectId = tkey
+                    key = tkey
+                }
+                objectList[key].velocityY -= objectList[key].energyLoss
+            } else if (objectList[key].velocityY < 0) {
+                for (let i = 0; i < Math.abs(objectList[key].velocityY); i++) {
+                    var tkey = moveDown(grid, objectList, key)
+                    if (tkey == undefined) break
+                    if (key == currentObjectId) currentObjectId = tkey
+                    key = tkey
+                }
+                objectList[key].velocityY += objectList[key].energyLoss
+            }
         })
 
-        //Process Boundary
+        //Process Parent Boundary
         Object.keys(objectList).map((key) => {
 
-            if (grid[key] != undefined && objectList[key] != undefined && objectList[grid[key].objectId] != undefined) {
-
+            if (objectList[key] != undefined && objectList[key].child != true) {
                 setBoundary(grid, objectList, key)
+                var isDestroyed = false
 
                 objectList[key].boundaryList.left.map((target) => {
                     if (grid[target].produceLeft == true) {
@@ -94,7 +90,7 @@ module.exports = {
                     }
                     var neighbours = getNeighbourKV(target)
                     if (grid[target].destroyLeft == true && grid[neighbours.left].objectId != grid[target].objectId) {
-                        destroyObject(grid, objectList, neighbours.left)
+                        isDestroyed = destroyObject(grid, objectList, neighbours.left)
                     }
                 })
 
@@ -104,7 +100,7 @@ module.exports = {
                     }
                     var neighbours = getNeighbourKV(target)
                     if (grid[target].destroyRight == true && grid[neighbours.right].objectId != grid[target].objectId) {
-                        destroyObject(grid, objectList, neighbours.right)
+                        isDestroyed = destroyObject(grid, objectList, neighbours.right)
                     }
                 })
 
@@ -114,7 +110,7 @@ module.exports = {
                     }
                     var neighbours = getNeighbourKV(target)
                     if (grid[target].destroyTop == true && grid[neighbours.top].objectId != grid[target].objectId) {
-                        destroyObject(grid, objectList, neighbours.top)
+                        isDestroyed = destroyObject(grid, objectList, neighbours.top)
                     }
                 })
 
@@ -124,15 +120,70 @@ module.exports = {
                     }
                     var neighbours = getNeighbourKV(target)
                     if (grid[target].destroyBottom == true && grid[neighbours.bottom].objectId != grid[target].objectId) {
-                        destroyObject(grid, objectList, neighbours.bottom)
+                        isDestroyed = destroyObject(grid, objectList, neighbours.bottom)
                     }
                 })
+
+                if (isDestroyed == true && objectList[key].destroySelf == true) {
+                    destroyObject(grid, objectList, key)
+                }
+            }
+        })
+
+        //Process Child Boundary
+        Object.keys(objectList).map((key) => {
+
+            if (objectList[key] != undefined && objectList[key].child == true) {
+                setBoundary(grid, objectList, key)
+                var isDestroyed = false
+
+                if(objectList[key].destroyLeft == true) {
+                    objectList[key].boundaryList.left.map((target) => {
+                        var neighbours = getNeighbourKV(target)
+                        if (grid[neighbours.left].objectId != grid[target].objectId) {
+                            isDestroyed = destroyObject(grid, objectList, neighbours.left)
+                        }
+                    })
+
+                }
+
+                if (objectList[key].destroyRight == true) {
+                    objectList[key].boundaryList.right.map((target) => {
+                        var neighbours = getNeighbourKV(target)
+                        if (grid[neighbours.right].objectId != grid[target].objectId) {
+                            isDestroyed = destroyObject(grid, objectList, neighbours.right)
+                        }
+                    })
+                }
+
+                if (objectList[key].destroyTop == true) {
+                    objectList[key].boundaryList.top.map((target) => {
+                        var neighbours = getNeighbourKV(target)
+                        if (grid[neighbours.top].objectId != grid[target].objectId) {
+                            isDestroyed = destroyObject(grid, objectList, neighbours.top)
+                        }
+                    })
+                }
+
+                if (objectList[key].destroyBottom == true) {
+                    objectList[key].boundaryList.bottom.map((target) => {
+                        var neighbours = getNeighbourKV(target)
+                        if (grid[neighbours.bottom].objectId != grid[target].objectId) {
+                            isDestroyed = destroyObject(grid, objectList, neighbours.bottom)
+                        }
+                    })
+
+                }
+
+                if (isDestroyed == true && objectList[key].destroySelf == true) {
+                    destroyObject(grid, objectList, key)
+                }
             }
         })
 
         //Detect Collision
         Object.keys(objectList).map((key) => {
-            if (grid[key] != undefined && objectList[key] != undefined && objectList[grid[key].objectId] != undefined) {
+            if (objectList[key] != undefined) {
                 collisionLeft(grid, objectList, key)
                 collisionTop(grid, objectList, key)
                 collisionBottom(grid, objectList, key)
@@ -143,12 +194,14 @@ module.exports = {
         //Process Collision
         Object.keys(objectList).map((key) => {
             
-            if (grid[key] != undefined && objectList[key] != undefined && objectList[grid[key].objectId] != undefined) {
+            if (objectList[key] != undefined) {
 
-                forceLeft(grid, objectList, key)
-                forceTop(grid, objectList, key)
-                forceRight(grid, objectList, key)
-                forceBottom(grid, objectList, key)
+                if(objectList[key].child != true) {
+                    forceLeft(grid, objectList, key)
+                    forceTop(grid, objectList, key)
+                    forceRight(grid, objectList, key)
+                    forceBottom(grid, objectList, key)
+                }
 
                 Object.keys(objectList[key].collisionList.left).map((target) => {
 
@@ -159,7 +212,7 @@ module.exports = {
                     objectList[key].velocityX = Math.floor(((m - 1) * u1 + 2 * u2) / (m + 1))
                     objectList[target].velocityX = Math.floor((2 * m * u1 + (1 - m) * u2) / (m + 1))
 
-                    //console.log(u1, u2, key, target, objectList[key].velocityX, objectList[target].velocityX)
+                    console.log(u1, u2, key, target, objectList[key].velocityX, objectList[target].velocityX)
 
                     delete objectList[key].collisionList.left[target]
                     delete objectList[target].collisionList.right[key]

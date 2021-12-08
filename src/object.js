@@ -45,6 +45,7 @@ var getNeighbourKV = (key) => {
 var getProperty = (key) => {
     var property = {
         "objectId": key,
+        "destroySelf": false,
         "density": 1,
         "cellCount": 1,
         "mass": 1,
@@ -172,7 +173,6 @@ var setBoundaryUtil = (grid, boundaryList, visited, key) => {
 }
 
 var setBoundary = (grid, objectList, key) => {
-    if (grid[key] == undefined) return
     var boundaryList = { "left": [], "right": [], "top": [], "bottom": [] }
     var visited = { "-1": true }
     setBoundaryUtil(grid, boundaryList, visited, parseInt(grid[key].objectId))
@@ -180,7 +180,6 @@ var setBoundary = (grid, objectList, key) => {
 }
 
 var collisionLeft = (grid, objectList, key) => {
-    if (grid[key] == undefined) return
     var collision = { "-1": "-1" }
     for (let i = 0; i < objectList[grid[key].objectId].boundaryList.left.length; i++) {
         var target = objectList[grid[key].objectId].boundaryList.left[i]
@@ -194,7 +193,6 @@ var collisionLeft = (grid, objectList, key) => {
 }
 
 var collisionRight = (grid, objectList, key) => {
-    if (grid[key] == undefined) return
     var collision = { "-1": "-1" }
     for (let i = 0; i < objectList[grid[key].objectId].boundaryList.right.length; i++) {
         var target = objectList[grid[key].objectId].boundaryList.right[i]
@@ -208,7 +206,6 @@ var collisionRight = (grid, objectList, key) => {
 }
 
 var collisionTop = (grid, objectList, key) => {
-    if (grid[key] == undefined) return
     var collision = { "-1": "-1" }
     for (let i = 0; i < objectList[grid[key].objectId].boundaryList.top.length; i++) {
         var target = objectList[grid[key].objectId].boundaryList.top[i]
@@ -222,7 +219,6 @@ var collisionTop = (grid, objectList, key) => {
 }
 
 var collisionBottom = (grid, objectList, key) => {
-    if (grid[key] == undefined) return
     var collision = { "-1": "-1" }
     for (let i = 0; i < objectList[grid[key].objectId].boundaryList.bottom.length; i++) {
         var target = objectList[grid[key].objectId].boundaryList.bottom[i]
@@ -276,10 +272,7 @@ var removeCell = (grid, currentKey) => {
 }
 
 var forceLeft = (grid, objectList, key) => {
-    if (grid[key] == undefined) return
     key = grid[key].objectId
-    setBoundary(grid, objectList, key)
-    collisionLeft(grid, objectList, key)
     Object.keys(objectList[key].collisionList.left).map((target) => {
         var neighbours = getNeighbourKV(target)
         if (grid[neighbours.left].type == "empty") {
@@ -293,10 +286,7 @@ var forceLeft = (grid, objectList, key) => {
 }
 
 var forceRight = (grid, objectList, key) => {
-    if (grid[key] == undefined) return
     key = grid[key].objectId
-    setBoundary(grid, objectList, key)
-    collisionRight(grid, objectList, key)
     Object.keys(objectList[key].collisionList.right).map((target) => {
         var neighbours = getNeighbourKV(target)
         if (grid[neighbours.right].type == "empty") {
@@ -310,10 +300,7 @@ var forceRight = (grid, objectList, key) => {
 }
 
 var forceTop = (grid, objectList, key) => {
-    if (grid[key] == undefined) return
     key = grid[key].objectId
-    setBoundary(grid, objectList, key)
-    collisionTop(grid, objectList, key)
     Object.keys(objectList[key].collisionList.top).map((target) => {
         var neighbours = getNeighbourKV(target)
         if (grid[neighbours.top].type == "empty") {
@@ -327,10 +314,7 @@ var forceTop = (grid, objectList, key) => {
 }
 
 var forceBottom = (grid, objectList, key) => {
-    if (grid[key] == undefined) return
     key = grid[key].objectId
-    setBoundary(grid, objectList, key)
-    collisionBottom(grid, objectList, key)
     Object.keys(objectList[key].collisionList.bottom).map((target) => {
         var neighbours = getNeighbourKV(target)
         if (grid[neighbours.bottom].type == "empty") {
@@ -344,7 +328,6 @@ var forceBottom = (grid, objectList, key) => {
 }
 
 var moveLeft = (grid, objectList, key) => {
-    if (grid[key] == undefined || objectList[key] == undefined) return
     key = grid[key].objectId
     setBoundary(grid, objectList, key)
     collisionLeft(grid, objectList, key)
@@ -399,7 +382,6 @@ var moveLeft = (grid, objectList, key) => {
 }
 
 var moveRight = (grid, objectList, key) => {
-    if (grid[key] == undefined || objectList[key] == undefined) return
     key = grid[key].objectId
     setBoundary(grid, objectList, key)
     collisionRight(grid, objectList, key)
@@ -454,7 +436,6 @@ var moveRight = (grid, objectList, key) => {
 }
 
 var moveUp = (grid, objectList, key) => {
-    if (grid[key] == undefined || objectList[key] == undefined) return
     key = grid[key].objectId
     setBoundary(grid, objectList, key)
     collisionTop(grid, objectList, key)
@@ -509,7 +490,6 @@ var moveUp = (grid, objectList, key) => {
 }
 
 var moveDown = (grid, objectList, key) => {
-    if (grid[key] == undefined || objectList[key] == undefined) return
     key = grid[key].objectId
     setBoundary(grid, objectList, key)
     collisionBottom(grid, objectList, key)
@@ -701,7 +681,9 @@ var destroyObject = (grid, objectList, currentKey) => {
             grid[objectList[objectId].cellList[i]].pushY = 0;
         }
         delete objectList[objectId];
+        return true
     }
+    return false
 }
 
 var getTopArea = (key) => {
