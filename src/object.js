@@ -54,18 +54,47 @@ var getProperty = (key) => {
         "velocityY": 0,
         "opposingForce": 0,
         "energyLoss": 0,
-        "script": "(grid, objectList, objectId) => {\n}",
+        "script": `(grid, objectList, objectId) => {\n
+                //setBoundary(grid, objectList, key)\n
+                //collisionLeft(grid, objectList, key)\n
+                //collisionTop(grid, objectList, key)\n
+                //collisionBottom(grid, objectList, key)\n
+                //collisionRight(grid, objectList, key)\n
+            }`,
         "childObject": {
+            "child": true,
+            "destroySelf": false,
+            "destroyLeft": false,
+            "destroyRight": false,
+            "destroyTop": false,
+            "destroyBottom": false,
             "density": 1,
-            "cellCount": 1,
-            "mass": 1,
+            "cellCount": 0,
+            "mass": 0,
             "forceX": 0,
             "forceY": 0,
             "velocityX": 0,
             "velocityY": 0,
             "opposingForce": 0,
             "energyLoss": 0,
-            "script": "(grid, objectList, objectId) => {\n}",
+            "script": `(grid, objectList, objectId) => {\n
+                //setBoundary(grid, objectList, key)\n
+                //collisionLeft(grid, objectList, key)\n
+                //collisionTop(grid, objectList, key)\n
+                //collisionBottom(grid, objectList, key)\n
+                //collisionRight(grid, objectList, key)\n
+            }`,
+            "childGridC": [
+                ["#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000"],
+                ["#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000"],
+                ["#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000"],
+                ["#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000"],
+                ["#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000"],
+                ["#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000"],
+                ["#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000"],
+                ["#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000"],
+                ["#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000"]
+            ],
             "childGrid": [
                 [0, 0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -315,7 +344,7 @@ var forceBottom = (grid, objectList, key) => {
 }
 
 var moveLeft = (grid, objectList, key) => {
-    if (grid[key] == undefined) return
+    if (grid[key] == undefined || objectList[key] == undefined) return
     key = grid[key].objectId
     setBoundary(grid, objectList, key)
     collisionLeft(grid, objectList, key)
@@ -370,7 +399,7 @@ var moveLeft = (grid, objectList, key) => {
 }
 
 var moveRight = (grid, objectList, key) => {
-    if (grid[key] == undefined) return
+    if (grid[key] == undefined || objectList[key] == undefined) return
     key = grid[key].objectId
     setBoundary(grid, objectList, key)
     collisionRight(grid, objectList, key)
@@ -425,7 +454,7 @@ var moveRight = (grid, objectList, key) => {
 }
 
 var moveUp = (grid, objectList, key) => {
-    if (grid[key] == undefined) return
+    if (grid[key] == undefined || objectList[key] == undefined) return
     key = grid[key].objectId
     setBoundary(grid, objectList, key)
     collisionTop(grid, objectList, key)
@@ -480,7 +509,7 @@ var moveUp = (grid, objectList, key) => {
 }
 
 var moveDown = (grid, objectList, key) => {
-    if (grid[key] == undefined) return
+    if (grid[key] == undefined || objectList[key] == undefined) return
     key = grid[key].objectId
     setBoundary(grid, objectList, key)
     collisionBottom(grid, objectList, key)
@@ -675,10 +704,305 @@ var destroyObject = (grid, objectList, currentKey) => {
     }
 }
 
+var getTopArea = (key) => {
+    key = parseInt(key)
+    var neighbours = []
+    var senseArea = 4
+
+    for (let currentRow = ((Math.floor(key / computeNumber)) * computeNumber) - (2 * senseArea + 1) * computeNumber, count1 = 2 * senseArea; count1 >= 0; count1--, currentRow += computeNumber) {
+        var currentRowStart = computeCircularRow(currentRow)
+        var currentRowEnd = computeCircularRow(currentRow) + computeNumber - 1
+        var midpoint = currentRowStart + key % computeNumber
+        var subgrid = []
+        for (let cell = midpoint - senseArea, count2 = 2 * senseArea; count2 >= 0; count2--, cell += 1) {
+            var computedKey = computeCircularColumn(cell, currentRowStart, currentRowEnd).toString()
+            subgrid.push(computedKey)
+        }
+        neighbours.push(subgrid)
+    }
+
+    return neighbours
+}
+
+var getBottomArea = (key) => {
+    key = parseInt(key)
+    var neighbours = []
+    var senseArea = 4
+
+    for (let currentRow = ((Math.floor(key / computeNumber)) * computeNumber) + computeNumber + 1, count1 = 2 * senseArea + 1; count1 > 0; count1--, currentRow += computeNumber) {
+        var currentRowStart = computeCircularRow(currentRow)
+        var currentRowEnd = computeCircularRow(currentRow) + computeNumber - 1
+        var midpoint = currentRowStart + key % computeNumber
+        var subgrid = []
+        for (let cell = midpoint - senseArea, count2 = 2 * senseArea; count2 >= 0; count2--, cell += 1) {
+            var computedKey = computeCircularColumn(cell, currentRowStart, currentRowEnd).toString()
+            subgrid.push(computedKey)
+        }
+        neighbours.push(subgrid)
+    }
+
+    return neighbours
+}
+
+var getLeftArea = (key) => {
+    key = parseInt(key)
+    var neighbours = []
+    var senseArea = 4
+
+    for (let currentRow = ((Math.floor(key / computeNumber)) * computeNumber) - senseArea * computeNumber, count1 = 2 * senseArea; count1 >= 0; count1--, currentRow += computeNumber) {
+        var currentRowStart = computeCircularRow(currentRow)
+        var currentRowEnd = computeCircularRow(currentRow) + computeNumber - 1
+        var midpoint = currentRowStart + key % computeNumber
+        var subgrid = []
+        for (let cell = midpoint - 2 * senseArea - 1, count2 = 2 * senseArea; count2 >= 0; count2--, cell += 1) {
+            var computedKey = computeCircularColumn(cell, currentRowStart, currentRowEnd).toString()
+            subgrid.push(computedKey)
+        }
+        neighbours.push(subgrid)
+    }
+    return neighbours
+}
+
+var getRightArea = (key) => {
+    key = parseInt(key)
+    var neighbours = []
+    var senseArea = 4
+
+    for (let currentRow = ((Math.floor(key / computeNumber)) * computeNumber) - senseArea * computeNumber, count1 = 2 * senseArea; count1 >= 0; count1--, currentRow += computeNumber) {
+        var currentRowStart = computeCircularRow(currentRow)
+        var currentRowEnd = computeCircularRow(currentRow) + computeNumber - 1
+        var midpoint = currentRowStart + key % computeNumber
+        var subgrid = []
+        for (let cell = midpoint + 1, count2 = 2 * senseArea; count2 >= 0; count2--, cell += 1) {
+            var computedKey = computeCircularColumn(cell, currentRowStart, currentRowEnd).toString()
+            subgrid.push(computedKey)
+        }
+        neighbours.push(subgrid)
+    }
+    return neighbours
+}
+
+var createRightChild = (grid, objectList, currentKey) => {
+    var objectId = grid[currentKey].objectId
+    var childGrid = objectList[objectId].childObject.childGrid
+    var childGridC = objectList[objectId].childObject.childGridC
+    var childKey = -1
+    var childI = 0
+    var childJ = 0
+    var flag = true
+    var produce = {
+        produceLeft: false,
+        produceRight: false,
+        produceTop: false,
+        produceBottom: false,
+    }
+    var destroy = {
+        destroyLeft: false,
+        destroyRight: false,
+        destroyTop: false,
+        destroyBottom: false,
+    }
+    var neighbours = getRightArea(currentKey)
+    neighbours.map((subgrid) => {
+        subgrid.map((key) => {
+            if(childGrid[childI][childJ] == 1 && grid[key].type != "empty") {
+               flag = false
+            }
+            childJ++
+        })
+        childJ = 0
+        childI++
+    })
+
+    if(flag == true) {
+        childI = 0
+        childJ = 0
+        neighbours.map((subgrid) => {
+            subgrid.map((key) => {
+                if (childGrid[childI][childJ] == 1) {
+                    if (childKey == -1) {
+                        childKey = key
+                        createObject(grid, objectList, childKey, objectId)
+                    } else {
+                        objectList[childKey].cellList.push(key)
+                        addCell(grid, childKey, key, 0, 0, childGridC[childI][childJ], produce, destroy)
+                    }
+                }
+                childJ++
+            })
+            childJ = 0
+            childI++
+        })
+    }
+}
+
+var createLeftChild = (grid, objectList, currentKey) => {
+    var objectId = grid[currentKey].objectId
+    var childGrid = objectList[objectId].childObject.childGrid
+    var childGridC = objectList[objectId].childObject.childGridC
+    var childKey = -1
+    var childI = 0
+    var childJ = 0
+    var flag = true
+    var produce = {
+        produceLeft: false,
+        produceRight: false,
+        produceTop: false,
+        produceBottom: false,
+    }
+    var destroy = {
+        destroyLeft: false,
+        destroyRight: false,
+        destroyTop: false,
+        destroyBottom: false,
+    }
+    var neighbours = getLeftArea(currentKey)
+    neighbours.map((subgrid) => {
+        subgrid.map((key) => {
+            if (childGrid[childI][childJ] == 1 && grid[key].type != "empty") {
+                flag = false
+            }
+            childJ++
+        })
+        childJ = 0
+        childI++
+    })
+    if (flag == true) {
+        childI = 0
+        childJ = 0
+        neighbours.map((subgrid) => {
+            subgrid.map((key) => {
+                if (childGrid[childI][childJ] == 1) {
+                    if (childKey == -1) {
+                        childKey = key
+                        createObject(grid, objectList, childKey, objectId)
+                    } else {
+                        objectList[childKey].cellList.push(key)
+                        addCell(grid, childKey, key, 0, 0, childGridC[childI][childJ], produce, destroy)
+                    }
+                }
+                childJ++
+            })
+            childJ = 0
+            childI++
+        })
+    }
+}
+
+var createTopChild = (grid, objectList, currentKey) => {
+    var objectId = grid[currentKey].objectId
+    var childGrid = objectList[objectId].childObject.childGrid
+    var childGridC = objectList[objectId].childObject.childGridC
+    var childKey = -1
+    var childI = 0
+    var childJ = 0
+    var flag = true
+    var produce = {
+        produceLeft: false,
+        produceRight: false,
+        produceTop: false,
+        produceBottom: false,
+    }
+    var destroy = {
+        destroyLeft: false,
+        destroyRight: false,
+        destroyTop: false,
+        destroyBottom: false,
+    }
+    var neighbours = getTopArea(currentKey)
+    neighbours.map((subgrid) => {
+        subgrid.map((key) => {
+            if (childGrid[childI][childJ] == 1 && grid[key].type != "empty") {
+                flag = false
+            }
+            childJ++
+        })
+        childI++
+        childJ = 0
+    })
+    if (flag == true) {
+        childI = 0
+        childJ = 0
+        neighbours.map((subgrid) => {
+            subgrid.map((key) => {
+                if (childGrid[childI][childJ] == 1) {
+                    if (childKey == -1) {
+                        childKey = key
+                        createObject(grid, objectList, childKey, objectId)
+                    } else {
+                        objectList[childKey].cellList.push(key)
+                        addCell(grid, childKey, key, 0, 0, childGridC[childI][childJ], produce, destroy)
+                    }
+                }
+                childJ++
+            })
+            childJ = 0
+            childI++
+        })
+    }
+}
+
+var createBottomChild = (grid, objectList, currentKey) => {
+    var objectId = grid[currentKey].objectId
+    var childGrid = objectList[objectId].childObject.childGrid
+    var childGridC = objectList[objectId].childObject.childGridC
+    var childKey = -1
+    var childI = 0
+    var childJ = 0
+    var flag = true
+    var produce = {
+        produceLeft: false,
+        produceRight: false,
+        produceTop: false,
+        produceBottom: false,
+    }
+    var destroy = {
+        destroyLeft: false,
+        destroyRight: false,
+        destroyTop: false,
+        destroyBottom: false,
+    }
+    var neighbours = getBottomArea(currentKey)
+    neighbours.map((subgrid) => {
+        subgrid.map((key) => {
+            if (childGrid[childI][childJ] == 1 && grid[key].type != "empty") {
+                flag = false
+            }
+            childJ++
+        })
+        childI++
+    })
+    if (flag == true) {
+        childI = 0
+        childJ = 0
+        neighbours.map((subgrid) => {
+            subgrid.map((key) => {
+                if (childGrid[childI][childJ] == 1) {
+                    if (childKey == -1) {
+                        childKey = key
+                        createObject(grid, objectList, childKey, objectId)
+                    } else {
+                        objectList[childKey].cellList.push(key)
+                        addCell(grid, childKey, key, 0, 0, childGridC[childI][childJ], produce, destroy)
+                    }
+                }
+                childJ++
+            })
+            childJ = 0
+            childI++
+        })
+    }
+}
+
+
 module.exports = {
     createObject: createObject,
     destroyObject: destroyObject,
     contractObject: contractObject,
+    createRightChild: createRightChild,
+    createBottomChild: createBottomChild,
+    createLeftChild: createLeftChild,
+    createTopChild: createTopChild,
     moveUp: moveUp,
     moveDown: moveDown,
     moveLeft: moveLeft,

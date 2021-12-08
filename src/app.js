@@ -15,7 +15,7 @@ import { processDOM } from "./processDOM";
 import { processGrid } from "./processGrid";
 
 var computeNumber = 128
-var simulationSpeed = 600
+var simulationSpeed = 6000
 
 var num = []
 for (let i = 0; i < computeNumber; i++) {
@@ -35,6 +35,15 @@ for(let i = 0; i < 9; i++) {
     subGrid.push({i, j})
   }
   childGrid.push(subGrid)
+}
+
+var childGridC = []
+for (let i = 0; i < 9; i++) {
+  var subGridC = []
+  for (let j = 0; j < 9; j++) {
+    subGridC.push("transparent")
+  }
+  childGridC.push(subGridC)
 }
 
 function App() {
@@ -93,7 +102,7 @@ function App() {
     left: "0",
     height: Math.min(height * 0.99, width * 0.99) / computeNumber,
     width: Math.min(height * 0.99, width * 0.99) / computeNumber,
-    zIndex: "3",
+    zIndex: "9",
     fontSize: "16px",
     fontWeight: "bold"
   }
@@ -125,7 +134,7 @@ function App() {
     top: "0px",
     fontSize: "16px",
     left: "0px",
-    zIndex: "3",
+    zIndex: "13",
     width: width * 0.30
   }
 
@@ -298,6 +307,60 @@ function App() {
       case "velocity": {
         objectList[currentObjectId].childObject.velocityY += 1;
       } break
+      default: {
+        var childKey = "CH" + childI.toString() + childJ.toString()
+        var cell = document.getElementById(childKey)
+        cell.style.backgroundColor = objectList[currentObjectId].childObject.childGridC[childI][childJ]
+        childI = (childI - 1) >= 0 ? (childI - 1) : 8
+        childKey = "CH" + childI.toString() + childJ.toString()
+        cell = document.getElementById(childKey)
+        cell.style.backgroundColor = "red"
+
+        var res = `
+      <table onKeyDown={onKeyDown} ref={controlTable} style={controlTableStyle} className="table">
+        <thead className="thead-dark">
+          <tr>
+            <th scope="col">Parameters</th>
+            <th scope="col">Value</th>
+          </tr>
+        </thead>
+         <tbody className="table-light">
+          <tr>
+            <td>ObjectId</td>
+            <td>`+ currentObjectId + `(Child)</td>
+          </tr>
+          <tr>
+            <td>Mass(Cell Count X Density)</td>
+            <td>`+ objectList[currentObjectId].childObject.mass.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Force(x-axis)</td>
+            <td>`+ objectList[currentObjectId].childObject.forceX.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Force(y-axis)</td>
+            <td>`+ objectList[currentObjectId].childObject.forceY.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Velocity(x-axis)</td>
+            <td>`+ objectList[currentObjectId].childObject.velocityX.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Velocity(y-axis)</td>
+            <td>`+ objectList[currentObjectId].childObject.velocityY.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Energy Loss/Cycle</td>
+            <td>`+ objectList[currentObjectId].childObject.energyLoss.toString() + `</td>
+          </tr>
+          <tr>
+            <td>Opposing Force/Cycle</td>
+            <td>`+ objectList[currentObjectId].childObject.opposingForce.toString() + `</td>
+          </tr>
+            </tbody>
+      </table>`
+        cellInfoPanel.current.innerHTML = res
+      }
     }
   }
 
@@ -322,6 +385,60 @@ function App() {
       case "velocity": {
         objectList[currentObjectId].childObject.velocityY -= 1;
       } break
+      default: {
+        var childKey = "CH" + childI.toString() + childJ.toString()
+        var cell = document.getElementById(childKey)
+        cell.style.backgroundColor = objectList[currentObjectId].childObject.childGridC[childI][childJ]
+        childI = (parseInt(childI) + 1) <= 8 ? (parseInt(childI) + 1) : 0
+        childKey = "CH" + childI.toString() + childJ.toString()
+        cell = document.getElementById(childKey)
+        cell.style.backgroundColor = "red"
+
+        var res = `
+      <table onKeyDown={onKeyDown} ref={controlTable} style={controlTableStyle} className="table">
+        <thead className="thead-dark">
+          <tr>
+            <th scope="col">Parameters</th>
+            <th scope="col">Value</th>
+          </tr>
+        </thead>
+         <tbody className="table-light">
+          <tr>
+            <td>ObjectId</td>
+            <td>`+ currentObjectId + `(Child)</td>
+          </tr>
+          <tr>
+            <td>Mass(Cell Count X Density)</td>
+            <td>`+ objectList[currentObjectId].childObject.mass.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Force(x-axis)</td>
+            <td>`+ objectList[currentObjectId].childObject.forceX.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Force(y-axis)</td>
+            <td>`+ objectList[currentObjectId].childObject.forceY.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Velocity(x-axis)</td>
+            <td>`+ objectList[currentObjectId].childObject.velocityX.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Velocity(y-axis)</td>
+            <td>`+ objectList[currentObjectId].childObject.velocityY.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Energy Loss/Cycle</td>
+            <td>`+ objectList[currentObjectId].childObject.energyLoss.toString() + `</td>
+          </tr>
+          <tr>
+            <td>Opposing Force/Cycle</td>
+            <td>`+ objectList[currentObjectId].childObject.opposingForce.toString() + `</td>
+          </tr>
+            </tbody>
+      </table>`
+        cellInfoPanel.current.innerHTML = res
+      }
     }
   }
 
@@ -346,6 +463,60 @@ function App() {
       case "velocity": {
         objectList[currentObjectId].childObject.velocityX -= 1;
       } break
+      default: {
+        var childKey = "CH" + childI.toString() + childJ.toString()
+        var cell = document.getElementById(childKey)
+        cell.style.backgroundColor = objectList[currentObjectId].childObject.childGridC[childI][childJ]
+        childJ = (childJ - 1) >= 0 ? (childJ - 1) : 8
+        childKey = "CH" + childI.toString() + childJ.toString()
+        cell = document.getElementById(childKey)
+        cell.style.backgroundColor = "red"
+
+        var res = `
+      <table onKeyDown={onKeyDown} ref={controlTable} style={controlTableStyle} className="table">
+        <thead className="thead-dark">
+          <tr>
+            <th scope="col">Parameters</th>
+            <th scope="col">Value</th>
+          </tr>
+        </thead>
+         <tbody className="table-light">
+          <tr>
+            <td>ObjectId</td>
+            <td>`+ currentObjectId + `(Child)</td>
+          </tr>
+          <tr>
+            <td>Mass(Cell Count X Density)</td>
+            <td>`+ objectList[currentObjectId].childObject.mass.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Force(x-axis)</td>
+            <td>`+ objectList[currentObjectId].childObject.forceX.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Force(y-axis)</td>
+            <td>`+ objectList[currentObjectId].childObject.forceY.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Velocity(x-axis)</td>
+            <td>`+ objectList[currentObjectId].childObject.velocityX.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Velocity(y-axis)</td>
+            <td>`+ objectList[currentObjectId].childObject.velocityY.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Energy Loss/Cycle</td>
+            <td>`+ objectList[currentObjectId].childObject.energyLoss.toString() + `</td>
+          </tr>
+          <tr>
+            <td>Opposing Force/Cycle</td>
+            <td>`+ objectList[currentObjectId].childObject.opposingForce.toString() + `</td>
+          </tr>
+            </tbody>
+      </table>`
+        cellInfoPanel.current.innerHTML = res
+      }
     }
   }
 
@@ -369,6 +540,60 @@ function App() {
       case "oppforce": {
         objectList[currentObjectId].childObject.opposingForce += 1;
       } break
+      default: {
+        var childKey = "CH" + childI.toString() + childJ.toString()
+        var cell = document.getElementById(childKey)
+        cell.style.backgroundColor = objectList[currentObjectId].childObject.childGridC[childI][childJ]
+        childJ = (parseInt(childJ) + 1) <= 8 ? (parseInt(childJ) + 1) : 0
+        childKey = "CH" + childI.toString() + childJ.toString()
+        cell = document.getElementById(childKey)
+        cell.style.backgroundColor = "red"
+
+        var res = `
+      <table onKeyDown={onKeyDown} ref={controlTable} style={controlTableStyle} className="table">
+        <thead className="thead-dark">
+          <tr>
+            <th scope="col">Parameters</th>
+            <th scope="col">Value</th>
+          </tr>
+        </thead>
+         <tbody className="table-light">
+          <tr>
+            <td>ObjectId</td>
+            <td>`+ currentObjectId + `(Child)</td>
+          </tr>
+          <tr>
+            <td>Mass(Cell Count X Density)</td>
+            <td>`+ objectList[currentObjectId].childObject.mass.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Force(x-axis)</td>
+            <td>`+ objectList[currentObjectId].childObject.forceX.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Force(y-axis)</td>
+            <td>`+ objectList[currentObjectId].childObject.forceY.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Velocity(x-axis)</td>
+            <td>`+ objectList[currentObjectId].childObject.velocityX.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Velocity(y-axis)</td>
+            <td>`+ objectList[currentObjectId].childObject.velocityY.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Energy Loss/Cycle</td>
+            <td>`+ objectList[currentObjectId].childObject.energyLoss.toString() + `</td>
+          </tr>
+          <tr>
+            <td>Opposing Force/Cycle</td>
+            <td>`+ objectList[currentObjectId].childObject.opposingForce.toString() + `</td>
+          </tr>
+            </tbody>
+      </table>`
+        cellInfoPanel.current.innerHTML = res
+      }
     }
   }
 
@@ -953,9 +1178,15 @@ function App() {
   }
 
   var onColorChange = (event) => {
-    if (grid[colorTarget].objectId != "-1") {
+    if(mode == "parent") {
       grid[colorTarget].color = event.target.value
       processDOM(grid)
+    } else {
+      if (objectList[currentObjectId].childObject.childGridC[childI][childJ] == "#000000") return
+      objectList[currentObjectId].childObject.childGridC[childI][childJ] = event.target.value
+      var childKey = "CH" + childI.toString() + childJ.toString()
+      var cell = document.getElementById(childKey)
+      cell.style.backgroundColor = objectList[currentObjectId].childObject.childGridC[childI][childJ]
     }
     colorPanel.current.hidden = true
   }
@@ -1032,11 +1263,22 @@ function App() {
         }
       }break
       case "9": {
-        if (mode == "child") break
         if (colorPanel.current.hidden == true) {
-          colorPanel.current.hidden = false
-          colorPanel.current.value = grid[currentKey].color
-          colorTarget = currentKey
+          if(mode == "parent") {
+            if (currentObjectId == "-1" || currentObjectId == undefined) return
+           colorPanel.current.hidden = false
+           if(grid[currentKey].objectId != "-1") {
+             colorPanel.current.style.height = (Math.min(height * 0.99, width * 0.99) / computeNumber).toString() + "px"
+             colorPanel.current.style.width = (Math.min(height * 0.99, width * 0.99) / computeNumber).toString() + "px"
+             colorPanel.current.value = grid[currentKey].color
+             colorTarget = currentKey
+           }
+          } else {
+            colorPanel.current.hidden = false
+            colorPanel.current.style.height = (Math.min(height * 0.99, width * 0.99) * 0.50 / 9).toString() + "px"
+            colorPanel.current.style.width = (Math.min(height * 0.99, width * 0.99) * 0.50 / 9).toString() + "px"
+            colorPanel.current.value = objectList[currentObjectId].childObject.childGridC[childI][childJ]
+          }
         } else {
           colorPanel.current.hidden = true
         }
@@ -1065,6 +1307,13 @@ function App() {
             mode = "child"
             alert("Switched to Child Mode")
             childPanel.current.hidden = false
+            childGrid.map((subgrid) => {
+              subgrid.map((index) => {
+                var childKey = "CH" + index.i.toString() + index.j.toString()
+                cell = document.getElementById(childKey)
+                cell.style.backgroundColor = objectList[currentObjectId].childObject.childGridC[index.i][index.j]
+              })
+            })
           }
         }
       } break
@@ -1075,11 +1324,17 @@ function App() {
           if(val == 0) {
             objectList[currentObjectId].childObject.childGrid[childI][childJ] = 1
             var cell = document.getElementById(childKey)
-            cell.style.backgroundColor = "white"
+            cell.style.backgroundColor = "#ffffff"
+            objectList[currentObjectId].childObject.childGridC[childI][childJ] = "#ffffff"
+            objectList[currentObjectId].childObject.cellCount++
+            objectList[currentObjectId].childObject.mass = objectList[currentObjectId].childObject.cellCount * objectList[currentObjectId].childObject.density
           } else {
             objectList[currentObjectId].childObject.childGrid[childI][childJ] = 0
             var cell = document.getElementById(childKey)
-            cell.style.backgroundColor = "transparent"
+            cell.style.backgroundColor = "#000000"
+            objectList[currentObjectId].childObject.childGridC[childI][childJ] = "#000000"
+            objectList[currentObjectId].childObject.cellCount--
+            objectList[currentObjectId].childObject.mass = objectList[currentObjectId].childObject.cellCount * objectList[currentObjectId].childObject.density
           }
         } else {
           if (currentProperty == null) {
@@ -1118,6 +1373,22 @@ function App() {
       case "n": {
         if (currentProperty == null) {
           currentProperty = "oppforce"
+        }
+      } break
+       case "i": {
+        if (currentObjectId == "-1" || currentObjectId == undefined) return
+        if(mode == "parent") {
+          if (objectList[currentObjectId].destroySelf == false) {
+            objectList[currentObjectId].destroySelf = true
+          } else {
+            objectList[currentObjectId].destroySelf = false
+          }
+        } else {
+          if (objectList[currentObjectId].childObject.destroySelf == false) {
+            objectList[currentObjectId].childObject.destroySelf = true
+          } else {
+            objectList[currentObjectId].childObject.destroySelf = false
+          }
         }
       } break
       case "m": {
@@ -1169,7 +1440,6 @@ function App() {
   }
 
   var onKeyUp = (event) => {
-    
     switch (event.key) {
       case "7": {
         currentProperty = null
@@ -1288,7 +1558,7 @@ function App() {
          <tbody className="table-light">
           <tr>
             <td>ObjectId</td>
-            <td>`+ currentObjectId + `</td>
+            <td>`+ currentObjectId + `(Child)</td>
           </tr>
           <tr>
             <td>Mass(Cell Count X Density)</td>
@@ -1424,8 +1694,65 @@ function App() {
       event.preventDefault()
       var cell = document.getElementById(event.target.id)
       cell.style.backgroundColor = "red"
+      colorPanel.current.hidden = true
+
       childI = event.target.dataset.i
       childJ = event.target.dataset.j
+
+      colorPanel.current.style.top = (childPanel.current.offsetTop +  cell.offsetTop).toString() + "px"
+      colorPanel.current.style.left = (childPanel.current.offsetLeft + cell.offsetLeft).toString() + "px"
+      colorPanel.current.value = objectList[currentObjectId].childObject.childGridC[childI][childJ]
+
+      cellInfoPanel.current.style.top = (childPanel.current.offsetTop + cell.offsetTop + Math.min(height * 0.99, width * 0.99) * 0.50 / 9).toString() + "px"
+      cellInfoPanel.current.style.left = (childPanel.current.offsetLeft + cell.offsetLeft + Math.min(height * 0.99, width * 0.99) * 0.50 / 9).toString() + "px"
+
+      textPanel.current.style.top = (childPanel.current.offsetTop + cell.offsetTop + Math.min(height * 0.99, width * 0.99) * 0.50 / 9).toString() + "px"
+      textPanel.current.style.left = (childPanel.current.offsetLeft + cell.offsetLeft + Math.min(height * 0.99, width * 0.99) * 0.50 / 9).toString() + "px"
+
+      var res = `
+      <table onKeyDown={onKeyDown} ref={controlTable} style={controlTableStyle} className="table">
+        <thead className="thead-dark">
+          <tr>
+            <th scope="col">Parameters</th>
+            <th scope="col">Value</th>
+          </tr>
+        </thead>
+         <tbody className="table-light">
+          <tr>
+            <td>ObjectId</td>
+            <td>`+ currentObjectId + `(Child)</td>
+          </tr>
+          <tr>
+            <td>Mass(Cell Count X Density)</td>
+            <td>`+ objectList[currentObjectId].childObject.mass.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Force(x-axis)</td>
+            <td>`+ objectList[currentObjectId].childObject.forceX.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Force(y-axis)</td>
+            <td>`+ objectList[currentObjectId].childObject.forceY.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Velocity(x-axis)</td>
+            <td>`+ objectList[currentObjectId].childObject.velocityX.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Velocity(y-axis)</td>
+            <td>`+ objectList[currentObjectId].childObject.velocityY.toString() + `</td>
+          </tr>
+           <tr>
+            <td>Energy Loss/Cycle</td>
+            <td>`+ objectList[currentObjectId].childObject.energyLoss.toString() + `</td>
+          </tr>
+          <tr>
+            <td>Opposing Force/Cycle</td>
+            <td>`+ objectList[currentObjectId].childObject.opposingForce.toString() + `</td>
+          </tr>
+            </tbody>
+      </table>`
+      cellInfoPanel.current.innerHTML = res
       //console.log(objectList[currentObjectId].childObject.childGrid[childI][childJ])
     }
   }
@@ -1433,13 +1760,8 @@ function App() {
   var onMouseLeaveChild = (event) => {
     if(mode == "child") {
       event.preventDefault()
-      var val = objectList[currentObjectId].childObject.childGrid[childI][childJ]
       var cell = document.getElementById(event.target.id)
-      if (val == 0) {
-        cell.style.backgroundColor = "transparent"
-      } else {
-        cell.style.backgroundColor = "white"
-      }
+      cell.style.backgroundColor = objectList[currentObjectId].childObject.childGridC[event.target.dataset.i][event.target.dataset.j]
     }
   }
 
@@ -1485,6 +1807,7 @@ function App() {
           <div key={i} className="d-flex justify-content-center">
             {num.map((j) => (
               <div
+                tabIndex={0}
                 onMouseEnter={onMouseEnterOrClick}
                 onMouseLeave={onMouseLeave}
                 onTouchStart={onMouseEnterOrClick}
@@ -1502,14 +1825,14 @@ function App() {
           </div>
         ))}
       </div>
-      <div ref={upload} style={uploadStyle} className="custom-file">
+      <div tabIndex={0} ref={upload} style={uploadStyle} className="custom-file">
         <input type="file" className="custom-file-input" id="uploadScene" onChange={onUpload}></input>
         <label className="custom-file-label" htmlFor="uploadScene">Upload Scene</label>
       </div>
-      <div ref={cellInfoPanel} style={infoPanelStyle}>
+      <div tabIndex={0} ref={cellInfoPanel} style={infoPanelStyle}>
       </div>
-      <input type="color" ref={colorPanel} style={colorPanelStyle} className="form-control form-control-color" onChange={onColorChange}></input>
-      <table onKeyDown={onKeyDown} ref={controlTable} style={controlTableStyle} className="table">
+      <input tabIndex={0} type="color" ref={colorPanel} style={colorPanelStyle} className="form-control form-control-color" onChange={onColorChange}></input>
+      <table tabIndex={0} onKeyDown={onKeyDown} ref={controlTable} style={controlTableStyle} className="table">
         <thead className="thead-dark">
           <tr>
             <th scope="col">Engine Controls</th>
@@ -1709,11 +2032,12 @@ function App() {
           </tr>
         </tbody>
       </table>
-      <textarea onKeyDown={handleTab} ref={textPanel} rows="20" style={textAreaStyle} onChange={onTextChange}></textarea>
+      <textarea tabIndex={0} onKeyDown={handleTab} ref={textPanel} rows="20" style={textAreaStyle} onChange={onTextChange}></textarea>
       <div ref={childPanel} style={childGridStyle}>
         {childGrid.map((subGrid) => (
           <div key={cidx++} className="d-flex justify-content-center">{subGrid.map((index) => (
             <div 
+              tabIndex={0}
               id={"CH"+index.i.toString() + index.j.toString()}
               key={"CH" + index.i.toString() + index.j.toString()}
               data-i={index.i.toString()}
@@ -1725,6 +2049,7 @@ function App() {
               onTouchEnd={onMouseLeaveChild}
               onClick={onMouseEnterOrClickChild}
               onKeyDown={onKeyDown}
+              onKeyUp={onKeyUp}
             ></div>
           ))}</div>
         ))}

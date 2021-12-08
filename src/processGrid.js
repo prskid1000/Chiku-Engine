@@ -12,24 +12,20 @@ const { forceLeft,
     setBoundary,
     forceBottom,
     getNeighbourKV,
-    createObject,
-    destroyObject, } = require("./object")
+    destroyObject,
+    createLeftChild,
+    createRightChild,
+    createBottomChild,
+    createTopChild, } = require("./object")
 
     
 module.exports = {
     processGrid: (grid, objectList, currentObjectId) => {
 
-        //Process Scripts
-        Object.keys(objectList).map((key) => {
-            if (grid[key] != undefined && objectList[key] != undefined) {
-                eval(objectList[key].script)(grid, objectList, key)
-            }
-        })
-
         //Process Force, Velocity, and Movement
         Object.keys(objectList).map((key) => {
 
-            if (grid[key] != undefined && objectList[key] != undefined) { 
+            if (grid[key] != undefined && objectList[key] != undefined && objectList[grid[key].objectId] != undefined) {
                 if (objectList[key].forceX > 0) {
                     objectList[key].velocityX = Math.floor(objectList[key].forceX / objectList[key].mass)
                     objectList[key].forceX -= objectList[key].opposingForce
@@ -85,10 +81,58 @@ module.exports = {
 
         })
 
-        //Detect Collision and Boundary
+        //Process Boundary
         Object.keys(objectList).map((key) => {
-            if (grid[key] != undefined && objectList[key] != undefined) { 
+
+            if (grid[key] != undefined && objectList[key] != undefined && objectList[grid[key].objectId] != undefined) {
+
                 setBoundary(grid, objectList, key)
+
+                objectList[key].boundaryList.left.map((target) => {
+                    if (grid[target].produceLeft == true) {
+                        createLeftChild(grid, objectList, target)
+                    }
+                    var neighbours = getNeighbourKV(target)
+                    if (grid[target].destroyLeft == true && grid[neighbours.left].objectId != grid[target].objectId) {
+                        destroyObject(grid, objectList, neighbours.left)
+                    }
+                })
+
+                objectList[key].boundaryList.right.map((target) => {
+                     if (grid[target].produceRight == true) {
+                        createRightChild(grid, objectList, target)
+                    }
+                    var neighbours = getNeighbourKV(target)
+                    if (grid[target].destroyRight == true && grid[neighbours.right].objectId != grid[target].objectId) {
+                        destroyObject(grid, objectList, neighbours.right)
+                    }
+                })
+
+                objectList[key].boundaryList.top.map((target) => {
+                    if (grid[target].produceTop == true) {
+                        createTopChild(grid, objectList, target)
+                    }
+                    var neighbours = getNeighbourKV(target)
+                    if (grid[target].destroyTop == true && grid[neighbours.top].objectId != grid[target].objectId) {
+                        destroyObject(grid, objectList, neighbours.top)
+                    }
+                })
+
+                objectList[key].boundaryList.bottom.map((target) => {
+                    if (grid[target].produceBottom == true) {
+                        createBottomChild(grid, objectList, target)
+                    }
+                    var neighbours = getNeighbourKV(target)
+                    if (grid[target].destroyBottom == true && grid[neighbours.bottom].objectId != grid[target].objectId) {
+                        destroyObject(grid, objectList, neighbours.bottom)
+                    }
+                })
+            }
+        })
+
+        //Detect Collision
+        Object.keys(objectList).map((key) => {
+            if (grid[key] != undefined && objectList[key] != undefined && objectList[grid[key].objectId] != undefined) {
                 collisionLeft(grid, objectList, key)
                 collisionTop(grid, objectList, key)
                 collisionBottom(grid, objectList, key)
@@ -99,7 +143,7 @@ module.exports = {
         //Process Collision
         Object.keys(objectList).map((key) => {
             
-            if (grid[key] != undefined && objectList[key] != undefined) {
+            if (grid[key] != undefined && objectList[key] != undefined && objectList[grid[key].objectId] != undefined) {
 
                 forceLeft(grid, objectList, key)
                 forceTop(grid, objectList, key)
@@ -168,39 +212,10 @@ module.exports = {
             }
         })
 
-        //Produce and Destroy
+        //Process Scripts
         Object.keys(objectList).map((key) => {
-            if (grid[key] != undefined && objectList[key] != undefined) {
-                for (let i = 0; i < objectList[key].cellList.length; i++) {
-                    var target = objectList[key].cellList[i]
-                    var neighbours = getNeighbourKV(target)
-
-                    if (grid[target].produceLeft == true) {
-                        createObject(grid, objectList, neighbours.left, key)
-                    }
-                    if (grid[target].produceTop == true) {
-                        createObject(grid, objectList, neighbours.top, key)
-                    }
-                    if (grid[target].produceBottom == true) {
-                        createObject(grid, objectList, neighbours.bottom, key)
-                    }
-                    if (grid[target].produceRight == true) {
-                        createObject(grid, objectList, neighbours.right, key)
-                    }
-
-                    if (grid[target].destroyLeft == true && grid[neighbours.left].objectId != grid[target].objectId) {
-                        destroyObject(grid, objectList, neighbours.left)
-                    }
-                    if (grid[target].destroyTop == true && grid[neighbours.top].objectId != grid[target].objectId) {
-                        destroyObject(grid, objectList, neighbours.top)
-                    }
-                    if (grid[target].destroyBottom == true && grid[neighbours.bottom].objectId != grid[target].objectId) {
-                        destroyObject(grid, objectList, neighbours.bottom)
-                    }
-                    if (grid[target].destroyRight == true && grid[neighbours.right].objectId != grid[target].objectId) {
-                        destroyObject(grid, objectList, neighbours.right)
-                    }
-                }
+            if (grid[key] != undefined && objectList[key] != undefined && objectList[grid[key].objectId] != undefined) {
+                eval(objectList[key].script)(grid, objectList, key)
             }
         })
 
