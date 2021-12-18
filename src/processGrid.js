@@ -77,7 +77,7 @@ module.exports = {
             }
         })
 
-        //Process Parent Boundary
+        //Process Parent Boundary, and Object Creation & Deletion
         Object.keys(objectList).map((key) => {
 
             if (objectList[key] != undefined && objectList[key].child != true) {
@@ -130,9 +130,8 @@ module.exports = {
             }
         })
 
-        //Process Child Boundary
+        //Process Child Boundary, and Object Deletion
         Object.keys(objectList).map((key) => {
-
             if (objectList[key] != undefined && objectList[key].child == true) {
                 setBoundary(grid, objectList, key)
                 var isDestroyed = false
@@ -183,27 +182,31 @@ module.exports = {
 
         //Detect Collision
         Object.keys(objectList).map((key) => {
-            if (objectList[key] != undefined) {
-                collisionLeft(grid, objectList, key)
-                collisionTop(grid, objectList, key)
-                collisionBottom(grid, objectList, key)
-                collisionRight(grid, objectList, key)
+            setBoundary(grid, objectList, key)
+            collisionLeft(grid, objectList, key)
+            collisionTop(grid, objectList, key)
+            collisionBottom(grid, objectList, key)
+            collisionRight(grid, objectList, key)
+        })
+
+        //Apply Push Force
+        Object.keys(objectList).map((key) => {
+            if (objectList[key].child != true) {
+                if (Object.keys(objectList[key].collisionList.left).length != 0) forceLeft(grid, objectList, key)
+                if (Object.keys(objectList[key].collisionList.top).length != 0) forceTop(grid, objectList, key)
+                if (Object.keys(objectList[key].collisionList.right).length != 0) forceRight(grid, objectList, key)
+                if (Object.keys(objectList[key].collisionList.bottom).length != 0) forceBottom(grid, objectList, key)
             }
         })
         
-        //Process Collision
+        //Process Convervation of Linear Momentum
         Object.keys(objectList).map((key) => {
             
             if (objectList[key] != undefined) {
 
-                if(objectList[key].child != true) {
-                    forceLeft(grid, objectList, key)
-                    forceTop(grid, objectList, key)
-                    forceRight(grid, objectList, key)
-                    forceBottom(grid, objectList, key)
-                }
-
                 Object.keys(objectList[key].collisionList.left).map((target) => {
+
+                    //console.log(target)
 
                     var m = objectList[key].mass / objectList[target].mass
                     var u1 = objectList[key].velocityX
@@ -212,7 +215,7 @@ module.exports = {
                     objectList[key].velocityX = Math.floor(((m - 1) * u1 + 2 * u2) / (m + 1))
                     objectList[target].velocityX = Math.floor((2 * m * u1 + (1 - m) * u2) / (m + 1))
 
-                    console.log(u1, u2, key, target, objectList[key].velocityX, objectList[target].velocityX)
+                    //console.log(u1, u2, key, target, objectList[key].velocityX, objectList[target].velocityX)
 
                     delete objectList[key].collisionList.left[target]
                     delete objectList[target].collisionList.right[key]
@@ -220,6 +223,8 @@ module.exports = {
                 })
 
                 Object.keys(objectList[key].collisionList.right).map((target) => {
+
+                    //console.log(target)
 
                     var m = objectList[key].mass / objectList[target].mass
                     var u1 = objectList[key].velocityX
@@ -236,6 +241,8 @@ module.exports = {
 
                 Object.keys(objectList[key].collisionList.top).map((target) => {
 
+                    //console.log(target)
+
                     var m = objectList[key].mass / objectList[target].mass
                     var u1 = objectList[key].velocityY
                     var u2 = objectList[target].velocityY
@@ -249,6 +256,8 @@ module.exports = {
                 })
 
                 Object.keys(objectList[key].collisionList.bottom).map((target) => {
+
+                    //console.log(target)
 
                     var m = objectList[key].mass / objectList[target].mass
                     var u1 = objectList[key].velocityY

@@ -161,7 +161,6 @@ function App() {
   }
 
   var simulate = () => {
-    console.log(objectList)
     currentObjectId = processGrid(grid, objectList, currentObjectId)
     processDOM(grid)
 
