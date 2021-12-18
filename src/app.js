@@ -90,7 +90,7 @@ function App() {
     top: "0",
     left: "0",
     zIndex: "7",
-    fontSize: "16px",
+    fontSize: "14px",
     fontWeight: "bold"
   }
 
@@ -105,7 +105,7 @@ function App() {
     height: Math.min(height * 0.99, width * 0.99) / computeNumber,
     width: Math.min(height * 0.99, width * 0.99) / computeNumber,
     zIndex: "9",
-    fontSize: "16px",
+    fontSize: "14px",
     fontWeight: "bold"
   }
 
@@ -115,7 +115,7 @@ function App() {
     top: "50%",
     left: width * 0.40,
     zIndex: "3",
-    fontSize: "12px",
+    fontSize: "14px",
     width: width * 0.20
   }
 
@@ -125,7 +125,7 @@ function App() {
     top: "50px",
     left: width * 0.30,
     zIndex: "3",
-    fontSize: "12px",
+    fontSize: "14px",
     width: width * 0.40,
   }
 
@@ -134,7 +134,7 @@ function App() {
     color: "white",
     backgroundColor: "transparent",
     top: "0px",
-    fontSize: "16px",
+    fontSize: "14px",
     left: "0px",
     zIndex: "13",
     width: width * 0.30
