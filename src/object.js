@@ -55,13 +55,7 @@ var getProperty = (key) => {
         "velocityY": 0,
         "opposingForce": 0,
         "energyLoss": 0,
-        "script": `(grid, objectList, objectId) => {\n
-                //setBoundary(grid, objectList, key)\n
-                //collisionLeft(grid, objectList, key)\n
-                //collisionTop(grid, objectList, key)\n
-                //collisionBottom(grid, objectList, key)\n
-                //collisionRight(grid, objectList, key)\n
-            }`,
+        "script": `(grid, objectList, objectId) => {\n}`,
         "childObject": {
             "child": true,
             "destroySelf": false,
@@ -78,13 +72,7 @@ var getProperty = (key) => {
             "velocityY": 0,
             "opposingForce": 0,
             "energyLoss": 0,
-            "script": `(grid, objectList, objectId) => {\n
-                //setBoundary(grid, objectList, key)\n
-                //collisionLeft(grid, objectList, key)\n
-                //collisionTop(grid, objectList, key)\n
-                //collisionBottom(grid, objectList, key)\n
-                //collisionRight(grid, objectList, key)\n
-            }`,
+            "script": `(grid, objectList, objectId) => {\n}`,
             "childGridC": [
                 ["#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000"],
                 ["#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000"],
@@ -277,7 +265,6 @@ var forceLeft = (grid, objectList, key) => {
         var neighbours = getNeighbourKV(target)
         if (grid[neighbours.left].type == "empty") {
             objectList[target].forceX -= grid[objectList[key].collisionList.left[target]].pushX
-            objectList[key].forceX += grid[objectList[key].collisionList.left[target]].pushX
         } else {
             objectList[target].forceY -= grid[objectList[key].collisionList.left[target]].pushY
         }
@@ -291,7 +278,6 @@ var forceRight = (grid, objectList, key) => {
         var neighbours = getNeighbourKV(target)
         if (grid[neighbours.right].type == "empty") {
             objectList[target].forceX += grid[objectList[key].collisionList.right[target]].pushX
-            objectList[key].forceX -= grid[objectList[key].collisionList.right[target]].pushX
         } else {
             objectList[target].forceY += grid[objectList[key].collisionList.right[target]].pushY
         }
@@ -305,7 +291,6 @@ var forceTop = (grid, objectList, key) => {
         var neighbours = getNeighbourKV(target)
         if (grid[neighbours.top].type == "empty") {
             objectList[target].forceY += grid[objectList[key].collisionList.top[target]].pushY
-            objectList[key].forceY -= grid[objectList[key].collisionList.top[target]].pushY
         } else {
             objectList[target].forceX += grid[objectList[key].collisionList.top[target]].pushX
         }
@@ -319,7 +304,6 @@ var forceBottom = (grid, objectList, key) => {
         var neighbours = getNeighbourKV(target)
         if (grid[neighbours.bottom].type == "empty") {
             objectList[target].forceY -= grid[objectList[key].collisionList.bottom[target]].pushY
-            objectList[key].forceY += grid[objectList[key].collisionList.bottom[target]].pushY
         } else {
             objectList[target].forceX -= grid[objectList[key].collisionList.bottom[target]].pushX
         }
