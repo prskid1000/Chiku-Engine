@@ -61,7 +61,9 @@ var getProperty = (key) => {
             "top": [],
             "bottom": [],
         },
-        "script": `(grid, objectList, objectId) => {\n}`,
+        "script": `(grid, objectList, objectId) => {\n
+            //console.log(objectList[objectId].scriptVariables)\n
+        }`,
         "childObject": {
             "child": true,
             "destroySelf": false,
@@ -78,7 +80,9 @@ var getProperty = (key) => {
             "velocityY": 0,
             "opposingForce": 0,
             "energyLoss": 0,
-            "script": `(grid, objectList, objectId) => {\n}`,
+            "script": `(grid, objectList, objectId) => {\n
+            //console.log(objectList[objectId].scriptVariables)\n
+            }`,
             "childGridC": [
                 ["#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000"],
                 ["#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000"],
@@ -115,7 +119,8 @@ var getProperty = (key) => {
             "right": [],
             "top": [],
             "bottom": [],
-        }
+        },
+        "scriptVariables": {}
     }
 
     return property
