@@ -818,6 +818,7 @@ var createRightChild = (grid, objectList, currentKey) => {
         destroyTop: false,
         destroyBottom: false,
     }
+    
     var neighbours = getRightArea(currentKey)
     neighbours.map((subgrid) => {
         subgrid.map((key) => {
@@ -839,6 +840,7 @@ var createRightChild = (grid, objectList, currentKey) => {
                     if (childKey == -1) {
                         childKey = key
                         createObject(grid, objectList, childKey, objectId)
+                        objectList[childKey].destroySelf = objectList[objectId].childObject.destroySelf
                     } else {
                         objectList[childKey].cellList.push(key)
                         addCell(grid, childKey, key, 0, 0, childGridC[childI][childJ], produce, destroy)
@@ -848,6 +850,22 @@ var createRightChild = (grid, objectList, currentKey) => {
             })
             childJ = 0
             childI++
+        })
+    }
+
+    if(childKey != -1) {
+        setBoundary(grid, objectList, childKey)
+        objectList[childKey].boundaryList.right.map((gkey) => {
+            grid[gkey].destroyRight = objectList[objectId].childObject.destroyRight
+        })
+        objectList[childKey].boundaryList.left.map((gkey) => {
+            grid[gkey].destroyLeft = objectList[objectId].childObject.destroyLeft
+        })
+        objectList[childKey].boundaryList.top.map((gkey) => {
+            grid[gkey].destroyTop = objectList[objectId].childObject.destroyTop
+        })
+        objectList[childKey].boundaryList.bottom.map((gkey) => {
+            grid[gkey].destroyBottom = objectList[objectId].childObject.destroyBottom
         })
     }
 }
