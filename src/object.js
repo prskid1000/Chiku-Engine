@@ -104,7 +104,7 @@ var getProperty = (key) => {
                 [0, 0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        ],
+            ],
             "cellList": []
         },
         "cellList": [key],
@@ -186,7 +186,7 @@ var collisionLeft = (grid, objectList, key) => {
         var neighbours = getNeighbourKV(target)
         if (grid[neighbours.left].type == "object" && grid[neighbours.left].objectId != grid[key].objectId) {
             collision[grid[neighbours.left].objectId] = target
-            if(objectList[grid[target].objectId].child != true) {
+            if (objectList[grid[target].objectId].child != true) {
                 if (force[grid[neighbours.left].objectId] == undefined) {
                     force[grid[neighbours.left].objectId] = [target]
                 } else {
@@ -316,7 +316,7 @@ var forceLeft = (grid, objectList, key) => {
         objectList[key].forceList.left[target].map((gkey) => {
             if (Object.keys(objectList[target].collisionList.left).length == 0) {
                 objectList[target].forceX -= grid[gkey].pushX
-            } else if (Object.keys(objectList[target].collisionList.bottom).length == 0){
+            } else if (Object.keys(objectList[target].collisionList.bottom).length == 0) {
                 objectList[target].forceY -= grid[gkey].pushY
             }
         })
@@ -344,7 +344,7 @@ var forceTop = (grid, objectList, key) => {
         objectList[key].forceList.top[target].map((gkey) => {
             if (Object.keys(objectList[target].collisionList.top).length == 0) {
                 objectList[target].forceY += grid[gkey].pushY
-            } else if (Object.keys(objectList[target].collisionList.right).length == 0){
+            } else if (Object.keys(objectList[target].collisionList.right).length == 0) {
                 objectList[target].forceX += grid[gkey].pushX
             }
         })
@@ -358,7 +358,7 @@ var forceBottom = (grid, objectList, key) => {
         objectList[key].forceList.bottom[target].map((gkey) => {
             if (Object.keys(objectList[target].collisionList.bottom).length == 0) {
                 objectList[target].forceY -= grid[gkey].pushY
-            } else if (Object.keys(objectList[target].collisionList.left).length == 0){
+            } else if (Object.keys(objectList[target].collisionList.left).length == 0) {
                 objectList[target].forceX -= grid[gkey].pushX
             }
         })
@@ -370,7 +370,7 @@ var moveLeft = (grid, objectList, key) => {
     key = grid[key].objectId
     setBoundary(grid, objectList, key)
     collisionLeft(grid, objectList, key)
-    if (Object.keys(objectList[key].collisionList.left).length != 0) return
+    if (Object.keys(objectList[key].collisionList.left).length != 0) return 
 
     var rowStart = computeCircularRow((Math.floor(parseInt(key) / computeNumber)) * computeNumber)
     var rowEnd = rowStart + computeNumber - 1
@@ -411,7 +411,7 @@ var moveLeft = (grid, objectList, key) => {
     })
 
     objectList[objectId].cellList = newCellList
-  
+
     objectList[objectId].cellList.map((cellKey) => {
         addCell(grid, objectId, cellKey, pushX[cellKey], pushY[cellKey], color[cellKey], produce[cellKey], destroy[cellKey])
     })
@@ -625,6 +625,7 @@ var expandLeft = (grid, objectList, currentKey) => {
     var upKey = computeCircularColumn(column, rowStart, rowEnd).toString()
     if (grid[upKey].type == "empty" && grid[upKey].color == "#000000") {
         grid[upKey].color = grid[currentKey].color;
+        grid[upKey].type = "object"
         grid[upKey].pushX = 0;
         grid[upKey].pushY = 0;
         grid[upKey].objectId = grid[currentKey].objectId;
@@ -642,6 +643,7 @@ var expandRight = (grid, objectList, currentKey) => {
     var upKey = computeCircularColumn(column, rowStart, rowEnd).toString()
     if (grid[upKey].type == "empty" && grid[upKey].color == "#000000") {
         grid[upKey].color = grid[currentKey].color;
+        grid[upKey].type = "object"
         grid[upKey].pushX = 0;
         grid[upKey].pushY = 0;
         grid[upKey].objectId = grid[currentKey].objectId;
@@ -666,7 +668,7 @@ var createObject = (grid, objectList, currentKey, parent) => {
             objectList[currentKey].velocityY = objectList[parent].childObject.velocityY
             objectList[currentKey].forceX = objectList[parent].childObject.forceX
             objectList[currentKey].forceY = objectList[parent].childObject.forceY
-            objectList[currentKey].opposingForce= objectList[parent].childObject.opposingForce
+            objectList[currentKey].opposingForce = objectList[parent].childObject.opposingForce
             objectList[currentKey].energyLoss = objectList[parent].childObject.energyLoss
             objectList[currentKey].cellCount = objectList[parent].childObject.cellCount
         }
@@ -823,12 +825,12 @@ var createRightChild = (grid, objectList, currentKey) => {
         destroyTop: false,
         destroyBottom: false,
     }
-    
+
     var neighbours = getRightArea(currentKey)
     neighbours.map((subgrid) => {
         subgrid.map((key) => {
-            if(childGrid[childI][childJ] == 1 && grid[key].type != "empty") {
-               flag = false
+            if (childGrid[childI][childJ] == 1 && grid[key].type != "empty") {
+                flag = false
             }
             childJ++
         })
@@ -836,7 +838,7 @@ var createRightChild = (grid, objectList, currentKey) => {
         childI++
     })
 
-    if(flag == true) {
+    if (flag == true) {
         childI = 0
         childJ = 0
         neighbours.map((subgrid) => {
@@ -858,7 +860,7 @@ var createRightChild = (grid, objectList, currentKey) => {
         })
     }
 
-    if(childKey != -1) {
+    if (childKey != -1) {
         setBoundary(grid, objectList, childKey)
         objectList[childKey].boundaryList.right.map((gkey) => {
             grid[gkey].destroyRight = objectList[objectId].childObject.destroyRight

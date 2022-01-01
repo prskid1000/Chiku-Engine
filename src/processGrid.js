@@ -1,5 +1,5 @@
-const { forceLeft, 
-    forceRight, 
+const { forceLeft,
+    forceRight,
     forceTop,
     moveDown,
     moveLeft,
@@ -18,7 +18,7 @@ const { forceLeft,
     createBottomChild,
     createTopChild, } = require("./object")
 
-    
+
 module.exports = {
     processGrid: (grid, objectList, currentObjectId) => {
 
@@ -79,9 +79,7 @@ module.exports = {
 
         //Process Parent Boundary, and Object Creation & Deletion
         Object.keys(objectList).map((key) => {
-
             if (objectList[key] != undefined && objectList[key].child != true) {
-                setBoundary(grid, objectList, key)
                 var isDestroyed = false
 
                 objectList[key].boundaryList.left.map((target) => {
@@ -95,7 +93,7 @@ module.exports = {
                 })
 
                 objectList[key].boundaryList.right.map((target) => {
-                     if (grid[target].produceRight == true) {
+                    if (grid[target].produceRight == true) {
                         createRightChild(grid, objectList, target)
                     }
                     var neighbours = getNeighbourKV(target)
@@ -136,7 +134,7 @@ module.exports = {
                 setBoundary(grid, objectList, key)
                 var isDestroyed = false
 
-                if(objectList[key].destroyLeft == true) {
+                if (objectList[key].destroyLeft == true) {
                     objectList[key].boundaryList.left.map((target) => {
                         var neighbours = getNeighbourKV(target)
                         if (grid[neighbours.left].objectId != grid[target].objectId) {
@@ -198,80 +196,145 @@ module.exports = {
                 if (Object.keys(objectList[key].collisionList.bottom).length != 0) forceBottom(grid, objectList, key)
             }
         })
-        
+
         //Process Convervation of Linear Momentum
         Object.keys(objectList).map((key) => {
-            
-            if (objectList[key] != undefined) {
 
-                Object.keys(objectList[key].collisionList.left).map((target) => {
+            Object.keys(objectList[key].collisionList.left).map((target) => {
 
-                    //console.log(target)
+                //console.log(target)
 
-                    var m = objectList[key].mass / objectList[target].mass
-                    var u1 = objectList[key].velocityX
-                    var u2 = objectList[target].velocityX
+                var m = objectList[key].mass / objectList[target].mass
+                var u1 = objectList[key].velocityX
+                var u2 = objectList[target].velocityX
 
-                    objectList[key].velocityX = Math.floor(((m - 1) * u1 + 2 * u2) / (m + 1))
-                    objectList[target].velocityX = Math.floor((2 * m * u1 + (1 - m) * u2) / (m + 1))
+                var v1 = Math.abs(((m - 1) * u1 + 2.0 * u2) / (m + 1))
+                var v2 = Math.abs((2.0 * m * u1 + (1 - m) * u2) / (m + 1))
 
-                    //console.log(u1, u2, key, target, objectList[key].velocityX, objectList[target].velocityX)
+                var s1 = Math.sign(((m - 1) * u1 + 2.0 * u2) / (m + 1))
+                var s2 = Math.sign((2.0 * m * u1 + (1 - m) * u2) / (m + 1))
 
-                    delete objectList[key].collisionList.left[target]
-                    delete objectList[target].collisionList.right[key]
+                s1 = Math.abs(s1) == 0 ? 0 : s1
+                s2 = Math.abs(s2) == 0 ? 0 : s2
 
-                })
+                if (v1 - Math.abs(u1) > 0) {
+                    v1 = Math.round(v1)
+                    v2 = Math.floor(v2)
+                } else {
+                    v2 = Math.round(v2)
+                    v1 = Math.floor(v1)
+                }
 
-                Object.keys(objectList[key].collisionList.right).map((target) => {
+                objectList[key].velocityX = s1 * v1
+                objectList[target].velocityX = s2 * v2
 
-                    //console.log(target)
+                //console.log(m, u1, u2, key, target, objectList[key].velocityX, objectList[target].velocityX)
 
-                    var m = objectList[key].mass / objectList[target].mass
-                    var u1 = objectList[key].velocityX
-                    var u2 = objectList[target].velocityX
+                delete objectList[key].collisionList.left[target]
+                delete objectList[target].collisionList.right[key]
 
-                    objectList[key].velocityX = Math.floor(((m - 1) * u1 + 2 * u2) / (m + 1))
-                    objectList[target].velocityX = Math.floor((2 * m * u1 + (1 - m) * u2) / (m + 1))
+            })
 
-                    //console.log(u1, u2, key, target, objectList[key].velocityX, objectList[target].velocityX)
+            Object.keys(objectList[key].collisionList.right).map((target) => {
 
-                    delete objectList[key].collisionList.right[target]
-                    delete objectList[target].collisionList.left[key]
-                })
+                //console.log(target)
 
-                Object.keys(objectList[key].collisionList.top).map((target) => {
+                var m = objectList[key].mass / objectList[target].mass
 
-                    //console.log(target)
+                var u1 = objectList[key].velocityX
+                var u2 = objectList[target].velocityX
 
-                    var m = objectList[key].mass / objectList[target].mass
-                    var u1 = objectList[key].velocityY
-                    var u2 = objectList[target].velocityY
+                var v1 = Math.abs(((m - 1) * u1 + 2.0 * u2) / (m + 1))
+                var v2 = Math.abs((2.0 * m * u1 + (1 - m) * u2) / (m + 1))
 
-                    objectList[key].velocityY = Math.floor(((m - 1) * u1 + 2 * u2) / (m + 1))
-                    objectList[target].velocityY = Math.floor((2 * m * u1 + (1 - m) * u2) / (m + 1))
+                var s1 = Math.sign(((m - 1) * u1 + 2.0 * u2) / (m + 1))
+                var s2 = Math.sign((2.0 * m * u1 + (1 - m) * u2) / (m + 1))
 
-                    delete objectList[key].collisionList.top[target]
-                    delete objectList[target].collisionList.bottom[key]
+                s1 = Math.abs(s1) == 0 ? 0 : s1
+                s2 = Math.abs(s2) == 0 ? 0 : s2
 
-                })
+                console.log(u1, u2, v1, v2)
 
-                Object.keys(objectList[key].collisionList.bottom).map((target) => {
+                if (v1 - Math.abs(u1) > 0) {
+                    v1 = Math.round(v1)
+                    v2 = Math.floor(v2)
+                } else {
+                    v2 = Math.round(v2)
+                    v1 = Math.floor(v1)
+                }
 
-                    //console.log(target)
+                objectList[key].velocityX = s1 * v1
+                objectList[target].velocityX = s2 * v2
 
-                    var m = objectList[key].mass / objectList[target].mass
-                    var u1 = objectList[key].velocityY
-                    var u2 = objectList[target].velocityY
+                delete objectList[key].collisionList.right[target]
+                delete objectList[target].collisionList.left[key]
+            })
 
-                    objectList[key].velocityY = Math.floor(((m - 1) * u1 + 2 * u2) / (m + 1))
-                    objectList[target].velocityY = Math.floor((2 * m * u1 + (1 - m) * u2) / (m + 1))
+            Object.keys(objectList[key].collisionList.top).map((target) => {
 
-                    delete objectList[key].collisionList.bottom[target]
-                    delete objectList[target].collisionList.top[key]
+                //console.log(target)
 
-                })
+                var m = objectList[key].mass / objectList[target].mass
+                var u1 = objectList[key].velocityY
+                var u2 = objectList[target].velocityY
 
-            }
+                var v1 = Math.abs(((m - 1) * u1 + 2.0 * u2) / (m + 1))
+                var v2 = Math.abs((2.0 * m * u1 + (1 - m) * u2) / (m + 1))
+
+                var s1 = Math.sign(((m - 1) * u1 + 2.0 * u2) / (m + 1))
+                var s2 = Math.sign((2.0 * m * u1 + (1 - m) * u2) / (m + 1))
+
+                s1 = Math.abs(s1) == 0 ? 0 : s1
+                s2 = Math.abs(s2) == 0 ? 0 : s2
+
+                if (v1 - Math.abs(u1) > 0) {
+                    v1 = Math.round(v1)
+                    v2 = Math.floor(v2)
+                } else {
+                    v2 = Math.round(v2)
+                    v1 = Math.floor(v1)
+                }
+
+                objectList[key].velocityY = s1 * v1
+                objectList[target].velocityY = s2 * v2
+
+                delete objectList[key].collisionList.top[target]
+                delete objectList[target].collisionList.bottom[key]
+
+            })
+
+            Object.keys(objectList[key].collisionList.bottom).map((target) => {
+
+                //console.log(target)
+
+                var m = objectList[key].mass / objectList[target].mass
+                var u1 = objectList[key].velocityY
+                var u2 = objectList[target].velocityY
+
+                var v1 = Math.abs(((m - 1) * u1 + 2.0 * u2) / (m + 1))
+                var v2 = Math.abs((2.0 * m * u1 + (1 - m) * u2) / (m + 1))
+
+                var s1 = Math.sign(((m - 1) * u1 + 2.0 * u2) / (m + 1))
+                var s2 = Math.sign((2.0 * m * u1 + (1 - m) * u2) / (m + 1))
+
+                s1 = Math.abs(s1) == 0 ? 0 : s1
+                s2 = Math.abs(s2) == 0 ? 0 : s2
+
+                if (v1 - Math.abs(u1) > 0) {
+                    v1 = Math.round(v1)
+                    v2 = Math.floor(v2)
+                } else {
+                    v2 = Math.round(v2)
+                    v1 = Math.floor(v1)
+                }
+
+                objectList[key].velocityY = s1 * v1
+                objectList[target].velocityY = s2 * v2
+
+                delete objectList[key].collisionList.bottom[target]
+                delete objectList[target].collisionList.top[key]
+
+            })
         })
 
         //Process Scripts
