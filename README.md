@@ -5,6 +5,9 @@
 
 ### A Simulation Engine that Simulate a Pixel Playground
 
+![1](https://i.imgur.com/aSAM2X2.png?raw=true)
+![1](https://github.com/prskid1000/Pixel-Engine/blob/main/Preview/qGRMwJG0Qd.gif?raw=true)
+
 ## Getting started
 
 - Fork the repository.
